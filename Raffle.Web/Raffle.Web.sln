@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raffle.Web", "Raffle.Web\Raffle.Web.csproj", "{DB872508-C346-4061-90E9-8F0E11BBECF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Raffle.Core", "Raffle.Core\Raffle.Core.csproj", "{C5D862B9-138D-4973-B07F-13F092A64B3A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB872508-C346-4061-90E9-8F0E11BBECF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB872508-C346-4061-90E9-8F0E11BBECF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB872508-C346-4061-90E9-8F0E11BBECF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB872508-C346-4061-90E9-8F0E11BBECF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5D862B9-138D-4973-B07F-13F092A64B3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5D862B9-138D-4973-B07F-13F092A64B3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5D862B9-138D-4973-B07F-13F092A64B3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5D862B9-138D-4973-B07F-13F092A64B3A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1D57A93A-0995-4B9A-ABC0-27BBFA961BDF}
+	EndGlobalSection
+EndGlobal

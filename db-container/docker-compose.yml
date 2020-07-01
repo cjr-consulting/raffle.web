@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  raffledbsolo:
+    image:  mcr.microsoft.com/mssql/server
+    ports:
+    - "9888:1433"
+    volumes:
+    - rafflesolosqlvolume:/var/opt/mssql
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: AStrong!Passw0rd
+      MSSQL_PID: Express
+volumes:
+  rafflesolosqlvolume:

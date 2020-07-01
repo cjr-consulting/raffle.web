@@ -1,0 +1,41 @@
+﻿@model Raffle.Web.Models.Raffle.RaffleOrderViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Darts for Dreams Raffle</p>
+</div>
+
+<form method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Category</th>
+                <th scope="col">Cost</th>
+                <th scope="col">Items</th>
+            </tr>
+        </thead>
+        @for (int i = 0; i < Model.RaffleItems.Count; i++)
+        {
+            <tr>
+                <td>
+                    @Html.HiddenFor(m => m.RaffleItems[i].Id)
+                <b>@Model.RaffleItems[i].Title</b>
+                <p>
+                    @Model.RaffleItems[i].Description<br />
+                @Model.RaffleItems[i].Sponsor
+            </p>
+        </td>
+        <td>@Model.RaffleItems[i].Category</td>
+        <td>@Model.RaffleItems[i].Cost</td>
+        <td>@Html.TextBoxFor(x => x.RaffleItems[i].Amount, null, new { style = "width:35px", @class = "form-control" })</td>
+    </tr>
+}
+    </table>
+
+    <button type="submit">Complete</button>
+</form>

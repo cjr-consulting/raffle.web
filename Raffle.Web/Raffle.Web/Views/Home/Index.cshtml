@@ -1,7 +1,7 @@
 ﻿@model Raffle.Web.Models.Raffle.RaffleOrderViewModel
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Raffle";
 }
 
 <div class="text-center">
@@ -24,12 +24,12 @@
             <tr>
                 <td>
                     @Html.HiddenFor(m => m.RaffleItems[i].Id)
-                <b>@Model.RaffleItems[i].Title</b>
-                <p>
-                    @Model.RaffleItems[i].Description<br />
-                @Model.RaffleItems[i].Sponsor
-            </p>
-        </td>
+                    <b>@Model.RaffleItems[i].Title</b>
+                    <p>
+                        @Model.RaffleItems[i].Description<br />
+                        @Model.RaffleItems[i].Sponsor
+                    </p>
+                </td>
         <td>@Model.RaffleItems[i].Category</td>
         <td>@Model.RaffleItems[i].Cost</td>
         <td>@Html.TextBoxFor(x => x.RaffleItems[i].Amount, null, new { style = "width:35px", @class = "form-control" })</td>

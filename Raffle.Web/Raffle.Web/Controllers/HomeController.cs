@@ -67,6 +67,36 @@ namespace Raffle.Web.Controllers
             return View(model);
         }
 
+        public IActionResult CompleteRaffle()
+        {
+            return View(new CompleteRaffleView
+            {
+                TotalPrice = 150,
+                TotalTickets = 45,
+                Items = new List<CompleteRaffleItem>
+                {
+                    new CompleteRaffleItem
+                    {
+                        Name = "First Item",
+                        Cost = 5,
+                        Amount = 15
+                    },
+                    new CompleteRaffleItem
+                    {
+                        Name = "Second Item",
+                        Cost = 5,
+                        Amount = 15
+                    },
+                    new CompleteRaffleItem
+                    {
+                        Name = "Third Item",
+                        Cost = 2,
+                        Amount = 15
+                    }
+                }
+            });
+        }
+
 
         public IActionResult Privacy()
         {

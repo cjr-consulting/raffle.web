@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Raffle.Core.Repositories
+namespace Raffle.Core.Models
 {
     public class RaffleItem
     {

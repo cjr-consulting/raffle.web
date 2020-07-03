@@ -1,8 +1,6 @@
-﻿using Raffle.Core.Repositories;
-
+﻿
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Raffle.Core.Models
 {
@@ -11,7 +9,7 @@ namespace Raffle.Core.Models
         public int Id { get; set; }
         public string TicketNumber { get; set; }
         public Customer Customer { get; set; }
-        public IReadOnlyList<RaffleOrderLine> MyProperty { get; set; }
+        public IReadOnlyList<RaffleOrderLine> Lines { get; set; }
     }
 
     public class Customer

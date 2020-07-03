@@ -1,21 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
+using Raffle.Core;
 using Raffle.Web.Models;
 using Raffle.Web.Models.Raffle;
+using Raffle.Web.Services;
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Raffle.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
+        readonly IEmailSender emailSender;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IEmailSender emailSender)
         {
-            _logger = logger;
+            this.emailSender = emailSender;
+            this.logger = logger;
         }
 
         public IActionResult Index()
@@ -98,8 +102,9 @@ namespace Raffle.Web.Controllers
         }
 
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Privacy()
         {
+            await emailSender.SendEmailAsync("johnnynibbles@gmail.com", "John Meade", "Test Email", "Test Plain Text", "<strong>Html Text</strong>");
             return View();
         }
 

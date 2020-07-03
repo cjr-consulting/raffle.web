@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Raffle.Core.Models;
+
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Raffle.Core.Repositories
 {
-    public class RaffleItemRepository
+    public interface IRaffleItemRepository
     {
-        public IReadOnlyList<RaffleItem> GetAll()
-        {
-            return new List<RaffleItem>();
-        }
+        IReadOnlyList<RaffleItem> GetAll();
+
+        Task AddAsync(RaffleItemAdd raffleItem);
     }
 }

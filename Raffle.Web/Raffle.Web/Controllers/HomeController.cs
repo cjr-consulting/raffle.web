@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using Raffle.Core;
+using Raffle.Core.Commands;
 using Raffle.Web.Models;
 using Raffle.Web.Models.Raffle;
-using Raffle.Web.Services;
 
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,9 +16,11 @@ namespace Raffle.Web.Controllers
     {
         private readonly ILogger<HomeController> logger;
         readonly IEmailSender emailSender;
+        readonly AddRaffleItemCommandHandler addHandler;
 
-        public HomeController(ILogger<HomeController> logger, IEmailSender emailSender)
+        public HomeController(ILogger<HomeController> logger, IEmailSender emailSender, AddRaffleItemCommandHandler addHandler)
         {
+            this.addHandler = addHandler;
             this.emailSender = emailSender;
             this.logger = logger;
         }
@@ -104,7 +107,19 @@ namespace Raffle.Web.Controllers
 
         public async Task<IActionResult> Privacy()
         {
-            await emailSender.SendEmailAsync("johnnynibbles@gmail.com", "John Meade", "Test Email", "Test Plain Text", "<strong>Html Text</strong>");
+            addHandler.Handle(new AddRaffleItemCommand
+            {
+                Title = "Title2",
+                Description = "Description2",
+                Category = "Category2",
+                ItemValue = "Value2",
+                ImageUrl = "url",
+                Cost = 5,
+                IsAvailable = true,
+                Order = 0,
+                Sponsor = "Sponsor"
+            });
+            // await emailSender.SendEmailAsync("johnnynibbles@gmail.com", "John Meade", "Test Email", "Test Plain Text", "<strong>Html Text</strong>");
             return View();
         }
 

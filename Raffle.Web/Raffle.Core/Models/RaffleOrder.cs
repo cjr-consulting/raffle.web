@@ -29,7 +29,7 @@ namespace Raffle.Core.Models
     {
         public RaffleItem Item { get; set; }
         public string Name { get; set; }
-        public int Cost { get; set; }
+        public int Price { get; set; }
         public int Amount { get; set; }
     }
 }

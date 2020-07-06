@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 
+using Raffle.Web.Models.Raffle;
+
 using System;
 
 using System.Linq;
@@ -12,6 +14,11 @@ namespace Raffle.Web.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult AddRaffleItem()
+        {
+            return View(new RaffleItemAddView());
         }
     }
 }

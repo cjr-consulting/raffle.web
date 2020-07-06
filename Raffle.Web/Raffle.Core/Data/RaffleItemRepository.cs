@@ -4,19 +4,28 @@ using Raffle.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dapper;
+using System.Data.SqlClient;
+using System.Linq;
 
 namespace Raffle.Core.Data
 {
     public class RaffleItemRepository : IRaffleItemRepository
     {
-        public Task AddAsync(RaffleItemAdd raffleItem)
+        readonly string connectionString;
+
+        public RaffleItemRepository(string connectionString)
         {
-            throw new NotImplementedException();
+            this.connectionString = connectionString;
         }
 
         public IReadOnlyList<RaffleItem> GetAll()
         {
-            throw new NotImplementedException();
+            using (var conn = new SqlConnection(connectionString))
+            {
+
+                return conn.Query<RaffleItem>("SELECT * FROM RaffleItems").ToList();
+            }
         }
     }
 }

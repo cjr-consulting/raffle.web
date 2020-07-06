@@ -1,0 +1,57 @@
+﻿@model Raffle.Web.Models.Raffle.RaffleItemAddView
+@{
+    ViewData["Title"] = "AddRaffleItem";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Add Raffle Item</h1>
+    <p>Darts for Dreams Raffle</p>
+</div>
+
+<form method="post">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Title</label>
+                    @Html.TextBoxFor(x => x.Title, null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="mb-3">
+                <label>Description</label>
+                @Html.TextAreaFor(x => x.Description, 4, 50, new { @class = "form-control" })
+            </div>
+            <div class="mb-3">
+                <label>Category</label>
+                @Html.TextBoxFor(x => x.Category, null, new { @class = "form-control" })
+            </div>
+            <div class="mb-3">
+                <label>Sponsor</label>
+                @Html.TextBoxFor(x => x.Sponsor, null, new { @class = "form-control" })
+            </div>
+            <div class="mb-3">
+                <label>Item Value</label>
+                @Html.TextBoxFor(x => x.ItemValue, null, new { @class = "form-control" })
+            </div>
+            <div class="mb-3">
+                <label>Cost</label>
+                @Html.TextBoxFor(x => x.ItemValue, null, new { @class = "form-control" })
+            </div>
+            <div class="mb-3">
+                <label>Available</label>
+                @Html.CheckBoxFor(x => x.IsAvailable, new { @class = "form-control" })
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <button type="submit" class="form-control btn btn-primary">Complete</button>
+                </div>
+                <div class="col-md-6">
+                    <button type="submit" class="btn btn-warning">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+

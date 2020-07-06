@@ -8,7 +8,5 @@ namespace Raffle.Core.Repositories
     public interface IRaffleItemRepository
     {
         IReadOnlyList<RaffleItem> GetAll();
-
-        Task AddAsync(RaffleItemAdd raffleItem);
     }
 }

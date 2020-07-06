@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Raffle.Core;
+using Raffle.Core.Commands;
 using Raffle.Web.Data;
 using Raffle.Web.Services;
 
@@ -28,9 +29,10 @@ namespace Raffle.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var dbConnectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    dbConnectionString));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.Configure<CookiePolicyOptions>(options =>
@@ -79,6 +81,7 @@ namespace Raffle.Web
 
             string sendGridKey = Configuration["SendGrid:ApiKey"];
             services.AddTransient<IEmailSender>(services => new SendGridEmailSender(sendGridKey, "noreply@trentondarts.com", "GTDL"));
+            services.AddScoped(services => new AddRaffleItemCommandHandler(dbConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

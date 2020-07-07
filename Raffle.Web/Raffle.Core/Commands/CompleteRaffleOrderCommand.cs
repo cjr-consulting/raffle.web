@@ -3,13 +3,11 @@
 using Raffle.Core.Shared;
 
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Text;
 
 namespace Raffle.Core.Commands
 {
-    public class CompleteRaffleOrderCommand: ICommand
+    public class CompleteRaffleOrderCommand : ICommand
     {
         public int OrderId { get; set; }
         public string Email { get; set; }
@@ -33,7 +31,7 @@ namespace Raffle.Core.Commands
 
         public void Handle(CompleteRaffleOrderCommand command)
         {
-            using(var conn = new SqlConnection(dbConnectionString))
+            using (var conn = new SqlConnection(dbConnectionString))
             {
                 const string updateOrder = "UPDATE RaffleOrders SET " +
                     "Customer_FirstName = @FirstName, " +

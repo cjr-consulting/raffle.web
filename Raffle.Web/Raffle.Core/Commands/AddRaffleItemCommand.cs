@@ -11,7 +11,7 @@ namespace Raffle.Core.Commands
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
         public string Category { get; set; }
         public int Order { get; set; }
         public string ItemValue { get; set; }

@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 
 using Raffle.Core;
 using Raffle.Core.Commands;
+using Raffle.Core.Data;
+using Raffle.Core.Repositories;
 using Raffle.Web.Data;
 using Raffle.Web.Services;
 
@@ -81,7 +83,13 @@ namespace Raffle.Web
 
             string sendGridKey = Configuration["SendGrid:ApiKey"];
             services.AddTransient<IEmailSender>(services => new SendGridEmailSender(sendGridKey, "noreply@trentondarts.com", "GTDL"));
+
             services.AddScoped(services => new AddRaffleItemCommandHandler(dbConnectionString));
+            services.AddScoped(services => new UpdateRaffleItemCommandHandler(dbConnectionString));
+            services.AddScoped(services => new StartRaffleOrderQueryHandler(dbConnectionString));
+            services.AddScoped(services => new GetRaffleOrderQueryHandler(dbConnectionString));
+            services.AddScoped(services => new CompleteRaffleOrderCommandHandler(dbConnectionString));
+            services.AddScoped<IRaffleItemRepository>(services => new RaffleItemRepository(dbConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Linq;
 
-namespace Raffle.Core.Models
+namespace Raffle.Web.Models.Raffle
 {
-    public class RaffleItem
+    public class RaffleItemUpdateModel
     {
         public int Id { get; set; }
         public string Title { get; set; }

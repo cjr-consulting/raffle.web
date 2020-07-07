@@ -3,11 +3,13 @@ using Microsoft.Extensions.Logging;
 
 using Raffle.Core;
 using Raffle.Core.Commands;
+using Raffle.Core.Repositories;
 using Raffle.Web.Models;
 using Raffle.Web.Models.Raffle;
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Raffle.Web.Controllers
@@ -16,46 +18,43 @@ namespace Raffle.Web.Controllers
     {
         private readonly ILogger<HomeController> logger;
         readonly IEmailSender emailSender;
-        readonly AddRaffleItemCommandHandler addHandler;
+        readonly IRaffleItemRepository raffleItemRepository;
+        readonly StartRaffleOrderQueryHandler startOrderCommandHandler;
+        readonly GetRaffleOrderQueryHandler raffleOrderQueryHandler;
+        readonly CompleteRaffleOrderCommandHandler completeRaffleOrderCommandHandler;
 
-        public HomeController(ILogger<HomeController> logger, IEmailSender emailSender, AddRaffleItemCommandHandler addHandler)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IEmailSender emailSender,
+            IRaffleItemRepository raffleItemRepository,
+            StartRaffleOrderQueryHandler startOrderCommandHandler,
+            GetRaffleOrderQueryHandler getRaffleOrderQueryHandler,
+            CompleteRaffleOrderCommandHandler completeRaffleOrderCommandHandler)
         {
-            this.addHandler = addHandler;
+            this.completeRaffleOrderCommandHandler = completeRaffleOrderCommandHandler;
+            raffleOrderQueryHandler = getRaffleOrderQueryHandler;
+            this.startOrderCommandHandler = startOrderCommandHandler;
+            this.raffleItemRepository = raffleItemRepository;
             this.emailSender = emailSender;
             this.logger = logger;
         }
 
         public IActionResult Index()
         {
+            var raffleItems = raffleItemRepository.GetAll()
+                .Select(x => new RaffleItemModel
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Category = x.Category,
+                    Sponsor = x.Sponsor,
+                    Cost = x.Cost,
+                    Value = x.ItemValue
+                }).ToList();
             var model = new RaffleOrderViewModel
             {
-                RaffleItems = new List<RaffleItemModel>
-                {
-                    new RaffleItemModel
-                    {
-                        Id = 1,
-                        Title = "Title",
-                        Description = "Description",
-                        Category = "Category",
-                        Value = "Value",
-                        Cost = 5,
-                        IsAvailable = true,
-                        Order = 0,
-                        Sponsor = "Sponsor"
-                    },
-                    new RaffleItemModel
-                    {
-                        Id = 2,
-                        Title = "Title2",
-                        Description = "Description2",
-                        Category = "Category2",
-                        Value = "Value2",
-                        Cost = 5,
-                        IsAvailable = true,
-                        Order = 0,
-                        Sponsor = "Sponsor"
-                    }
-                }
+                RaffleItems = raffleItems
             };
 
             return View(model);
@@ -68,58 +67,78 @@ namespace Raffle.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-
+                var command = new StartRaffleOrderQuery
+                {
+                    RaffleOrderItems = model.RaffleItems
+                        .Where(x => x.Amount > 0)
+                        .Select(x => new StartRaffleOrderQuery.RaffleOrderItem
+                        {
+                            RaffleItemId = x.Id,
+                            Name = x.Title,
+                            Price = x.Cost,
+                            Count = x.Amount
+                        }).ToList()
+                };
+                var orderId = startOrderCommandHandler.Handle(command);
+                return RedirectToAction("CompleteRaffle", new { orderId });
             }
 
             return View(model);
         }
 
-        public IActionResult CompleteRaffle()
+        [HttpGet("Complete/{orderId}")]
+        public IActionResult CompleteRaffle(int orderId)
         {
-            return View(new CompleteRaffleView
+            var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            var model = new CompleteRaffleModel
             {
-                TotalPrice = 150,
-                TotalTickets = 45,
-                Items = new List<CompleteRaffleItem>
+                TotalPrice = order.TotalPrice,
+                TotalTickets = order.TotalTickets,
+                Items = order.Lines.Select(x => new CompleteRaffleItemModel
                 {
-                    new CompleteRaffleItem
-                    {
-                        Name = "First Item",
-                        Cost = 5,
-                        Amount = 15
-                    },
-                    new CompleteRaffleItem
-                    {
-                        Name = "Second Item",
-                        Cost = 5,
-                        Amount = 15
-                    },
-                    new CompleteRaffleItem
-                    {
-                        Name = "Third Item",
-                        Cost = 2,
-                        Amount = 15
-                    }
-                }
-            });
+                    Name = x.Name,
+                    Cost = x.Price,
+                    Amount = x.Count
+                }).ToList()
+            };
+
+            return base.View(model);
         }
 
-
-        public async Task<IActionResult> Privacy()
+        [HttpPost("Complete/{orderId}")]
+        [ValidateAntiForgeryToken]
+        public IActionResult CompleteRaffle(int orderId, CompleteRaffleModel model)
         {
-            addHandler.Handle(new AddRaffleItemCommand
+            if (ModelState.IsValid)
             {
-                Title = "Title2",
-                Description = "Description2",
-                Category = "Category2",
-                ItemValue = "Value2",
-                ImageUrl = "url",
-                Cost = 5,
-                IsAvailable = true,
-                Order = 0,
-                Sponsor = "Sponsor"
-            });
-            // await emailSender.SendEmailAsync("johnnynibbles@gmail.com", "John Meade", "Test Email", "Test Plain Text", "<strong>Html Text</strong>");
+                var command = new CompleteRaffleOrderCommand
+                {
+                    OrderId = orderId,
+                    FirstName = model.CustomerFirstName,
+                    LastName = model.CustomerLastName,
+                    Email = model.CustomerEmail,
+                    AddressLine1 = model.AddressLine1,
+                    AddressLine2 = model.AddressLine2,
+                    City = model.City,
+                    State = model.State,
+                    Zip = model.Zip
+                };
+
+                completeRaffleOrderCommandHandler.Handle(command);
+                return RedirectToAction("OrderSuccessful", new { orderId });
+            }
+
+            return View(model);
+        }
+
+        [HttpGet("OrderSucces/{orderId}")]
+        public IActionResult OrderSuccessful(int orderId)
+        {
+            return View();
+        }
+
+        public IActionResult Privacy()
+        {
             return View();
         }
 

@@ -27,5 +27,13 @@ namespace Raffle.Core.Data
                 return conn.Query<RaffleItem>("SELECT * FROM RaffleItems").ToList();
             }
         }
+
+        public RaffleItem GetById(int id)
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                return conn.Query<RaffleItem>("SELECT * FROM RaffleItems WHERE Id = @id" , new { id }).SingleOrDefault();
+            }
+        }
     }
 }

@@ -4,9 +4,10 @@ using System.Linq;
 
 namespace Raffle.Web.Models.Raffle
 {
-    public class CompleteRaffleView
+    public class CompleteRaffleModel
     {
-        public string CustomerFullName { get; set; }
+        public string CustomerFirstName { get; set; }
+        public string CustomerLastName { get; set; }
         public string CustomerEmail { get; set; }
         public string CustomerEmailRepeat { get; set; }
         public string AddressLine1 { get; set; }
@@ -18,10 +19,10 @@ namespace Raffle.Web.Models.Raffle
         public int TotalPrice { get; set; }
         public int TotalTickets { get; set; }
 
-        public List<CompleteRaffleItem> Items { get; set; } = new List<CompleteRaffleItem>();
+        public List<CompleteRaffleItemModel> Items { get; set; } = new List<CompleteRaffleItemModel>();
     }
 
-    public class CompleteRaffleItem
+    public class CompleteRaffleItemModel
     {
         public int RaffleItemId { get; set; }
         public string Name { get; set; }

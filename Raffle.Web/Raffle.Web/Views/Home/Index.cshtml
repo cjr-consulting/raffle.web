@@ -24,18 +24,18 @@
             <tr>
                 <td>
                     @Html.HiddenFor(m => m.RaffleItems[i].Id)
-                    <b>@Model.RaffleItems[i].Title</b>
+                    <b>@Model.RaffleItems[i].Title @Html.HiddenFor(x=>x.RaffleItems[i].Title)</b>
                     <p>
                         @Model.RaffleItems[i].Description<br />
                         @Model.RaffleItems[i].Sponsor
                     </p>
                 </td>
         <td>@Model.RaffleItems[i].Category</td>
-        <td>@Model.RaffleItems[i].Cost</td>
+        <td>@Model.RaffleItems[i].Cost @Html.HiddenFor(x => x.RaffleItems[i].Cost)</td>
         <td>@Html.TextBoxFor(x => x.RaffleItems[i].Amount, null, new { style = "width:35px", @class = "form-control" })</td>
     </tr>
 }
     </table>
 
-    <button type="submit">Complete</button>
+    <button type="submit" class="btn btn-primary">Complete</button>
 </form>

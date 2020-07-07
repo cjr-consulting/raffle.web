@@ -18,7 +18,7 @@ namespace Raffle.Web.Controllers
 
         public IActionResult AddRaffleItem()
         {
-            return View(new RaffleItemAddView());
+            return View(new RaffleItemAddModel());
         }
     }
 }

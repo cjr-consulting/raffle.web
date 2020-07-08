@@ -6,10 +6,12 @@
 
   <ItemGroup>
     <None Remove="EmailTemplates\OrderComplete.html" />
+    <None Remove="EmailTemplates\Sample.html" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="EmailTemplates\OrderComplete.html" />
+    <EmbeddedResource Include="EmailTemplates\Sample.html" />
   </ItemGroup>
   
   <ItemGroup>

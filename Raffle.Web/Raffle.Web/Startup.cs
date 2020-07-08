@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Raffle.Core;
 using Raffle.Core.Commands;
 using Raffle.Core.Data;
+using Raffle.Core.Models;
 using Raffle.Core.Repositories;
 using Raffle.Core.Shared;
 using Raffle.Web.Data;
@@ -83,6 +84,9 @@ namespace Raffle.Web
             });
 
             string sendGridKey = Configuration["SendGrid:ApiKey"];
+            string managerEmail = Configuration["raffleManager:email"];
+            string managerName = Configuration["raffleManager:name"];
+
             services.AddTransient<IEmailSender>(services => new SendGridEmailSender(sendGridKey, "noreply@trentondarts.com", "GTDL"));
 
             services.AddScoped(services => new AddRaffleItemCommandHandler(dbConnectionString));
@@ -92,7 +96,8 @@ namespace Raffle.Web
             services.AddScoped(services => new CompleteRaffleOrderCommandHandler(
                 dbConnectionString, 
                 services.GetService<IEmailSender>(),
-                services.GetService<EmbeddedResourceReader>()));
+                services.GetService<EmbeddedResourceReader>(),
+                new EmailAddress(managerEmail, managerName)));
             services.AddScoped<IRaffleItemRepository>(services => new RaffleItemRepository(dbConnectionString));
             services.AddSingleton<EmbeddedResourceReader>();
         }

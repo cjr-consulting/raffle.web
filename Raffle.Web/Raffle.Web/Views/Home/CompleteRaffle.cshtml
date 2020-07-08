@@ -5,7 +5,7 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Finalize Raffle Submition</h1>
+    <h1 class="display-4">Complete Raffle Donation</h1>
     <p>Darts for Dreams Raffle</p>
 </div>
 
@@ -37,7 +37,10 @@
         <div class="col-md-8 order-md-1">
 
             <h4 class="mb-3">Customer Information</h4>
-
+            @if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))
+            {
+                @Html.ValidationSummary(false, "Errors: ", new { @class = "alert alert-danger" })
+            }
             <div class="row">
                 <div class="col-md-6">
                     <label>First Name</label>
@@ -85,7 +88,7 @@
                     <button type="submit" class="form-control btn btn-primary">Complete</button>
                 </div>
                 <div class="col-md-6">
-                    <button type="submit" class="btn btn-warning">Cancel</button>
+                    @Html.ActionLink("Cancel", "Index", "Home", null, new { @class = "btn btn-warning" })
                 </div>
             </div>
         </div>

@@ -65,6 +65,28 @@ namespace Raffle.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Index(RaffleOrderViewModel model)
         {
+            if (!model.RaffleItems.Where(x => x.Amount > 0).Any())
+            {
+                var raffleItems = raffleItemRepository.GetAll()
+                .Select(x => new RaffleItemModel
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Category = x.Category,
+                    Sponsor = x.Sponsor,
+                    Cost = x.Cost,
+                    Value = x.ItemValue
+                }).ToList();
+                model = new RaffleOrderViewModel
+                {
+                    RaffleItems = raffleItems,
+                    ErrorMessage = "A raffle needs to be selected."
+                };
+
+                return View(model);
+            }
+
             if (ModelState.IsValid)
             {
                 var command = new StartRaffleOrderQuery

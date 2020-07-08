@@ -8,6 +8,7 @@
     [ItemValue]   NVARCHAR (50)  NOT NULL,
     [Cost]        INT            NOT NULL,
     [IsAvailable] BIT            NOT NULL,
+    [Order] INT NOT NULL DEFAULT 0, 
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 

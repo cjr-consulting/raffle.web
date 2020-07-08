@@ -101,6 +101,7 @@ namespace Raffle.Web.Controllers
                             Count = x.Amount
                         }).ToList()
                 };
+
                 var orderId = startOrderCommandHandler.Handle(command);
                 return RedirectToAction("CompleteRaffle", new { orderId });
             }
@@ -143,12 +144,23 @@ namespace Raffle.Web.Controllers
                     AddressLine2 = model.AddressLine2,
                     City = model.City,
                     State = model.State,
-                    Zip = model.Zip
+                    Zip = model.Zip,
+
                 };
 
                 completeRaffleOrderCommandHandler.Handle(command);
                 return RedirectToAction("OrderSuccessful", new { orderId });
             }
+
+            var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            model.Items = order.Lines.Select(x => new CompleteRaffleItemModel
+                {
+                    Name = x.Name,
+                    Cost = x.Price,
+                    Amount = x.Count
+                }).ToList();
+            model.TotalPrice = order.TotalPrice;
+            model.TotalTickets = order.TotalTickets;
 
             return View(model);
         }

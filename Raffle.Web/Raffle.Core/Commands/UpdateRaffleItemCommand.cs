@@ -12,11 +12,11 @@ namespace Raffle.Core.Commands
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
         public string Category { get; set; }
         public int Order { get; set; }
         public string ItemValue { get; set; }
-        public string Sponsor { get; set; }
+        public string Sponsor { get; set; } = string.Empty;
         public int Cost { get; set; }
         public bool IsAvailable { get; set; } = true;
     }
@@ -39,7 +39,7 @@ namespace Raffle.Core.Commands
                 " Sponsor = @Sponsor," +
                 " ItemValue = @ItemValue," +
                 " Cost = @Cost," +
-                " IsAvailable = @IsAvailable" +
+                " IsAvailable = @IsAvailable " +
                 "WHERE Id = @Id";
             using (var conn = new SqlConnection(connectionString))
             {

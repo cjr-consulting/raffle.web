@@ -61,11 +61,11 @@ namespace Raffle.Web.Controllers
                 addHandler.Handle(new AddRaffleItemCommand
                 {
                     Title = model.Title,
-                    Description = model.Description,
-                    Category = model.Category,
-                    Sponsor = model.Sponsor,
+                    Description = model.Description ?? string.Empty,
+                    Category = model.Category ?? string.Empty,
+                    Sponsor = model.Sponsor ?? string.Empty,
                     Cost = model.Cost,
-                    ItemValue = model.ItemValue,
+                    ItemValue = model.ItemValue ?? string.Empty,
                     IsAvailable = model.IsAvailable,
                     Order = model.Order
                 });
@@ -104,10 +104,10 @@ namespace Raffle.Web.Controllers
                 {
                     Id = id,
                     Title = model.Title,
-                    Description = model.Description,
-                    ItemValue = model.ItemValue,
-                    Category = model.Category,
-                    Sponsor = model.Sponsor,
+                    Description = model.Description ?? string.Empty,
+                    ItemValue = model.ItemValue ?? string.Empty,
+                    Category = model.Category ?? string.Empty,
+                    Sponsor = model.Sponsor ?? string.Empty,
                     Cost = model.Cost,
                     IsAvailable = model.IsAvailable,
                     Order = model.Order

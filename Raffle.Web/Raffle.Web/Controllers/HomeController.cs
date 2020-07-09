@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using Raffle.Core;
@@ -6,18 +7,16 @@ using Raffle.Core.Commands;
 using Raffle.Core.Repositories;
 using Raffle.Web.Models;
 using Raffle.Web.Models.Raffle;
-
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Raffle.Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
-        readonly IEmailSender emailSender;
+        readonly IRaffleEmailSender emailSender;
         readonly IRaffleItemRepository raffleItemRepository;
         readonly StartRaffleOrderQueryHandler startOrderCommandHandler;
         readonly GetRaffleOrderQueryHandler raffleOrderQueryHandler;
@@ -25,7 +24,7 @@ namespace Raffle.Web.Controllers
 
         public HomeController(
             ILogger<HomeController> logger,
-            IEmailSender emailSender,
+            IRaffleEmailSender emailSender,
             IRaffleItemRepository raffleItemRepository,
             StartRaffleOrderQueryHandler startOrderCommandHandler,
             GetRaffleOrderQueryHandler getRaffleOrderQueryHandler,
@@ -52,6 +51,17 @@ namespace Raffle.Web.Controllers
                     Cost = x.Cost,
                     Value = x.ItemValue
                 }).ToList();
+
+            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            {
+                var orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
+                var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+                foreach(var line in order.Lines)
+                {
+                    raffleItems.First(x => x.Id == line.RaffleItemId).Amount = line.Count;
+                }
+            }
+
             var model = new RaffleOrderViewModel
             {
                 RaffleItems = raffleItems
@@ -60,11 +70,32 @@ namespace Raffle.Web.Controllers
             return View(model);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Index(RaffleOrderViewModel model)
         {
+            if (!model.RaffleItems.Where(x => x.Amount > 0).Any())
+            {
+                var raffleItems = raffleItemRepository.GetAll()
+                .Select(x => new RaffleItemModel
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Category = x.Category,
+                    Sponsor = x.Sponsor,
+                    Cost = x.Cost,
+                    Value = x.ItemValue
+                }).ToList();
+                model = new RaffleOrderViewModel
+                {
+                    RaffleItems = raffleItems,
+                    ErrorMessage = "A raffle needs to be selected."
+                };
+
+                return View(model);
+            }
+
             if (ModelState.IsValid)
             {
                 var command = new StartRaffleOrderQuery
@@ -79,11 +110,28 @@ namespace Raffle.Web.Controllers
                             Count = x.Amount
                         }).ToList()
                 };
+
                 var orderId = startOrderCommandHandler.Handle(command);
+                HttpContext.Response.Cookies.Append("dfdoid", orderId.ToString(), new CookieOptions
+                    {
+                        Secure = true,
+                        Expires = new DateTimeOffset(DateTime.Now.AddDays(7))
+                    });
                 return RedirectToAction("CompleteRaffle", new { orderId });
             }
 
             return View(model);
+        }
+
+        [HttpGet("ClearDonation")]
+        public IActionResult ClearDonation()
+        {
+            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            {
+                HttpContext.Response.Cookies.Delete("dfdoid");
+            }
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet("Complete/{orderId}")]
@@ -121,18 +169,29 @@ namespace Raffle.Web.Controllers
                     AddressLine2 = model.AddressLine2,
                     City = model.City,
                     State = model.State,
-                    Zip = model.Zip
+                    Zip = model.Zip,
+
                 };
 
                 completeRaffleOrderCommandHandler.Handle(command);
-                return RedirectToAction("OrderSuccessful", new { orderId });
+                return RedirectToAction("DonationSuccessful", new { orderId });
             }
+
+            var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            model.Items = order.Lines.Select(x => new CompleteRaffleItemModel
+            {
+                Name = x.Name,
+                Cost = x.Price,
+                Amount = x.Count
+            }).ToList();
+            model.TotalPrice = order.TotalPrice;
+            model.TotalTickets = order.TotalTickets;
 
             return View(model);
         }
 
-        [HttpGet("OrderSucces/{orderId}")]
-        public IActionResult OrderSuccessful(int orderId)
+        [HttpGet("DonationSuccess/{orderId}")]
+        public IActionResult DonationSuccessful(int orderId)
         {
             return View();
         }

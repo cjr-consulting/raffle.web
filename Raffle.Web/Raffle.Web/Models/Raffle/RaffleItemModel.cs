@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Raffle.Web.Models.Raffle
 {
@@ -21,6 +20,7 @@ namespace Raffle.Web.Models.Raffle
 
     public class RaffleOrderViewModel
     {
+        public string ErrorMessage { get; set; }
         public List<RaffleItemModel> RaffleItems { get; set; } = new List<RaffleItemModel>();
     }
 }

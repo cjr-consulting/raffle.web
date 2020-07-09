@@ -1,8 +1,9 @@
-﻿using Raffle.Core;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
+
 using SendGrid;
 using SendGrid.Helpers.Mail;
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,26 +11,26 @@ namespace Raffle.Web.Services
 {
     public class SendGridEmailSender : IEmailSender
     {
-        readonly string apiKey;
+        readonly SendGridClient client;
         readonly string fromEmail;
         readonly string fromName;
 
         public SendGridEmailSender(
-            string apiKey,
-            string fromEmail,
-            string fromName)
+            SendGridClient client,
+            string email,
+            string name)
         {
-            this.fromName = fromName;
-            this.fromEmail = fromEmail;
-            this.apiKey = apiKey;
+            this.fromName = name;
+            this.fromEmail = email;
+            this.client = client;
         }
 
-        public async Task SendEmailAsync(string toEmail, string toName, string subject, string textBody, string htmlBody)
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            var client = new SendGridClient(apiKey);
             var from = new EmailAddress(fromEmail, fromName);
-            var to = new EmailAddress(toEmail, toName);
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, textBody, htmlBody);
+            var to = new EmailAddress(email);
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, htmlMessage, htmlMessage);
+            msg.SetClickTracking(false, false);
             var response = await client.SendEmailAsync(msg);
         }
     }

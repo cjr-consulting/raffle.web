@@ -4,14 +4,12 @@ using Raffle.Core.Models;
 using Raffle.Core.Shared;
 
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 
 namespace Raffle.Core.Commands
 {
-    public class GetRaffleOrderQuery: IQuery
+    public class GetRaffleOrderQuery : IQuery
     {
         public int OrderId { get; set; }
     }

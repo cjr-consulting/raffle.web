@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,8 @@ using Raffle.Core.Repositories;
 using Raffle.Core.Shared;
 using Raffle.Web.Data;
 using Raffle.Web.Services;
+
+using SendGrid;
 
 using System;
 using System.Linq;
@@ -87,7 +90,9 @@ namespace Raffle.Web
             string managerEmail = Configuration["raffleManager:email"];
             string managerName = Configuration["raffleManager:name"];
 
-            services.AddTransient<IEmailSender>(services => new SendGridEmailSender(sendGridKey, "noreply@trentondarts.com", "GTDL"));
+            services.AddSingleton(services => new SendGridClient(sendGridKey));
+            services.AddTransient<IRaffleEmailSender>(services => new SendGridRaffleEmailSender(services.GetService<SendGridClient>(), "noreply@trentondarts.com", "GTDL"));
+            services.AddTransient<IEmailSender>(services => new SendGridEmailSender(services.GetService<SendGridClient>(), "noreply@trentondarts.com", "GTDL"));
 
             services.AddScoped(services => new AddRaffleItemCommandHandler(dbConnectionString));
             services.AddScoped(services => new UpdateRaffleItemCommandHandler(dbConnectionString));
@@ -95,7 +100,7 @@ namespace Raffle.Web
             services.AddScoped(services => new GetRaffleOrderQueryHandler(dbConnectionString));
             services.AddScoped(services => new CompleteRaffleOrderCommandHandler(
                 dbConnectionString, 
-                services.GetService<IEmailSender>(),
+                services.GetService<IRaffleEmailSender>(),
                 services.GetService<EmbeddedResourceReader>(),
                 new EmailAddress(managerEmail, managerName)));
             services.AddScoped<IRaffleItemRepository>(services => new RaffleItemRepository(dbConnectionString));

@@ -16,7 +16,7 @@ namespace Raffle.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
-        readonly IEmailSender emailSender;
+        readonly IRaffleEmailSender emailSender;
         readonly IRaffleItemRepository raffleItemRepository;
         readonly StartRaffleOrderQueryHandler startOrderCommandHandler;
         readonly GetRaffleOrderQueryHandler raffleOrderQueryHandler;
@@ -24,7 +24,7 @@ namespace Raffle.Web.Controllers
 
         public HomeController(
             ILogger<HomeController> logger,
-            IEmailSender emailSender,
+            IRaffleEmailSender emailSender,
             IRaffleItemRepository raffleItemRepository,
             StartRaffleOrderQueryHandler startOrderCommandHandler,
             GetRaffleOrderQueryHandler getRaffleOrderQueryHandler,

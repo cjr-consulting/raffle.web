@@ -25,13 +25,13 @@ namespace Raffle.Core.Commands
     public class CompleteRaffleOrderCommandHandler : ICommandHandler<CompleteRaffleOrderCommand>
     {
         readonly string dbConnectionString;
-        readonly IEmailSender emailSender;
+        readonly IRaffleEmailSender emailSender;
         readonly EmbeddedResourceReader reader;
         readonly EmailAddress managerEmail;
 
         public CompleteRaffleOrderCommandHandler(
             string dbConnectionString,
-            IEmailSender emailSender,
+            IRaffleEmailSender emailSender,
             EmbeddedResourceReader reader,
             EmailAddress managerEmail)
         {

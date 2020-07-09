@@ -25,7 +25,7 @@
                 <tr>
                     <th scope="col">Item</th>
                     <th scope="col">Category</th>
-                    <th scope="col">Cost</th>
+                    <th scope="col">Points</th>
                     <th scope="col">Items</th>
                 </tr>
             </thead>
@@ -48,6 +48,11 @@
         </table>
     </div>
     <div class="row">
-        <button type="submit" class="btn btn-primary">Complete</button>
+        <div class="col-md-6">
+            <button type="submit" class="form-control btn btn-primary">Complete</button>
+        </div>
+        <div class="col-md-6">
+            @Html.ActionLink("Clear Donation", "ClearDonation", "Home", null, new { @class = "btn btn-warning" })
+        </div>
     </div>
 </form>

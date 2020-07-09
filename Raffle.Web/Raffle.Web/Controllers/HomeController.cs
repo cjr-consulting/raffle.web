@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using Raffle.Core;
@@ -6,11 +7,9 @@ using Raffle.Core.Commands;
 using Raffle.Core.Repositories;
 using Raffle.Web.Models;
 using Raffle.Web.Models.Raffle;
-
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Raffle.Web.Controllers
 {
@@ -52,6 +51,17 @@ namespace Raffle.Web.Controllers
                     Cost = x.Cost,
                     Value = x.ItemValue
                 }).ToList();
+
+            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            {
+                var orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
+                var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+                foreach(var line in order.Lines)
+                {
+                    raffleItems.First(x => x.Id == line.RaffleItemId).Amount = line.Count;
+                }
+            }
+
             var model = new RaffleOrderViewModel
             {
                 RaffleItems = raffleItems
@@ -59,7 +69,6 @@ namespace Raffle.Web.Controllers
 
             return View(model);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -103,10 +112,26 @@ namespace Raffle.Web.Controllers
                 };
 
                 var orderId = startOrderCommandHandler.Handle(command);
+                HttpContext.Response.Cookies.Append("dfdoid", orderId.ToString(), new CookieOptions
+                    {
+                        Secure = true,
+                        Expires = new DateTimeOffset(DateTime.Now.AddDays(7))
+                    });
                 return RedirectToAction("CompleteRaffle", new { orderId });
             }
 
             return View(model);
+        }
+
+        [HttpGet("ClearDonation")]
+        public IActionResult ClearDonation()
+        {
+            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            {
+                HttpContext.Response.Cookies.Delete("dfdoid");
+            }
+
+            return RedirectToAction("Index");
         }
 
         [HttpGet("Complete/{orderId}")]
@@ -149,24 +174,24 @@ namespace Raffle.Web.Controllers
                 };
 
                 completeRaffleOrderCommandHandler.Handle(command);
-                return RedirectToAction("OrderSuccessful", new { orderId });
+                return RedirectToAction("DonationSuccessful", new { orderId });
             }
 
             var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
             model.Items = order.Lines.Select(x => new CompleteRaffleItemModel
-                {
-                    Name = x.Name,
-                    Cost = x.Price,
-                    Amount = x.Count
-                }).ToList();
+            {
+                Name = x.Name,
+                Cost = x.Price,
+                Amount = x.Count
+            }).ToList();
             model.TotalPrice = order.TotalPrice;
             model.TotalTickets = order.TotalTickets;
 
             return View(model);
         }
 
-        [HttpGet("OrderSucces/{orderId}")]
-        public IActionResult OrderSuccessful(int orderId)
+        [HttpGet("DonationSuccess/{orderId}")]
+        public IActionResult DonationSuccessful(int orderId)
         {
             return View();
         }

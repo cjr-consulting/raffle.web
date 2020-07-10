@@ -93,7 +93,7 @@ namespace Raffle.Core.Commands
 
             foreach(var line in order.Lines)
             {
-                text += $"{line.Name}  ${line.Price} x {line.Count}" + Environment.NewLine;
+                text += $"{line.Name}  {line.Price}p x {line.Count}tix" + Environment.NewLine;
             }
 
             text += Environment.NewLine + Environment.NewLine;
@@ -113,7 +113,7 @@ namespace Raffle.Core.Commands
             foreach (var line in order.Lines)
             {
                 ticketDetail += "<tr><td style=\"font-family:'Open Sans', Arial, sans-serif; font-size:18px; line-height:22px; color: #fbeb59; letter-spacing:2px; padding-bottom:12px;\" valign=\"top\" align=\"center\">";
-                ticketDetail += $"{line.Name} ${line.Price} x {line.Count}";
+                ticketDetail += $"{line.Name} {line.Price}p x {line.Count}tix";
                 ticketDetail += "</td></tr>";
             }
 

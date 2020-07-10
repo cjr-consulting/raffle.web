@@ -174,6 +174,7 @@ namespace Raffle.Web.Controllers
                 };
 
                 completeRaffleOrderCommandHandler.Handle(command);
+                HttpContext.Response.Cookies.Delete("dfdoid");
                 return RedirectToAction("DonationSuccessful", new { orderId });
             }
 

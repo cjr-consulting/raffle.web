@@ -91,8 +91,8 @@ namespace Raffle.Web
             string managerName = Configuration["raffleManager:name"];
 
             services.AddSingleton(services => new SendGridClient(sendGridKey));
-            services.AddTransient<IRaffleEmailSender>(services => new SendGridRaffleEmailSender(services.GetService<SendGridClient>(), "noreply@trentondarts.com", "GTDL"));
-            services.AddTransient<IEmailSender>(services => new SendGridEmailSender(services.GetService<SendGridClient>(), "noreply@trentondarts.com", "GTDL"));
+            services.AddTransient<IRaffleEmailSender>(services => new SendGridRaffleEmailSender(services.GetService<SendGridClient>(), "raffle@trentondarts.com", "DfD Quarantine"));
+            services.AddTransient<IEmailSender>(services => new SendGridEmailSender(services.GetService<SendGridClient>(), "noreply@trentondarts.com", "DfD Quarantine"));
 
             services.AddScoped(services => new AddRaffleItemCommandHandler(dbConnectionString));
             services.AddScoped(services => new UpdateRaffleItemCommandHandler(dbConnectionString));

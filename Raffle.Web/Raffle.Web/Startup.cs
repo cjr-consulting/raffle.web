@@ -86,13 +86,13 @@ namespace Raffle.Web
                 options.SlidingExpiration = true;
             });
 
-            string sendGridKey = Configuration["SendGrid:ApiKey"];
-            string managerEmail = Configuration["raffleManager:email"];
-            string managerName = Configuration["raffleManager:name"];
+            services.Configure<SendGridEmailSenderOptions>(Configuration.GetSection("SendGrid"));
 
-            services.AddSingleton(services => new SendGridClient(sendGridKey));
-            services.AddTransient<IRaffleEmailSender>(services => new SendGridRaffleEmailSender(services.GetService<SendGridClient>(), "raffle@trentondarts.com", "DfD Quarantine"));
-            services.AddTransient<IEmailSender>(services => new SendGridEmailSender(services.GetService<SendGridClient>(), "noreply@trentondarts.com", "DfD Quarantine"));
+            string managerEmail = Configuration["raffleManager:Email"];
+            string managerName = Configuration["raffleManager:Name"];
+
+            services.AddTransient<IRaffleEmailSender, SendGridRaffleEmailSender>();
+            services.AddTransient<IEmailSender, SendGridEmailSender>();
 
             services.AddScoped(services => new AddRaffleItemCommandHandler(dbConnectionString));
             services.AddScoped(services => new UpdateRaffleItemCommandHandler(dbConnectionString));
@@ -121,6 +121,7 @@ namespace Raffle.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();

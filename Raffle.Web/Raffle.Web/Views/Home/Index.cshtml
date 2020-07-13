@@ -39,40 +39,46 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th scope="col"></th>
                     <th scope="col">Item</th>
                     <th scope="col">Category</th>
                     <th scope="col">Points</th>
                     <th scope="col">How Many</th>
                 </tr>
             </thead>
-            @for (int i = 0; i < Model.RaffleItems.Count; i++)
-            {
-                <tr>
-                    <td>
-                        @Html.HiddenFor(m => m.RaffleItems[i].Id)
-                        <b>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</b>
-                        <div>
-                            @Model.RaffleItems[i].Description
-                            @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
-                            {
-                                <br /><span class="font-italic">@Model.RaffleItems[i].Sponsor</span>
-                            }
-                            <br />
-                            @if (Model.RaffleItems[i].ForOver21)
-                            {
-                                <span class="badge badge-warning">Over 21</span>
-                            }
-                            @if (Model.RaffleItems[i].LocalPickupOnly)
-                            {
-                                <span class="badge badge-primary">Local Pickup Only</span>
-                            }
-                        </div>
-                    </td>
-                    <td class="text-center align-middle">@Model.RaffleItems[i].Category</td>
-                    <td class="text-center align-middle">@Model.RaffleItems[i].Cost @Html.HiddenFor(x => x.RaffleItems[i].Cost)</td>
-                    <td class="text-center align-middle">@Html.TextBoxFor(x => x.RaffleItems[i].Amount, null, new { style = "width:50px", @class = "form-control" })</td>
-                </tr>
-            }
+            <tbody>
+                @for (int i = 0; i < Model.RaffleItems.Count; i++)
+                {
+                    <tr>
+                        <td class="text-center align-middle">
+                            #@Model.RaffleItems[i].ItemNumber @Html.HiddenFor(x => x.RaffleItems[i].ItemNumber)
+                        </td>
+                        <td>
+                            @Html.HiddenFor(m => m.RaffleItems[i].Id)
+                            <b>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</b>
+                            <div>
+                                @Model.RaffleItems[i].Description
+                                @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
+                                {
+                                    <br /><span class="font-italic">@Model.RaffleItems[i].Sponsor</span>
+                                }
+                                <br />
+                                @if (Model.RaffleItems[i].ForOver21)
+                                {
+                                    <span class="badge badge-warning">Over 21</span>
+                                }
+                                @if (Model.RaffleItems[i].LocalPickupOnly)
+                                {
+                                    <span class="badge badge-primary">Local Pickup Only</span>
+                                }
+                            </div>
+                        </td>
+                        <td class="text-center align-middle">@Model.RaffleItems[i].Category</td>
+                        <td class="text-center align-middle">@Model.RaffleItems[i].Cost @Html.HiddenFor(x => x.RaffleItems[i].Cost)</td>
+                        <td class="text-center align-middle">@Html.TextBoxFor(x => x.RaffleItems[i].Amount, null, new { style = "width:50px", @class = "form-control" })</td>
+                    </tr>
+                }
+            </tbody>
         </table>
     </div>
     <div class="row">

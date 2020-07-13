@@ -111,7 +111,7 @@ namespace Raffle.Web.Controllers
                         .Select(x => new StartRaffleOrderQuery.RaffleOrderItem
                         {
                             RaffleItemId = x.Id,
-                            Name = x.Title,
+                            Name = $"#{x.ItemNumber} {x.Title}",
                             Price = x.Cost,
                             Count = x.Amount
                         }).ToList()

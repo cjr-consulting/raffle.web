@@ -117,7 +117,7 @@ namespace Raffle.Core.Commands
                 ticketDetail += "</td></tr>";
             }
 
-            var result = template.Replace(token, $"http://localhost:5001/home/privacy")
+            var result = template.Replace(token, $"https://raffle.dartsfordreams.com/home/privacy")
                 .Replace("${raffle.orderid}", order.Id.ToString())
                 .Replace("${donor.email}", command.Email)
                 .Replace("${name.first}", command.FirstName)

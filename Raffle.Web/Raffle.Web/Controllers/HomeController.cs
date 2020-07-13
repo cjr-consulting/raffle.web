@@ -44,12 +44,15 @@ namespace Raffle.Web.Controllers
                 .Select(x => new RaffleItemModel
                 {
                     Id = x.Id,
+                    ItemNumber = x.ItemNumber,
                     Title = x.Title,
                     Description = x.Description,
                     Category = x.Category,
                     Sponsor = x.Sponsor,
                     Cost = x.Cost,
-                    Value = x.ItemValue
+                    Value = x.ItemValue,
+                    ForOver21 = x.ForOver21,
+                    LocalPickupOnly = x.LocalPickupOnly
                 }).ToList();
 
             if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
@@ -80,12 +83,15 @@ namespace Raffle.Web.Controllers
                 .Select(x => new RaffleItemModel
                 {
                     Id = x.Id,
+                    ItemNumber = x.ItemNumber,
                     Title = x.Title,
                     Description = x.Description,
                     Category = x.Category,
                     Sponsor = x.Sponsor,
                     Cost = x.Cost,
-                    Value = x.ItemValue
+                    Value = x.ItemValue,
+                    ForOver21 = x.ForOver21,
+                    LocalPickupOnly = x.LocalPickupOnly
                 }).ToList();
                 model = new RaffleOrderViewModel
                 {

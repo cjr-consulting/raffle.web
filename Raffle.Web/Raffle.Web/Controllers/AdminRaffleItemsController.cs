@@ -36,12 +36,16 @@ namespace Raffle.Web.Controllers
                 .Select(x => new RaffleItemModel
                 {
                     Id = x.Id,
+                    ItemNumber = x.ItemNumber,
                     Title = x.Title,
                     Description = x.Description,
                     Category = x.Category,
                     Sponsor = x.Sponsor,
                     Cost = x.Cost,
-                    Value = x.ItemValue
+                    Value = x.ItemValue,
+                    IsAvailable = x.IsAvailable,
+                    ForOver21 = x.ForOver21,
+                    LocalPickupOnly = x.LocalPickupOnly
                 }).ToList();
             return View("RaffleItemList", model);
         }
@@ -60,6 +64,7 @@ namespace Raffle.Web.Controllers
             {
                 addHandler.Handle(new AddRaffleItemCommand
                 {
+                    ItemNumber = model.ItemNumber,
                     Title = model.Title,
                     Description = model.Description ?? string.Empty,
                     Category = model.Category ?? string.Empty,
@@ -67,6 +72,8 @@ namespace Raffle.Web.Controllers
                     Cost = model.Cost,
                     ItemValue = model.ItemValue ?? string.Empty,
                     IsAvailable = model.IsAvailable,
+                    ForOver21 = model.ForOver21,
+                    LocalPickupOnly = model.LocalPickupOnly,
                     Order = model.Order
                 });
                 return RedirectToAction("Index");
@@ -82,6 +89,7 @@ namespace Raffle.Web.Controllers
             var model = new RaffleItemUpdateModel
             {
                 Id = id,
+                ItemNumber = raffleItem.ItemNumber,
                 Title = raffleItem.Title,
                 Description = raffleItem.Description,
                 Category = raffleItem.Category,
@@ -89,6 +97,8 @@ namespace Raffle.Web.Controllers
                 ItemValue = raffleItem.ItemValue,
                 Cost = raffleItem.Cost,
                 IsAvailable = raffleItem.IsAvailable,
+                ForOver21 = raffleItem.ForOver21,
+                LocalPickupOnly = raffleItem.LocalPickupOnly,
                 Order = raffleItem.Order
             };
             return View("RaffleItemUpdate", model);
@@ -103,13 +113,16 @@ namespace Raffle.Web.Controllers
                 var command = new UpdateRaffleItemCommand
                 {
                     Id = id,
+                    ItemNumber = model.ItemNumber,
                     Title = model.Title,
                     Description = model.Description ?? string.Empty,
-                    ItemValue = model.ItemValue ?? string.Empty,
                     Category = model.Category ?? string.Empty,
                     Sponsor = model.Sponsor ?? string.Empty,
                     Cost = model.Cost,
+                    ItemValue = model.ItemValue ?? string.Empty,
                     IsAvailable = model.IsAvailable,
+                    ForOver21 = model.ForOver21,
+                    LocalPickupOnly = model.LocalPickupOnly,
                     Order = model.Order
                 };
                 updateHandler.Handle(command);

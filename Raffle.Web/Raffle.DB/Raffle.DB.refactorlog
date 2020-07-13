@@ -14,4 +14,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Customer_AddressLine1" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="400b7620-c20c-4d8f-a401-2892f041a45d" ChangeDateTime="07/13/2020 00:33:08">
+    <Property Name="ElementName" Value="[dbo].[RaffleItems].[IsOver21]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RaffleItems]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ForOver21" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="0d77b588-814c-4528-8643-07a5059f1bc3" ChangeDateTime="07/13/2020 00:33:16">
+    <Property Name="ElementName" Value="[dbo].[RaffleItems].[IsLocalPickup]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RaffleItems]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LocalPickupOnly" />
+  </Operation>
 </Operations>

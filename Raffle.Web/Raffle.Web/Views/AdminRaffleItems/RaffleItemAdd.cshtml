@@ -10,7 +10,12 @@
 <form method="post">
     <div class="row">
         <div class="col-md-12">
-
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Item Number</label>
+                    @Html.TextBoxFor(x => x.ItemNumber, null, new { @class = "form-control" })
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <label>Title</label>
@@ -37,11 +42,25 @@
                 <label>Cost</label>
                 @Html.TextBoxFor(x => x.Cost, null, new { @class = "form-control" })
             </div>
-            <div class="mb-3">
-                <label>
-                    @Html.CheckBoxFor(x => x.IsAvailable)
-                    Available
-                </label>
+            <div class="row">
+                <div class="col-md-3">
+                    <label>
+                        @Html.CheckBoxFor(x => x.ForOver21)
+                        Over 21
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <label>
+                        @Html.CheckBoxFor(x => x.LocalPickupOnly)
+                        Local Pickup Only
+                    </label>
+                </div>
+                <div class="col-md-3">
+                    <label>
+                        @Html.CheckBoxFor(x => x.IsAvailable)
+                        Available
+                    </label>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-6">

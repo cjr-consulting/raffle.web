@@ -24,7 +24,7 @@ namespace Raffle.Core.Data
             using (var conn = new SqlConnection(connectionString))
             {
 
-                return conn.Query<RaffleItem>("SELECT * FROM RaffleItems ORDER BY Category, [Order]").ToList();
+                return conn.Query<RaffleItem>("SELECT * FROM RaffleItems ORDER BY [ItemNumber]").ToList();
             }
         }
 

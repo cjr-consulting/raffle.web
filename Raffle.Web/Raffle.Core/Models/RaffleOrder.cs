@@ -9,6 +9,7 @@ namespace Raffle.Core.Models
         public int Id { get; set; }
         public string TicketNumber { get; set; }
         public Customer Customer { get; set; }
+        public bool IsOrderConfirmed { get; set; }
         public IReadOnlyList<RaffleOrderLine> Lines { get; set; }
         public int TotalPrice
         {

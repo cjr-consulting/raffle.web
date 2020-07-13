@@ -7,6 +7,7 @@ namespace Raffle.Web.Models.Raffle
     public class RaffleItemModel
     {
         public int Id { get; set; }
+        public int ItemNumber { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
@@ -16,6 +17,8 @@ namespace Raffle.Web.Models.Raffle
         public int Cost { get; set; }
         public int Amount { get; set; }
         public bool IsAvailable { get; set; }
+        public bool ForOver21 { get; set; }
+        public bool LocalPickupOnly { get; set; }
     }
 
     public class RaffleOrderViewModel

@@ -11,24 +11,32 @@
     <thead>
         <tr>
             <th scope="col">Action</th>
+            <th scope="col">#</th>
             <th scope="col">Title</th>
             <th scope="col">Description</th>
             <th scope="col">Category</th>
             <th scope="col">Sponsor</th>
             <th scope="col">Cost</th>
+            <th class="text-center" scope="col">Over 21</th>
+            <th class="text-center" scope="col">Local Pickup</th>
+            <th scope="col">Available</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @for (var i = 0; i < Model.Count; i++)
         {
-            <tr>
-                <td>@Html.ActionLink("Update", "Update", "AdminRaffleItems", new { id = item.Id }, new { @class = "btn btn-primary" })</td>
-                <td>@item.Title</td>
-                <td>@item.Description</td>
-                <td>@item.Category</td>
-                <td>@item.Sponsor</td>
-                <td>@item.Cost</td>
-            </tr>
+        <tr>
+            <td class="align-middle">@Html.ActionLink("Update", "Update", "AdminRaffleItems", new { id = Model[i].Id }, new { @class = "btn btn-primary" })</td>
+            <td class="align-middle">#@Model[i].ItemNumber</td>
+            <td>@Model[i].Title</td>
+            <td>@Model[i].Description</td>
+            <td class="align-middle">@Model[i].Category</td>
+            <td class="align-middle">@Model[i].Sponsor</td>
+            <td class="text-center align-middle">@Model[i].Cost</td>
+            <td class="text-center align-middle">@Html.CheckBoxFor(x => x[i].ForOver21, new { onclick = "return false;" })</td>
+            <td class="text-center align-middle">@Html.CheckBoxFor(x => x[i].LocalPickupOnly, new { onclick = "return false;" })</td>
+            <td class="text-center align-middle">@Html.CheckBoxFor(x => x[i].IsAvailable, new { onclick = "return false;" })</td>
+        </tr>
         }
     </tbody>
 </table>

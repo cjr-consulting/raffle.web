@@ -61,25 +61,25 @@ namespace Raffle.Core.Commands
                 conn.Execute(updateOrder, command);
 
                 var order = GetOrder(conn, command.OrderId);
-                var body = BuildTemplate(reader.GetContents("Raffle.Core.EmailTemplates.OrderComplete.html"),
-                    order,
-                    command);
+                //var body = BuildTemplate(reader.GetContents("Raffle.Core.EmailTemplates.OrderComplete.html"),
+                //    order,
+                //    command);
 
-                var text = BuildTextTemplate(order, command);
+                //var text = BuildTextTemplate(order, command);
 
-                emailSender.SendEmailAsync(
-                    command.Email,
-                    $"{command.FirstName} {command.LastName}",
-                    "Darts For Dreams 15 - Raffle Order",
-                    text,
-                    body);
+                //emailSender.SendEmailAsync(
+                //    command.Email,
+                //    $"{command.FirstName} {command.LastName}",
+                //    "Darts For Dreams 15 - Raffle Order",
+                //    text,
+                //    body);
 
-                emailSender.SendEmailAsync(
-                    managerEmail.Email,
-                    managerEmail.Name,
-                    "Darts For Dreams 15 - Raffle Order",
-                    text,
-                    body);
+                //emailSender.SendEmailAsync(
+                //    managerEmail.Email,
+                //    managerEmail.Name,
+                //    "Darts For Dreams 15 - Raffle Order",
+                //    text,
+                //    body);
             }
         }
 
@@ -98,6 +98,9 @@ namespace Raffle.Core.Commands
             {
                 text += $"{line.Name}  {line.Price}p x {line.Count}tix" + Environment.NewLine;
             }
+
+            text += Environment.NewLine;
+            text += $"TOTAL POINTS: {order.TotalPrice}" + Environment.NewLine;
 
             text += Environment.NewLine + Environment.NewLine;
 
@@ -138,10 +141,29 @@ namespace Raffle.Core.Commands
 
         public RaffleOrder GetOrder(SqlConnection conn, int orderId)
         {
-            const string getOrder = "SELECT * FROM RaffleOrders WHERE Id = @id";
+            const string getOrder = "SELECT Id = Ro.Id, ro.TicketNumber, ro.IsOrderConfirmed, " +
+                    "Email = ro.Customer_Email, FirstName = ro.Customer_FirstName, LastName = ro.Customer_LastName, " +
+                    "PhoneNumber = Customer_PhoneNumber, " +
+                    "AddressLine1 = Customer_AddressLine1, " +
+                    "AddressLine2 = Customer_AddressLine2, " +
+                    "City = Customer_Address_City, " +
+                    "State = Customer_Address_State, " +
+                    "Zip = Customer_Address_Zip " +
+                    " FROM RaffleOrders ro WHERE Id  =  @id";
             const string getOrderLineItems = "SELECT * FROM RaffleOrderLineItems WHERE RaffleOrderId = @id";
 
-            var order = conn.Query<RaffleOrder>(getOrder, new { id = orderId }).SingleOrDefault();
+            var order = conn.Query<RaffleOrder, Customer, RaffleOrder>(
+                getOrder,
+                (raffleOrder, customer) =>
+                {
+                    raffleOrder.Customer = customer;
+                    return raffleOrder;
+                },
+                new { id = orderId },
+                splitOn: "Email")
+                .Distinct()
+                .SingleOrDefault();
+
             order.Lines = conn.Query<RaffleOrderLine>(getOrderLineItems, new { id = orderId }).ToList();
             return order;
         }

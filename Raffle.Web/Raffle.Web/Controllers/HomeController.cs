@@ -148,7 +148,7 @@ namespace Raffle.Web.Controllers
             {
                 TotalPrice = order.TotalPrice,
                 TotalTickets = order.TotalTickets,
-                Items = order.Lines.Select(x => new CompleteRaffleItemModel
+                Items = order.Lines.Select(x => new CompleteRaffleLineItemModel
                 {
                     Name = x.Name,
                     Cost = x.Price,
@@ -186,7 +186,7 @@ namespace Raffle.Web.Controllers
             }
 
             var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
-            model.Items = order.Lines.Select(x => new CompleteRaffleItemModel
+            model.Items = order.Lines.Select(x => new CompleteRaffleLineItemModel
             {
                 Name = x.Name,
                 Cost = x.Price,
@@ -201,7 +201,31 @@ namespace Raffle.Web.Controllers
         [HttpGet("DonationSuccess/{orderId}")]
         public IActionResult DonationSuccessful(int orderId)
         {
-            return View();
+            var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+
+            var model = new SuccessDonationViewModel
+            {
+                CustomerEmail = order.Customer.Email,
+                CustomerFirstName = order.Customer.FirstName,
+                CustomerLastName = order.Customer.LastName,
+                PhoneNumber = order.Customer.PhoneNumber,
+                AddressLine1 = order.Customer.AddressLine1,
+                AddressLine2 = order.Customer.AddressLine2,
+                City = order.Customer.City,
+                State = order.Customer.State,
+                Zip = order.Customer.Zip,
+                TicketNumber = order.TicketNumber,
+                TotalPrice = order.TotalPrice,
+                TotalTickets = order.TotalTickets,
+                Items = order.Lines.Select(x=>
+                    new SuccessDonationLineItemModel
+                    {
+                        Name = x.Name,
+                        Amount = x.Count,
+                        Price= x.Price
+                    }).ToList()
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()

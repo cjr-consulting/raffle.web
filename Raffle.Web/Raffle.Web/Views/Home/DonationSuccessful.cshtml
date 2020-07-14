@@ -1,7 +1,47 @@
-﻿
+﻿@model Raffle.Web.Models.SuccessDonationViewModel
 @{
     ViewData["Title"] = "DFD Donation Successful";
 }
 
-<h1>Donation Success!</h1>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <img src="~/images/DFDQ-RaffleBanner.png" class="img-fluid" alt="Donation Success!" />
+    </div>
+</div>
+<div class="text-center">
+    <h1 class="display-4">Success!</h1>
+    <p>Almost done with your raffle donation...</p>
+    <p>
+        You've now selected the prizes you want to win and how many chances you'd like to have.
+        Please fill in your information so we can track down winners, and note the total amount
+        of points in your cart. Under the total are your instructions to complete the donation
+        to MAWNJ. When you hit COMPLETE on this page, you'll get your receipt via email and be
+        sent to the Darts for Dreams Donation Page where you should make your donation. We
+        believe that a $1/point donation is a perfect amount. If you've miscalculated your
+        tickets, just hit the BACK button on your browser and adjust your selections then
+        CONTINUE again to proceed.
+    </p>
+</div>
 
+<div class="row">
+    <div class="col-md-4">
+        @Model.CustomerFirstName @Model.CustomerLastName<br />
+        @Model.PhoneNumber<br />
+        @Model.CustomerEmail<br />
+        <br />
+
+        @Model.AddressLine1<br />
+
+        @Model.AddressLine2<br />
+
+        @Model.City, @Model.State, @Model.Zip<br/>
+    </div>
+
+    <div class="col-md-8">
+        @foreach(var item in Model.Items)
+        {
+            @item.Name<br />
+        }
+    </div>
+</div>

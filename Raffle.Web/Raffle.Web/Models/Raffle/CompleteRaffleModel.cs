@@ -52,7 +52,7 @@ namespace Raffle.Web.Models.Raffle
         public int TotalPrice { get; set; }
         public int TotalTickets { get; set; }
 
-        public List<CompleteRaffleItemModel> Items { get; set; } = new List<CompleteRaffleItemModel>();
+        public List<CompleteRaffleLineItemModel> Items { get; set; } = new List<CompleteRaffleLineItemModel>();
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
@@ -65,7 +65,7 @@ namespace Raffle.Web.Models.Raffle
         }
     }
 
-    public class CompleteRaffleItemModel
+    public class CompleteRaffleLineItemModel
     {
         public int RaffleItemId { get; set; }
         public string Name { get; set; }

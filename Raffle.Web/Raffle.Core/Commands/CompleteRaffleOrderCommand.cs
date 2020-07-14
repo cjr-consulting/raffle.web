@@ -15,6 +15,7 @@ namespace Raffle.Core.Commands
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string City { get; set; }
@@ -48,6 +49,7 @@ namespace Raffle.Core.Commands
                 const string updateOrder = "UPDATE RaffleOrders SET " +
                     "Customer_FirstName = @FirstName, " +
                     "Customer_LastName = @LastName, " +
+                    "Customer_PhoneNumber = @PhoneNumber, " +
                     "Customer_Email = @Email, " +
                     "Customer_AddressLine1 = @AddressLine1, " +
                     "Customer_AddressLine2 = @AddressLine2, " +
@@ -85,6 +87,7 @@ namespace Raffle.Core.Commands
         {
             var text = $"Dart for Dreams - Raffle Order" + Environment.NewLine;
             text += $"{command.FirstName} {command.LastName}" + Environment.NewLine;
+            text += $"{command.PhoneNumber} " + Environment.NewLine;
             text += $"{command.Email}" + Environment.NewLine;
             text += $"{command.AddressLine1}" + Environment.NewLine;
             text += $"{command.AddressLine2}" + Environment.NewLine;
@@ -122,6 +125,7 @@ namespace Raffle.Core.Commands
                 .Replace("${donor.email}", command.Email)
                 .Replace("${name.first}", command.FirstName)
                 .Replace("${name.last}", command.LastName)
+                .Replace("${phoneNumber}", command.PhoneNumber)
                 .Replace("${address.line1}", command.AddressLine1)
                 .Replace("${address.line2}", command.AddressLine2)
                 .Replace("${address.city}", command.City)

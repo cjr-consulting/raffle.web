@@ -49,38 +49,42 @@
             <h4 class="mb-3">Customer Information</h4>
             @if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))
             {
-                @Html.ValidationSummary(false, "Errors: ", new { @class = "alert alert-danger" })
+            @Html.ValidationSummary(false, "Errors: ", new { @class = "alert alert-danger" })
             }
             <div class="row">
                 <div class="col-md-6">
                     <label>First Name</label>
-                    @Html.TextBoxFor(x => x.CustomerFirstName, null, new { @class = "form-control" })
+                    @Html.TextBoxFor(x => x.CustomerFirstName, null, new { @class = "form-control", placeholder = "", required = "required" })
                 </div>
                 <div class="col-md-6">
                     <label>Last Name</label>
-                    @Html.TextBoxFor(x => x.CustomerLastName, null, new { @class = "form-control" })
+                    @Html.TextBoxFor(x => x.CustomerLastName, null, new { @class = "form-control", placeholder = "", required = "required" })
                 </div>
             </div>
             <div class="mb-3">
+                <label>Phone</label>
+                @Html.TextBoxFor(x => x.PhoneNumber, null, new { @class = "form-control", placeholder = "", required = "required" })
+            </div>
+            <div class="mb-3">
                 <label>Email</label>
-                @Html.TextBoxFor(x => x.CustomerEmail, null, new { @class = "form-control" })
+                @Html.TextBoxFor(x => x.CustomerEmail, null, new { @class = "form-control", placeholder = "", required = "required" })
                 <label>Email Again</label>
-                @Html.TextBoxFor(x => x.CustomerEmailRepeat, null, new { @class = "form-control" })
+                @Html.TextBoxFor(x => x.CustomerEmailRepeat, null, new { @class = "form-control", placeholder = "", required = "required" })
             </div>
             <div class="mb-3">
                 <label>Address 1</label>
-                @Html.TextBoxFor(x => x.AddressLine1, null, new { @class = "form-control" })
+                @Html.TextBoxFor(x => x.AddressLine1, null, new { @class = "form-control", placeholder = "", required = "required" })
                 <label>Address 2</label>
                 @Html.TextBoxFor(x => x.AddressLine2, null, new { @class = "form-control" })
             </div>
             <div class="row">
                 <div class="col-md-5 mb-3">
                     <label>City</label>
-                    @Html.TextBoxFor(x => x.City, null, new { @class = "form-control" })
+                    @Html.TextBoxFor(x => x.City, null, new { @class = "form-control", placeholder = "", required = "required" })
                 </div>
                 <div class="col-md-4 mb-3">
                     <label>State</label>
-                    @Html.TextBoxFor(x => x.State, null, new { @class = "form-control" })
+                    @Html.TextBoxFor(x => x.State, null, new { @class = "form-control", placeholder = "", required = "required" })
                     <div class="invalid-feedback">
                         Please provide a valid state.
                     </div>

@@ -170,6 +170,7 @@ namespace Raffle.Web.Controllers
                     OrderId = orderId,
                     FirstName = model.CustomerFirstName,
                     LastName = model.CustomerLastName,
+                    PhoneNumber = model.PhoneNumber,
                     Email = model.CustomerEmail,
                     AddressLine1 = model.AddressLine1,
                     AddressLine2 = model.AddressLine2,

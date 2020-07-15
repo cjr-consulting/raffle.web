@@ -3,45 +3,91 @@
     ViewData["Title"] = "DFD Donation Successful";
 }
 
-<div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
-        <img src="~/images/DFDQ-RaffleBanner.png" class="img-fluid" alt="Donation Success!" />
-    </div>
-</div>
 <div class="text-center">
-    <h1 class="display-4">Success!</h1>
-    <p>Almost done with your raffle donation...</p>
+    <h1 class="display-4">Raffle Success!</h1>
+    <p><b>Raffle submitted now it is time to</b></p>
     <p>
-        You've now selected the prizes you want to win and how many chances you'd like to have.
-        Please fill in your information so we can track down winners, and note the total amount
-        of points in your cart. Under the total are your instructions to complete the donation
-        to MAWNJ. When you hit COMPLETE on this page, you'll get your receipt via email and be
-        sent to the Darts for Dreams Donation Page where you should make your donation. We
-        believe that a $1/point donation is a perfect amount. If you've miscalculated your
-        tickets, just hit the BACK button on your browser and adjust your selections then
-        CONTINUE again to proceed.
+        <div class="align-content-center"><a href="http://site.wish.org/goto/DartsforDreams15" class="btn btn-success btn-lg fa-bold" style="width:100%;">Complete Donation for @Model.TotalPrice Points</a></div>
+    </p>
+    <p>
+        Thank you for completing the selection and information pages. If you haven't already done so, please head over to the Darts for Dreams Event Donation Page to complete your transaction. Once completed, the organizers will match up your DfD receipt with the MAWNJ receipt and put your tickets in the corresponding buckets.
+    </p>
+    <p>
+        On August 22nd, check back at our <a href="https://www.dartsfordreams.com">Darts for Dreams webpage</a> or on the <a href="https://www.facebook.com/events/641961176328480">Facebook event page</a>. We'll be doing a live broadcast that day for the winners and some stories about the event.
     </p>
 </div>
-
 <div class="row">
-    <div class="col-md-4">
-        @Model.CustomerFirstName @Model.CustomerLastName<br />
-        @Model.PhoneNumber<br />
-        @Model.CustomerEmail<br />
-        <br />
-
-        @Model.AddressLine1<br />
-
-        @Model.AddressLine2<br />
-
-        @Model.City, @Model.State, @Model.Zip<br/>
+    <div class="col-md-5">
+        <div class="row">
+            <div class="col-md-12"><h5>Customer</h5></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <b>Name:</b>
+            </div>
+            <div class="col-md-8">
+                @Model.CustomerFirstName @Model.CustomerLastName
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <b>Phone:</b>
+            </div>
+            <div class="col-md-8">
+                @Model.PhoneNumber
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <b>Email:</b>
+            </div>
+            <div class="col-lg-8">
+                @Model.CustomerEmail
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <b>Address:</b>
+            </div>
+            <div class="col-md-8">
+                @Model.AddressLine1<br />
+                @if (!string.IsNullOrEmpty(Model.AddressLine2))
+                {
+                    @Model.AddressLine2<br />
+                }
+                @Model.City, @Model.State @Model.Zip
+            </div>
+        </div>
     </div>
 
-    <div class="col-md-8">
-        @foreach(var item in Model.Items)
-        {
-            @item.Name<br />
-        }
+    <div class="col-md-7">
+        <div class="row">
+            <div class="col-md-12"><h5>Raffle Tickets</h5></div>
+        </div>
+        <table class="table-sm table-bordered">
+            <thead>
+                <tr>
+                    <!--<th scope="col">#</th>-->
+                    <th scope="col">Raffle Item</th>
+                    <th scope="col" class="text-center">Points</th>
+                    <th scope="col" class="text-center">Tickets</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <!--<td></td>-->
+                        <td>@item.Name</td>
+                        <td class="text-center">@item.Price</td>
+                        <td class="text-center">@item.Amount</td>
+                    </tr>
+                }
+                <tr class="table-primary">
+                    <td><b>Total</b></td>
+                    <td colspan="2" class="text-center"><b>@Model.TotalPrice Points</b></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>

@@ -55,21 +55,23 @@
                         </td>
                         <td>
                             @Html.HiddenFor(m => m.RaffleItems[i].Id)
-                            <b>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</b>
+                            <h5>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</h5>
                             <div>
-                                @Model.RaffleItems[i].Description
+                                @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Description))
+                                {
+                                    @Model.RaffleItems[i].Description<br />
+                                }
                                 @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
                                 {
-                                    <br /><span class="font-italic">@Model.RaffleItems[i].Sponsor</span>
-                                }
-                                <br />
-                                @if (Model.RaffleItems[i].ForOver21)
-                                {
-                                    <span class="badge badge-warning">Over 21</span>
+                                    <b>Donated By: </b><span class="font-italic">@Model.RaffleItems[i].Sponsor</span><br />
                                 }
                                 @if (Model.RaffleItems[i].LocalPickupOnly)
                                 {
                                     <span class="badge badge-primary">Local Pickup Only</span>
+                                }
+                                @if (Model.RaffleItems[i].ForOver21)
+                                {
+                                    <span class="badge badge-warning">Over 21</span>
                                 }
                             </div>
                         </td>

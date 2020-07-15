@@ -121,6 +121,7 @@ namespace Raffle.Web.Controllers
                 HttpContext.Response.Cookies.Append("dfdoid", orderId.ToString(), new CookieOptions
                     {
                         Secure = true,
+                        SameSite = SameSiteMode.Strict,
                         Expires = new DateTimeOffset(DateTime.Now.AddDays(7))
                     });
                 return RedirectToAction("CompleteRaffle", new { orderId });
@@ -151,7 +152,7 @@ namespace Raffle.Web.Controllers
                 Items = order.Lines.Select(x => new CompleteRaffleLineItemModel
                 {
                     Name = x.Name,
-                    Cost = x.Price,
+                    Price = x.Price,
                     Amount = x.Count
                 }).ToList()
             };
@@ -189,7 +190,7 @@ namespace Raffle.Web.Controllers
             model.Items = order.Lines.Select(x => new CompleteRaffleLineItemModel
             {
                 Name = x.Name,
-                Cost = x.Price,
+                Price = x.Price,
                 Amount = x.Count
             }).ToList();
             model.TotalPrice = order.TotalPrice;

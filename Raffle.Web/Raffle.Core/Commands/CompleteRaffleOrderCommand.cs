@@ -70,14 +70,14 @@ namespace Raffle.Core.Commands
                 emailSender.SendEmailAsync(
                     command.Email,
                     $"{command.FirstName} {command.LastName}",
-                    "Darts For Dreams 15 - Raffle Order",
+                    $"Receipt for Darts For Dreams 15 Raffle Order# {command.OrderId}",
                     text,
                     body);
 
                 emailSender.SendEmailAsync(
                     managerEmail.Email,
                     managerEmail.Name,
-                    "Darts For Dreams 15 - Raffle Order",
+                    $"Receipt for Darts For Dreams 15 Raffle Order# {command.OrderId}",
                     text,
                     body);
             }
@@ -85,7 +85,7 @@ namespace Raffle.Core.Commands
 
         public string BuildTextTemplate(RaffleOrder order, CompleteRaffleOrderCommand command)
         {
-            var text = $"Dart for Dreams - Raffle Order" + Environment.NewLine;
+            var text = $"Dart for Dreams - Raffle Receipt" + Environment.NewLine;
             text += $"{command.FirstName} {command.LastName}" + Environment.NewLine;
             text += $"{command.PhoneNumber} " + Environment.NewLine;
             text += $"{command.Email}" + Environment.NewLine;

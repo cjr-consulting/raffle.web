@@ -69,7 +69,7 @@ namespace Raffle.Web.Models.Raffle
     {
         public int RaffleItemId { get; set; }
         public string Name { get; set; }
-        public int Cost { get; set; }
+        public int Cost { get { return Amount * Price; } }
         public int Amount { get; set; }
         public int Price { get; set; }
     }

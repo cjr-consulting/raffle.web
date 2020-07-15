@@ -1,9 +1,6 @@
-﻿using Raffle.Web.Models.Raffle;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Raffle.Web.Models
 {
@@ -29,7 +26,7 @@ namespace Raffle.Web.Models
     {
         public SuccessDonationRaffleItemModel RaffleItem { get; set; }
         public string Name { get; set; }
-        public int Cost { get; set; }
+        public int Cost { get { return Amount + Price; } }
         public int Amount { get; set; }
         public int Price { get; set; }
     }

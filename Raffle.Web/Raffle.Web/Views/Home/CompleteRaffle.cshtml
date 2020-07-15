@@ -9,6 +9,17 @@
     <p>You're almost there!</p>
 </div>
 
+<p>
+    You've now selected the prizes you want to win and how many chances you'd like to have.
+    Please fill in your information so we can track down winners, and note the total amount
+    of points in your cart. Under the total are your instructions to complete the donation
+    to MAWNJ. When you hit COMPLETE on this page, you'll get your receipt via email and be
+    sent to the Darts for Dreams Donation Page where you should make your donation. We
+    believe that a $1/point donation is a perfect amount. If you've miscalculated your
+    tickets, just hit the BACK button on your browser and adjust your selections then
+    CONTINUE again to proceed.
+</p>
+
 <form method="post">
     <div class="row">
         <div class="col-md-4 order-md-2 mb-4">
@@ -22,26 +33,16 @@
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
                             <h6 class="my-0">@Model.Items[i].Name</h6>
-                            <small class="text-muted">@Model.Items[i].Cost p</small>
+                            <small class="text-muted">@Model.Items[i].Amount tix</small>
                         </div>
-                        <span class="text-muted">@Model.Items[i].Amount</span>
+                        <span class="text-muted">@Model.Items[i].Cost</span>
                     </li>
                 }
-                <li class="list-group-item d-flex justify-content-between">
+                <li class="list-group-item d-flex justify-content-between list-group-item-primary">
                     <span>Total Points</span>
                     <strong>@Model.TotalPrice</strong>
                 </li>
             </ul>
-            <p>
-                You've now selected the prizes you want to win and how many chances you'd like to have.
-                Please fill in your information so we can track down winners, and note the total amount
-                of points in your cart. Under the total are your instructions to complete the donation
-                to MAWNJ. When you hit COMPLETE on this page, you'll get your receipt via email and be
-                sent to the Darts for Dreams Donation Page where you should make your donation. We
-                believe that a $1/point donation is a perfect amount. If you've miscalculated your
-                tickets, just hit the BACK button on your browser and adjust your selections then
-                CONTINUE again to proceed.
-            </p>
         </div>
 
         <div class="col-md-8 order-md-1">
@@ -49,7 +50,7 @@
             <h4 class="mb-3">Customer Information</h4>
             @if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))
             {
-            @Html.ValidationSummary(false, "Errors: ", new { @class = "alert alert-danger" })
+                @Html.ValidationSummary(false, "Errors: ", new { @class = "alert alert-danger" })
             }
             <div class="row">
                 <div class="col-md-6">

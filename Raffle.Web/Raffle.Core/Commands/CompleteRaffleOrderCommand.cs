@@ -61,25 +61,25 @@ namespace Raffle.Core.Commands
                 conn.Execute(updateOrder, command);
 
                 var order = GetOrder(conn, command.OrderId);
-                //var body = BuildTemplate(reader.GetContents("Raffle.Core.EmailTemplates.OrderComplete.html"),
-                //    order,
-                //    command);
+                var body = BuildTemplate(reader.GetContents("Raffle.Core.EmailTemplates.OrderComplete.html"),
+                    order,
+                    command);
 
-                //var text = BuildTextTemplate(order, command);
+                var text = BuildTextTemplate(order, command);
 
-                //emailSender.SendEmailAsync(
-                //    command.Email,
-                //    $"{command.FirstName} {command.LastName}",
-                //    "Darts For Dreams 15 - Raffle Order",
-                //    text,
-                //    body);
+                emailSender.SendEmailAsync(
+                    command.Email,
+                    $"{command.FirstName} {command.LastName}",
+                    "Darts For Dreams 15 - Raffle Order",
+                    text,
+                    body);
 
-                //emailSender.SendEmailAsync(
-                //    managerEmail.Email,
-                //    managerEmail.Name,
-                //    "Darts For Dreams 15 - Raffle Order",
-                //    text,
-                //    body);
+                emailSender.SendEmailAsync(
+                    managerEmail.Email,
+                    managerEmail.Name,
+                    "Darts For Dreams 15 - Raffle Order",
+                    text,
+                    body);
             }
         }
 
@@ -118,9 +118,17 @@ namespace Raffle.Core.Commands
             var ticketDetail = "";
             foreach (var line in order.Lines)
             {
-                ticketDetail += "<tr><td style=\"font-family:'Open Sans', Arial, sans-serif; font-size:18px; line-height:22px; color: #fbeb59; letter-spacing:2px; padding-bottom:12px;\" valign=\"top\" align=\"center\">";
-                ticketDetail += $"{line.Name} {line.Price}p x {line.Count}tix";
-                ticketDetail += "</td></tr>";
+                ticketDetail += "<tr>" +
+                    "<td style=\"font-family:'Open Sans', Arial, sans-serif; font-size:18px; line-height:22px; color: #fbeb59; letter-spacing:2px; padding-bottom:12px;\" valign=\"top\" align=\"left\" width=\"70%\">" +
+                    $"{line.Name}" +
+                    "</td>" +
+                    "<td style=\"font-family:'Open Sans', Arial, sans-serif; font-size:18px; line-height:22px; color: #fbeb59; letter-spacing:2px; padding-bottom:12px;\" valign=\"top\" align=\"center\">" +
+                    $"{line.Price} p" +
+                    "</td>" +
+                    "<td style=\"font-family:'Open Sans', Arial, sans-serif; font-size:18px; line-height:22px; color: #fbeb59; letter-spacing:2px; padding-bottom:12px;\" valign=\"top\" align=\"center\">" +
+                    $"{line.Count} tix" +
+                    "</td>" +
+                    "</tr>";
             }
 
             var result = template.Replace(token, $"https://raffle.dartsfordreams.com/home/privacy")

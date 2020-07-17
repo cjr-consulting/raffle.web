@@ -34,6 +34,16 @@
         }
     </div>
 </div>
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="searchFilter" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
 <form method="post">
     <div class="row">
         <table class="table">
@@ -42,7 +52,7 @@
                     <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["itemNumberSortParam"]">Num</a></th>
                     <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["titleSortParam"]">Item</a></th>
                     <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["categorySortParam"]">Category</a></th>
-                    <th scope="col">Points</th>
+                    <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["pointsSortParam"]">Points</a></th>
                     <th scope="col">How Many</th>
                 </tr>
             </thead>

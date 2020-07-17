@@ -39,12 +39,13 @@ namespace Raffle.Web.Controllers
             this.logger = logger;
         }
 
-        public IActionResult Index(string sortBy)
+        public IActionResult Index(string sortBy, string searchFilter)
         {
             ViewData["itemNumberSortParam"] = sortBy == "itemNumber" ? "itemNumber_desc" : "itemNumber";
             ViewData["titleSortParam"] = sortBy == "title" ? "title_desc" : "title";
             ViewData["categorySortParam"] = sortBy == "category" ? "category_desc" : "category";
             ViewData["pointsSortParam"] = sortBy == "points" ? "points_desc" : "points";
+            ViewData["currentFilter"] = searchFilter;
 
             var raffleItems = raffleItemRepository.GetAll()
                 .Select(x => new RaffleItemModel
@@ -69,6 +70,14 @@ namespace Raffle.Web.Controllers
                 {
                     raffleItems.First(x => x.Id == line.RaffleItemId).Amount = line.Count;
                 }
+            }
+
+            if(!string.IsNullOrEmpty(searchFilter))
+            {
+                raffleItems.Where(x => x.Title.Contains(searchFilter)
+                    || x.Description.Contains(searchFilter)
+                    || x.Category.Contains(searchFilter))
+                    .ToList();
             }
 
             switch(sortBy)

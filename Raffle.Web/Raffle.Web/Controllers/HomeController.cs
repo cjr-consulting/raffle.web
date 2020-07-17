@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 
 using Raffle.Core;
 using Raffle.Core.Commands;
+using Raffle.Core.Models;
 using Raffle.Core.Repositories;
 using Raffle.Web.Models;
 using Raffle.Web.Models.Raffle;
@@ -38,8 +39,11 @@ namespace Raffle.Web.Controllers
             this.logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string sortBy)
         {
+            ViewData["titleSortParam"] = sortBy == "title" ? "title_desc" : "title";
+            ViewData["categorySortParam"] = sortBy == "category" ? "category_desc" : "category";
+
             var raffleItems = raffleItemRepository.GetAll()
                 .Select(x => new RaffleItemModel
                 {
@@ -63,6 +67,22 @@ namespace Raffle.Web.Controllers
                 {
                     raffleItems.First(x => x.Id == line.RaffleItemId).Amount = line.Count;
                 }
+            }
+
+            switch(sortBy)
+            {
+                case "title_desc":
+                    raffleItems = raffleItems.OrderByDescending(x => x.Title).ToList();
+                    break;
+                case "category":
+                    raffleItems = raffleItems.OrderBy(x => x.Category).ToList();
+                    break;
+                case "category_desc":
+                    raffleItems = raffleItems.OrderByDescending(x => x.Category).ToList();
+                    break;
+                case "title":
+                    raffleItems = raffleItems.OrderBy(x => x.Title).ToList();
+                    break;
             }
 
             var model = new RaffleOrderViewModel

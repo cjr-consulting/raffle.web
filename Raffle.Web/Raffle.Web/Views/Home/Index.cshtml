@@ -40,8 +40,8 @@
             <thead>
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col">Item</th>
-                    <th scope="col">Category</th>
+                    <th scope="col"><a asp-action="Index" asp-controller="Home" asp-route-sortBy="@ViewData["titleSortParam"]">Item</a></th>
+                    <th scope="col"><a asp-action="Index" asp-controller="Home" asp-route-sortBy="@ViewData["categorySortParam"]">Category</a></th>
                     <th scope="col">Points</th>
                     <th scope="col">How Many</th>
                 </tr>
@@ -53,7 +53,7 @@
                         <td class="text-center align-middle">
                             #@Model.RaffleItems[i].ItemNumber @Html.HiddenFor(x => x.RaffleItems[i].ItemNumber)
                         </td>
-                        <td>
+                        <td class=" align-middle">
                             @Html.HiddenFor(m => m.RaffleItems[i].Id)
                             <h5>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</h5>
                             <div>

@@ -41,8 +41,10 @@ namespace Raffle.Web.Controllers
 
         public IActionResult Index(string sortBy)
         {
+            ViewData["itemNumberSortParam"] = sortBy == "itemNumber" ? "itemNumber_desc" : "itemNumber";
             ViewData["titleSortParam"] = sortBy == "title" ? "title_desc" : "title";
             ViewData["categorySortParam"] = sortBy == "category" ? "category_desc" : "category";
+            ViewData["pointsSortParam"] = sortBy == "points" ? "points_desc" : "points";
 
             var raffleItems = raffleItemRepository.GetAll()
                 .Select(x => new RaffleItemModel
@@ -74,14 +76,26 @@ namespace Raffle.Web.Controllers
                 case "title_desc":
                     raffleItems = raffleItems.OrderByDescending(x => x.Title).ToList();
                     break;
+                case "title":
+                    raffleItems = raffleItems.OrderBy(x => x.Title).ToList();
+                    break;
                 case "category":
                     raffleItems = raffleItems.OrderBy(x => x.Category).ToList();
                     break;
                 case "category_desc":
                     raffleItems = raffleItems.OrderByDescending(x => x.Category).ToList();
                     break;
-                case "title":
-                    raffleItems = raffleItems.OrderBy(x => x.Title).ToList();
+                case "itemNumber":
+                    raffleItems = raffleItems.OrderBy(x => x.ItemNumber).ToList();
+                    break;
+                case "itemNumber_desc":
+                    raffleItems = raffleItems.OrderByDescending(x => x.ItemNumber).ToList();
+                    break;
+                case "points":
+                    raffleItems = raffleItems.OrderBy(x => x.Cost).ToList();
+                    break;
+                case "points_desc":
+                    raffleItems = raffleItems.OrderByDescending(x => x.Cost).ToList();
                     break;
             }
 

@@ -74,9 +74,9 @@ namespace Raffle.Web.Controllers
 
             if(!string.IsNullOrEmpty(searchFilter))
             {
-                raffleItems.Where(x => x.Title.Contains(searchFilter)
-                    || x.Description.Contains(searchFilter)
-                    || x.Category.Contains(searchFilter))
+                raffleItems = raffleItems.Where(x => x.Title.Contains(searchFilter, StringComparison.OrdinalIgnoreCase)
+                    || x.Description.Contains(searchFilter, StringComparison.OrdinalIgnoreCase)
+                    || x.Category.Contains(searchFilter, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 

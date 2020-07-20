@@ -1,10 +1,11 @@
-﻿using Raffle.Core.Models;
+﻿using Dapper;
+
+using Raffle.Core.Models;
+
 using Raffle.Core.Repositories;
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dapper;
 using System.Data.SqlClient;
 using System.Linq;
 
@@ -62,7 +63,7 @@ namespace Raffle.Core.Data
         {
             using (var conn = new SqlConnection(connectionString))
             {
-                return conn.Query<RaffleItem>("SELECT * FROM RaffleItems WHERE Id = @id" , new { id }).SingleOrDefault();
+                return conn.Query<RaffleItem>("SELECT * FROM RaffleItems WHERE Id = @id", new { id }).SingleOrDefault();
             }
         }
     }

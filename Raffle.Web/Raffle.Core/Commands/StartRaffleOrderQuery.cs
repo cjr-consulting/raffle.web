@@ -5,12 +5,10 @@ using Raffle.Core.Shared;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Raffle.Core.Commands
 {
-    public class StartRaffleOrderQuery: IQuery
+    public class StartRaffleOrderQuery : IQuery
     {
         public List<RaffleOrderItem> RaffleOrderItems { get; set; }
 

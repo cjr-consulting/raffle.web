@@ -4,12 +4,10 @@ using Microsoft.Extensions.Logging;
 
 using Raffle.Core;
 using Raffle.Core.Commands;
-using Raffle.Core.Models;
 using Raffle.Core.Repositories;
 using Raffle.Web.Models;
 using Raffle.Web.Models.Raffle;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 

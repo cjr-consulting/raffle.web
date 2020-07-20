@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Raffle.Core.Commands;
 
 using Raffle.Core.Repositories;
-
-using Raffle.Web.Models.Raffle;
+using Raffle.Web.Models.Admin.RaffleItem;
 
 using System;
 using System.Linq;

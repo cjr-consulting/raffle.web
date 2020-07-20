@@ -70,6 +70,7 @@
     <Build Include="dbo\Tables\AspNetRoleClaims.sql" />
     <Build Include="dbo\Tables\RaffleOrders.sql" />
     <Build Include="dbo\Tables\RaffleOrderLineItems.sql" />
+    <Build Include="dbo\Tables\RaffleItemImages.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="Raffle.DB.refactorlog" />

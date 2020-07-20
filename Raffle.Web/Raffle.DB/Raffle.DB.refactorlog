@@ -28,4 +28,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="LocalPickupOnly" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="50c9b302-2aab-4218-9467-a925e50a9ede" ChangeDateTime="07/20/2020 02:48:38">
+    <Property Name="ElementName" Value="[dbo].[RaffleItemImages].[ImagePath]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RaffleItemImages]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ImageRoute" />
+  </Operation>
 </Operations>

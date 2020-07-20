@@ -23,8 +23,38 @@ namespace Raffle.Core.Data
         {
             using (var conn = new SqlConnection(connectionString))
             {
+                const string query = "SELECT ri.*, " +
+                    " rii.ImageRoute " +
+                    "FROM RaffleItems ri " +
+                    "LEFT JOIN RaffleItemImages rii ON ri.Id = rii.RaffleItemId";
 
-                return conn.Query<RaffleItem>("SELECT * FROM RaffleItems ORDER BY [ItemNumber]").ToList();
+                var raffleItemDictionary = new Dictionary<int, RaffleItem>();
+
+                var list = conn.Query<RaffleItem, string, RaffleItem>(
+                    query,
+                    (raffleItem, imageRoute) =>
+                    {
+                        RaffleItem raffleItemEntry;
+
+                        if (!raffleItemDictionary.TryGetValue(raffleItem.Id, out raffleItemEntry))
+                        {
+                            raffleItemEntry = raffleItem;
+                            raffleItemEntry.ImageUrls = new List<string>();
+                            raffleItemDictionary.Add(raffleItemEntry.Id, raffleItemEntry);
+                        }
+
+                        if (imageRoute != null)
+                        {
+                            raffleItemEntry.ImageUrls.Add(imageRoute);
+                        }
+
+                        return raffleItemEntry;
+                    },
+                    splitOn: "ImageRoute")
+                .Distinct()
+                .ToList();
+
+                return list;
             }
         }
 

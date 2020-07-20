@@ -37,9 +37,9 @@
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
-            Find by name: <input type="text" name="searchFilter" value="@ViewData["currentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
+            <b>Find by name:</b> <input type="text" name="searchFilter" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-action="Index">clear search</a>
         </p>
     </div>
 </form>
@@ -65,25 +65,44 @@
                         </td>
                         <td class=" align-middle">
                             @Html.HiddenFor(m => m.RaffleItems[i].Id)
-                            <h5>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</h5>
+                            <div style="margin-bottom: 8px;">
+                                @if (Model.RaffleItems[i].Pictures.Count == 1)
+                                {
+                                    <a href="@Model.RaffleItems[i].Pictures.First()" target="_blank" rel="noopener noreferrer">
+                                        <img src="@Model.RaffleItems[i].Pictures.First()" class="rounded float-left" style="max-width: 120px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                    </a>
+                                }
+                                <h5>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</h5>
+                                <div>
+                                    @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Description))
+                                    {
+                                        @Model.RaffleItems[i].Description<br />
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
+                                    {
+                                        <b>Donated By: </b><span class="font-italic">@Model.RaffleItems[i].Sponsor</span><br />
+                                    }
+                                    @if (Model.RaffleItems[i].LocalPickupOnly)
+                                    {
+                                        <span class="badge badge-primary">Local Pickup Only</span>
+                                    }
+                                    @if (Model.RaffleItems[i].ForOver21)
+                                    {
+                                        <span class="badge badge-warning">Over 21</span>
+                                    }
+                                </div>
+                            </div>
+                            @if (Model.RaffleItems[i].Pictures.Count > 1)
+                            {
                             <div>
-                                @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Description))
+                                @foreach (var picture in Model.RaffleItems[i].Pictures)
                                 {
-                                    @Model.RaffleItems[i].Description<br />
-                                }
-                                @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
-                                {
-                                    <b>Donated By: </b><span class="font-italic">@Model.RaffleItems[i].Sponsor</span><br />
-                                }
-                                @if (Model.RaffleItems[i].LocalPickupOnly)
-                                {
-                                    <span class="badge badge-primary">Local Pickup Only</span>
-                                }
-                                @if (Model.RaffleItems[i].ForOver21)
-                                {
-                                    <span class="badge badge-warning">Over 21</span>
+                                <a href="@picture" target="_blank" rel="noopener noreferrer">
+                                    <img src="@picture" class="rounded float-left" style="max-width: 100px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                </a>
                                 }
                             </div>
+                            }
                         </td>
                         <td class="text-center align-middle">@Model.RaffleItems[i].Category</td>
                         <td class="text-center align-middle">@Model.RaffleItems[i].Cost @Html.HiddenFor(x => x.RaffleItems[i].Cost)</td>

@@ -9,6 +9,7 @@ using Raffle.Core.Repositories;
 using Raffle.Web.Models;
 using Raffle.Web.Models.Raffle;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -59,7 +60,8 @@ namespace Raffle.Web.Controllers
                     Cost = x.Cost,
                     Value = x.ItemValue,
                     ForOver21 = x.ForOver21,
-                    LocalPickupOnly = x.LocalPickupOnly
+                    LocalPickupOnly = x.LocalPickupOnly,
+                    Pictures = x.ImageUrls
                 }).ToList();
 
             if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
@@ -134,7 +136,8 @@ namespace Raffle.Web.Controllers
                     Cost = x.Cost,
                     Value = x.ItemValue,
                     ForOver21 = x.ForOver21,
-                    LocalPickupOnly = x.LocalPickupOnly
+                    LocalPickupOnly = x.LocalPickupOnly,
+                    Pictures = x.ImageUrls
                 }).ToList();
                 model = new RaffleOrderViewModel
                 {

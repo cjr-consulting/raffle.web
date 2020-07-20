@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 
-using Raffle.Web.Models.Raffle;
 
 using System;
 

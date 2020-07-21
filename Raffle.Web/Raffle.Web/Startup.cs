@@ -94,15 +94,18 @@ namespace Raffle.Web
             services.AddTransient<IRaffleEmailSender, SendGridRaffleEmailSender>();
             services.AddTransient<IEmailSender, SendGridEmailSender>();
 
-            services.AddScoped(services => new AddRaffleItemCommandHandler(dbConnectionString));
-            services.AddScoped(services => new UpdateRaffleItemCommandHandler(dbConnectionString));
-            services.AddScoped(services => new StartRaffleOrderQueryHandler(dbConnectionString));
-            services.AddScoped(services => new GetRaffleOrderQueryHandler(dbConnectionString));
-            services.AddScoped(services => new CompleteRaffleOrderCommandHandler(
+            services.AddScoped<ICommandHandler<AddRaffleItemCommand>>(services => new AddRaffleItemCommandHandler(dbConnectionString));
+            services.AddScoped<ICommandHandler<UpdateRaffleItemCommand>>(services => new UpdateRaffleItemCommandHandler(dbConnectionString));
+            services.AddScoped<IQueryHandler<GetRaffleOrderQuery, RaffleOrder>>(services => new GetRaffleOrderQueryHandler(dbConnectionString));
+
+            services.AddScoped<ICommandHandler<UpdateOrderCommand>>(services => new UpdateOrderCommandHandler(dbConnectionString));
+            services.AddScoped<IQueryHandler<StartRaffleOrderQuery, int>>(services => new StartRaffleOrderQueryHandler(dbConnectionString));
+            services.AddScoped<ICommandHandler<CompleteRaffleOrderCommand>>(services => new CompleteRaffleOrderCommandHandler(
                 dbConnectionString, 
                 services.GetService<IRaffleEmailSender>(),
                 services.GetService<EmbeddedResourceReader>(),
                 new EmailAddress(managerEmail, managerName)));
+            
             services.AddScoped<IRaffleItemRepository>(services => new RaffleItemRepository(dbConnectionString));
             services.AddSingleton<EmbeddedResourceReader>();
         }

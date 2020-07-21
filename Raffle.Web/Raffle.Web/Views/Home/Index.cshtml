@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "Raffle";
 }
+
+@section Scripts {
+<script type="text/javascript" src="/js/rafflecart.js"></script>
+}
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8">
@@ -106,7 +110,16 @@
                         </td>
                         <td class="text-center align-middle">@Model.RaffleItems[i].Category</td>
                         <td class="text-center align-middle">@Model.RaffleItems[i].Cost @Html.HiddenFor(x => x.RaffleItems[i].Cost)</td>
-                        <td class="text-center align-middle">@Html.TextBoxFor(x => x.RaffleItems[i].Amount, null, new { style = "width:50px", @class = "form-control" })</td>
+                        <td class="text-center align-middle">
+                            @Html.TextBoxFor(x =>
+                                x.RaffleItems[i].Amount, 
+                                null, 
+                                new { style = "width:50px", 
+                                    @class = "form-control ticketInput", 
+                                    data_raffle_item_id=Model.RaffleItems[i].Id 
+                                })
+
+                        </td>
                     </tr>
                 }
             </tbody>

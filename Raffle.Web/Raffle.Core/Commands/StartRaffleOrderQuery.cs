@@ -10,7 +10,7 @@ namespace Raffle.Core.Commands
 {
     public class StartRaffleOrderQuery : IQuery
     {
-        public List<RaffleOrderItem> RaffleOrderItems { get; set; }
+        public List<RaffleOrderItem> RaffleOrderItems { get; set; } = new List<RaffleOrderItem>();
 
         public class RaffleOrderItem
         {
@@ -23,16 +23,16 @@ namespace Raffle.Core.Commands
 
     public class StartRaffleOrderQueryHandler : IQueryHandler<StartRaffleOrderQuery, int>
     {
-        readonly string dbConnectionString;
+        readonly string connectionString;
 
-        public StartRaffleOrderQueryHandler(string dbConnectionString)
+        public StartRaffleOrderQueryHandler(string connectionString)
         {
-            this.dbConnectionString = dbConnectionString;
+            this.connectionString = connectionString;
         }
 
         public int Handle(StartRaffleOrderQuery command)
         {
-            using (var conn = new SqlConnection(dbConnectionString))
+            using (var conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 using (var transaction = conn.BeginTransaction())

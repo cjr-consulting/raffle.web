@@ -1,12 +1,10 @@
 ﻿using Dapper;
 
-using Raffle.Core.Models;
 using Raffle.Core.Shared;
 
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Text;
 
 namespace Raffle.Core.Commands
 {
@@ -41,7 +39,7 @@ namespace Raffle.Core.Commands
                 using (var transaction = conn.BeginTransaction())
                 {
                     const string clearLineItemsQuery = "DELETE FROM RaffleOrderLineItems WHERE RaffleOrderId = @RaffleOrderId;";
-                    
+
                     const string upsertOrderItemQuery = "IF EXISTS(SELECT 1 FROM RaffleOrderLineItems WHERE RaffleItemId = @RaffleItemId AND RaffleOrderId = @RaffleOrderId) " +
                         "BEGIN " +
                         "  UPDATE RaffleOrderLineItems SET " +
@@ -55,8 +53,8 @@ namespace Raffle.Core.Commands
                         "  (RaffleOrderId, RaffleItemId, Name, Price, Count) VALUES " +
                         "  (@RaffleOrderId, @RaffleItemId, @Name, @Price, @Count); " +
                         "END ";
-                                             
-                    if(command.ReplaceAll)
+
+                    if (command.ReplaceAll)
                     {
                         conn.Execute(clearLineItemsQuery, new { RaffleOrderId = command.OrderId }, transaction);
                     }

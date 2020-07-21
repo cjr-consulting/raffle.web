@@ -22,6 +22,7 @@ namespace Raffle.Core.Commands
         public bool IsAvailable { get; set; } = true;
         public bool ForOver21 { get; set; } = true;
         public bool LocalPickupOnly { get; set; } = true;
+        public int NumberOfDraws { get; set; } = 1;
     }
 
     public class UpdateRaffleItemCommandHandler : ICommandHandler<UpdateRaffleItemCommand>
@@ -45,7 +46,8 @@ namespace Raffle.Core.Commands
                 " Cost = @Cost," +
                 " IsAvailable = @IsAvailable, " +
                 " ForOver21 = @ForOver21, " +
-                " LocalPickupOnly = @LocalPickupOnly " +
+                " LocalPickupOnly = @LocalPickupOnly," +
+                " NumberOfDraws = @NumberOfDraws " +
                 "WHERE Id = @Id";
             using (var conn = new SqlConnection(connectionString))
             {

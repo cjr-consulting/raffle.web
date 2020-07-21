@@ -17,6 +17,7 @@
             <th scope="col">Category</th>
             <th scope="col">Sponsor</th>
             <th scope="col">Cost</th>
+            <th class="text-center" scope="col">Draws</th>
             <th class="text-center" scope="col">Over 21</th>
             <th class="text-center" scope="col">Local Pickup</th>
             <th scope="col">Available</th>
@@ -33,6 +34,16 @@
             <td class="align-middle">@Model[i].Category</td>
             <td class="align-middle">@Model[i].Sponsor</td>
             <td class="text-center align-middle">@Model[i].Cost</td>
+            <td class="text-center align-middle">
+                @if (Model[i].NumberOfDraws == 1)
+                {
+                    <span class="badge badge-pill badge-primary">@Model[i].NumberOfDraws</span>
+                }
+                else
+                {
+                    <span class="badge badge-pill badge-warning">@Model[i].NumberOfDraws</span>
+                }
+            </td>
             <td class="text-center align-middle">@Html.CheckBoxFor(x => x[i].ForOver21, new { onclick = "return false;" })</td>
             <td class="text-center align-middle">@Html.CheckBoxFor(x => x[i].LocalPickupOnly, new { onclick = "return false;" })</td>
             <td class="text-center align-middle">@Html.CheckBoxFor(x => x[i].IsAvailable, new { onclick = "return false;" })</td>

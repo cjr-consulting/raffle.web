@@ -42,7 +42,7 @@ namespace Raffle.Core.Queries
                         "(RaffleOrderId, RaffleItemId, Name, Price, Count) VALUES " +
                         "(@RaffleOrderId, @RaffleItemId, @Name, @Price, @Count);";
 
-                    var orderId = conn.ExecuteScalar<int>(addOrderQuery, null, transaction);
+                    var orderId = conn.ExecuteScalar<int>(addOrderQuery, new { StartDate = DateTime.UtcNow }, transaction);
                     foreach (var lineItem in command.RaffleOrderItems)
                     {
                         conn.Execute(
@@ -53,8 +53,7 @@ namespace Raffle.Core.Queries
                                 lineItem.RaffleItemId,
                                 lineItem.Name,
                                 lineItem.Price,
-                                lineItem.Count,
-                                StartDate = DateTime.UtcNow
+                                lineItem.Count
                             },
                             transaction);
                     }

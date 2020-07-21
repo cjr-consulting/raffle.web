@@ -101,6 +101,7 @@ namespace Raffle.Web.Controllers
                     Value = x.ItemValue,
                     ForOver21 = x.ForOver21,
                     LocalPickupOnly = x.LocalPickupOnly,
+                    NumberOfDraws = x.NumberOfDraws,
                     Pictures = x.ImageUrls
                 }).ToList();
 
@@ -191,6 +192,7 @@ namespace Raffle.Web.Controllers
                     Value = x.ItemValue,
                     ForOver21 = x.ForOver21,
                     LocalPickupOnly = x.LocalPickupOnly,
+                    NumberOfDraws = x.NumberOfDraws,
                     Pictures = x.ImageUrls
                 }).ToList();
                 model = new RaffleOrderViewModel

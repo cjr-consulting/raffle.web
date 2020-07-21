@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Raffle.Core.Commands;
 
 using Raffle.Core.Repositories;
+using Raffle.Core.Shared;
 using Raffle.Web.Models.Admin.RaffleItem;
 
 using System;
@@ -16,14 +17,14 @@ namespace Raffle.Web.Controllers
     [Route("/admin/raffleitem")]
     public class AdminRaffleItemsController : Controller
     {
-        readonly UpdateRaffleItemCommandHandler updateHandler;
-        readonly AddRaffleItemCommandHandler addHandler;
+        readonly ICommandHandler<UpdateRaffleItemCommand> updateHandler;
+        readonly ICommandHandler<AddRaffleItemCommand> addHandler;
         readonly IRaffleItemRepository raffleItemRepository;
 
         public AdminRaffleItemsController(
             IRaffleItemRepository raffleItemRepository,
-            AddRaffleItemCommandHandler addHandler,
-            UpdateRaffleItemCommandHandler updateHandler)
+            ICommandHandler<AddRaffleItemCommand> addHandler,
+            ICommandHandler<UpdateRaffleItemCommand> updateHandler)
         {
             this.raffleItemRepository = raffleItemRepository;
             this.addHandler = addHandler;
@@ -46,7 +47,8 @@ namespace Raffle.Web.Controllers
                     Value = x.ItemValue,
                     IsAvailable = x.IsAvailable,
                     ForOver21 = x.ForOver21,
-                    LocalPickupOnly = x.LocalPickupOnly
+                    LocalPickupOnly = x.LocalPickupOnly,
+                    NumberOfDraws = x.NumberOfDraws
                 }).ToList();
             return View("RaffleItemList", model);
         }
@@ -75,6 +77,7 @@ namespace Raffle.Web.Controllers
                     IsAvailable = model.IsAvailable,
                     ForOver21 = model.ForOver21,
                     LocalPickupOnly = model.LocalPickupOnly,
+                    NumberOfDraws = model.NumberOfDraws,
                     Order = model.Order
                 });
                 return RedirectToAction("Index");
@@ -100,6 +103,7 @@ namespace Raffle.Web.Controllers
                 IsAvailable = raffleItem.IsAvailable,
                 ForOver21 = raffleItem.ForOver21,
                 LocalPickupOnly = raffleItem.LocalPickupOnly,
+                NumberOfDraws = raffleItem.NumberOfDraws,
                 Order = raffleItem.Order
             };
             return View("RaffleItemUpdate", model);
@@ -124,6 +128,7 @@ namespace Raffle.Web.Controllers
                     IsAvailable = model.IsAvailable,
                     ForOver21 = model.ForOver21,
                     LocalPickupOnly = model.LocalPickupOnly,
+                    NumberOfDraws = model.NumberOfDraws,
                     Order = model.Order
                 };
                 updateHandler.Handle(command);

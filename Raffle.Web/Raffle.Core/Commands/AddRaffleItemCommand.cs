@@ -21,6 +21,7 @@ namespace Raffle.Core.Commands
         public bool IsAvailable { get; set; } = true;
         public bool ForOver21 { get; set; }
         public bool LocalPickupOnly { get; set; }
+        public int NumberOfDraws { get; set; } = 1;
     }
 
     public class AddRaffleItemCommandHandler : ICommandHandler<AddRaffleItemCommand>
@@ -33,8 +34,9 @@ namespace Raffle.Core.Commands
 
         public void Handle(AddRaffleItemCommand command)
         {
-            const string query = "INSERT INTO [RaffleItems] (ItemNumber, Title, Description, ImageUrl, Category, Sponsor, ItemValue, Cost, IsAvailable, ForOver21, LocalPickupOnly) VALUES " +
-                "(@ItemNumber, @Title, @Description, @ImageUrl, @Category, @Sponsor, @ItemValue, @Cost, @IsAvailable, @ForOver21, @LocakPickupOnly)";
+            const string query = "INSERT INTO [RaffleItems] " +
+                "(ItemNumber, Title, Description, ImageUrl, Category, Sponsor, ItemValue, Cost, IsAvailable, ForOver21, LocalPickupOnly, NumberOfDraws) VALUES " +
+                "(@ItemNumber, @Title, @Description, @ImageUrl, @Category, @Sponsor, @ItemValue, @Cost, @IsAvailable, @ForOver21, @LocakPickupOnly, @NumberOfDraws)";
             using (var conn = new SqlConnection(connectionString))
             {
                 conn.Execute(query, command);

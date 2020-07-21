@@ -43,19 +43,25 @@
                 @Html.TextBoxFor(x => x.Cost, null, new { @class = "form-control" })
             </div>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
+                    <label>
+                        Draws
+                        </label>
+                        @Html.TextBoxFor(x => x.NumberOfDraws, null, new { style = "width:50px", @class = "form-control" })                        
+                </div>
+                <div class="col-md-2">
                     <label>
                         @Html.CheckBoxFor(x => x.ForOver21)
                         Over 21
                     </label>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label>
                         @Html.CheckBoxFor(x => x.LocalPickupOnly)
                         Local Pickup Only
                     </label>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label>
                         @Html.CheckBoxFor(x => x.IsAvailable)
                         Available

@@ -19,6 +19,7 @@ namespace Raffle.Web.Models.Admin.RaffleItem
         public string Sponsor { get; set; }
         [Required]
         public int Cost { get; set; }
+        public int NumberOfDraws { get; set; } = 1;
         public bool IsAvailable { get; set; }
         public bool ForOver21 { get; set; }
         public bool LocalPickupOnly { get; set; }

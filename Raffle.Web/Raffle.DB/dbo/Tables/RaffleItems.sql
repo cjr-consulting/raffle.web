@@ -9,8 +9,9 @@
     [ItemValue]   NVARCHAR (50)  NOT NULL,
     [Cost]        INT            NOT NULL,
     [IsAvailable] BIT            NOT NULL,
-    [ForOver21]    BIT            NOT NULL DEFAULT 0,
-    [LocalPickupOnly] BIT          NOT NULL DEFAULT 0,
+    [ForOver21]    BIT           NOT NULL DEFAULT 0,
+    [LocalPickupOnly] BIT        NOT NULL DEFAULT 0,
+    [NumberOfDraws] INT          NOT NULL DEFAULT 1,
     [Order] INT NOT NULL DEFAULT 0, 
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );

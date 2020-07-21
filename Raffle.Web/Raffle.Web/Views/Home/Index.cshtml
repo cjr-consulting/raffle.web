@@ -86,6 +86,10 @@
                                     {
                                         <b>Donated By: </b><span class="font-italic">@Model.RaffleItems[i].Sponsor</span><br />
                                     }
+                                    @if (Model.RaffleItems[i].NumberOfDraws > 1)
+                                    {
+                                        <span class="badge badge-success" title="Number of tickets drawn">@Model.RaffleItems[i].NumberOfDraws Winners</span>
+                                    }
                                     @if (Model.RaffleItems[i].LocalPickupOnly)
                                     {
                                         <span class="badge badge-primary">Local Pickup Only</span>

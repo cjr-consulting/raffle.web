@@ -34,8 +34,7 @@ namespace Raffle.Web.Controllers
             IQueryHandler<StartRaffleOrderQuery, int> startOrderCommandHandler,
             IQueryHandler<GetRaffleOrderQuery, RaffleOrder> getRaffleOrderQueryHandler,
             ICommandHandler<CompleteRaffleOrderCommand> completeRaffleOrderCommandHandler,
-            ICommandHandler<UpdateOrderCommand> updateOrderCommandHandler
-            )
+            ICommandHandler<UpdateOrderCommand> updateOrderCommandHandler)
         {
             this.updateOrderCommandHandler = updateOrderCommandHandler;
             this.completeRaffleOrderCommandHandler = completeRaffleOrderCommandHandler;
@@ -80,13 +79,14 @@ namespace Raffle.Web.Controllers
             return Json(new { Success = false });
         }
 
-        public IActionResult Index(string sortBy, string searchFilter)
+        public IActionResult Index(string sortBy, string searchFilter, string categoryFilter)
         {
             ViewData["itemNumberSortParam"] = sortBy == "itemNumber" ? "itemNumber_desc" : "itemNumber";
             ViewData["titleSortParam"] = sortBy == "title" ? "title_desc" : "title";
             ViewData["categorySortParam"] = sortBy == "category" ? "category_desc" : "category";
             ViewData["pointsSortParam"] = sortBy == "points" ? "points_desc" : "points";
             ViewData["currentFilter"] = searchFilter;
+            ViewData["categoryFilter"] = categoryFilter;
 
             var raffleItems = raffleItemRepository.GetAll()
                 .Select(x => new RaffleItemModel
@@ -137,6 +137,12 @@ namespace Raffle.Web.Controllers
                     .ToList();
             }
 
+            if(!string.IsNullOrEmpty(categoryFilter))
+            {
+                raffleItems = raffleItems.Where(x => x.Category.Equals(categoryFilter, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
             switch(sortBy)
             {
                 case "title_desc":
@@ -167,6 +173,7 @@ namespace Raffle.Web.Controllers
 
             var model = new RaffleOrderViewModel
             {
+                Categories = raffleItemRepository.GetUsedCategories().OrderBy(x => x).ToList(),
                 RaffleItems = raffleItems
             };
 

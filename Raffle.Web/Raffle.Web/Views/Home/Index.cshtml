@@ -38,17 +38,38 @@
 </div>
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
-        <p>
-            <b>Find by name:</b> <input type="text" name="searchFilter" value="@ViewData["currentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-primary" /> |
-            <a asp-action="Index">clear search</a>
-        </p>
+        <div class="row">
+            <div class="col-md-6">
+                <b>Find by name:</b> <input type="text" name="searchFilter" value="@ViewData["currentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-primary" /> |
+                <a asp-action="Index">clear search</a>
+
+            </div>
+            <div class="col-md-6">
+                <div class="text-align">
+                    <select name="categoryFilter" class="btn btn-secondary dropdown-toggle" onchange="this.form.submit();">
+                        <option value="">Select a Category</option>
+                        @foreach (var category in Model.Categories)
+                        {
+                            @if (category == (string)ViewData["categoryFilter"])
+                            {
+                                <option value="@category" selected="selected">@category</option>
+                            }
+                            else
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
 </form>
 
 <form method="post">
     <div class="row">
-        <table class="table">
+        <table class="table" style="margin-top: 5px;">
             <thead>
                 <tr>
                     <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["itemNumberSortParam"]">Num</a></th>

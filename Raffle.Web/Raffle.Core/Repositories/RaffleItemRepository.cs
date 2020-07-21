@@ -9,5 +9,6 @@ namespace Raffle.Core.Repositories
         IReadOnlyList<RaffleItem> GetAll();
 
         RaffleItem GetById(int id);
+        IReadOnlyList<string> GetUsedCategories();
     }
 }

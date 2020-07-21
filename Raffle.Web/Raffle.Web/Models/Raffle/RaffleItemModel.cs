@@ -25,6 +25,7 @@ namespace Raffle.Web.Models.Raffle
 
     public class RaffleOrderViewModel
     {
+        public List<string> Categories { get; set; } = new List<string>();
         public string ErrorMessage { get; set; }
         public List<RaffleItemModel> RaffleItems { get; set; } = new List<RaffleItemModel>();
     }

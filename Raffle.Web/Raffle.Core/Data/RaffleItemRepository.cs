@@ -66,5 +66,13 @@ namespace Raffle.Core.Data
                 return conn.Query<RaffleItem>("SELECT * FROM RaffleItems WHERE Id = @id", new { id }).SingleOrDefault();
             }
         }
+
+        public IReadOnlyList<string> GetUsedCategories()
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                return conn.Query<string>("SELECT DISTINCT RTRIM(LTRIM(Category)) FROM RaffleItems;").ToList();
+            }
+        }
     }
 }

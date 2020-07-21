@@ -24,25 +24,10 @@ namespace Raffle.Web.Models
 
     public class SuccessDonationLineItemModel
     {
-        public SuccessDonationRaffleItemModel RaffleItem { get; set; }
         public string Name { get; set; }
-        public int Cost { get { return Amount + Price; } }
+        public int Cost { get { return Amount * Price; } }
         public int Amount { get; set; }
         public int Price { get; set; }
-    }
-
-    public class SuccessDonationRaffleItemModel
-    {
-        public int ItemNumber { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Category { get; set; }
-        public int Order { get; set; }
-        public string Value { get; set; }
-        public string Sponsor { get; set; }
-        public int Cost { get; set; }
-        public int Amount { get; set; }
-        public bool ForOver21 { get; set; }
-        public bool LocalPickupOnly { get; set; }
+        public List<string> ImageUrls { get; set; } = new List<string>();
     }
 }

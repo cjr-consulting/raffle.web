@@ -72,5 +72,6 @@ namespace Raffle.Web.Models.Raffle
         public int Cost { get { return Amount * Price; } }
         public int Amount { get; set; }
         public int Price { get; set; }
+        public List<string> ImageUrls { get; set; } = new List<string>();
     }
 }

@@ -39,7 +39,7 @@ namespace Raffle.Core.Commands
                 using (var transaction = conn.BeginTransaction())
                 {
                     const string clearLineItemsQuery = "DELETE FROM RaffleOrderLineItems WHERE RaffleOrderId = @RaffleOrderId;";
-
+                    const string clearLineItemQuery = "DELETE FROM RaffleOrderLineItems WHERE RaffleOrderId = @RaffleOrderId AND RaffleItemId = @RaffleItemId;";
                     const string upsertOrderItemQuery = "IF EXISTS(SELECT 1 FROM RaffleOrderLineItems WHERE RaffleItemId = @RaffleItemId AND RaffleOrderId = @RaffleOrderId) " +
                         "BEGIN " +
                         "  UPDATE RaffleOrderLineItems SET " +
@@ -61,17 +61,31 @@ namespace Raffle.Core.Commands
 
                     foreach (var lineItem in command.RaffleOrderItems)
                     {
-                        conn.Execute(
-                            upsertOrderItemQuery,
-                            new
-                            {
-                                RaffleOrderId = command.OrderId,
-                                lineItem.RaffleItemId,
-                                lineItem.Name,
-                                lineItem.Price,
-                                lineItem.Count
-                            },
-                            transaction);
+                        if (lineItem.Count > 0)
+                        {
+                            conn.Execute(
+                                upsertOrderItemQuery,
+                                new
+                                {
+                                    RaffleOrderId = command.OrderId,
+                                    lineItem.RaffleItemId,
+                                    lineItem.Name,
+                                    lineItem.Price,
+                                    lineItem.Count
+                                },
+                                transaction);
+                        }
+                        else
+                        {
+                            conn.Execute(
+                                clearLineItemQuery,
+                                new
+                                {
+                                    RaffleOrderId = command.OrderId,
+                                    lineItem.RaffleItemId
+                                },
+                                transaction);
+                        }
                     }
 
                     transaction.Commit();

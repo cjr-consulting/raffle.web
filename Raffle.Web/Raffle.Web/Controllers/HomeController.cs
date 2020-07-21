@@ -303,6 +303,7 @@ namespace Raffle.Web.Controllers
         public IActionResult CompleteRaffle(int orderId)
         {
             var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            var raffleItems = raffleItemRepository.GetAll();
             var model = new CompleteRaffleModel
             {
                 TotalPrice = order.TotalPrice,
@@ -311,7 +312,8 @@ namespace Raffle.Web.Controllers
                 {
                     Name = x.Name,
                     Price = x.Price,
-                    Amount = x.Count
+                    Amount = x.Count,
+                    ImageUrls = raffleItems.First(ri => ri.Id == x.RaffleItemId).ImageUrls
                 }).ToList()
             };
 
@@ -345,11 +347,13 @@ namespace Raffle.Web.Controllers
             }
 
             var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            var raffleItems = raffleItemRepository.GetAll();
             model.Items = order.Lines.Select(x => new CompleteRaffleLineItemModel
             {
                 Name = x.Name,
                 Price = x.Price,
-                Amount = x.Count
+                Amount = x.Count,
+                ImageUrls = raffleItems.First(ri => ri.Id == x.RaffleItemId).ImageUrls
             }).ToList();
             model.TotalPrice = order.TotalPrice;
             model.TotalTickets = order.TotalTickets;
@@ -361,6 +365,7 @@ namespace Raffle.Web.Controllers
         public IActionResult DonationSuccessful(int orderId)
         {
             var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            var raffleItems = raffleItemRepository.GetAll();
 
             var model = new SuccessDonationViewModel
             {
@@ -381,7 +386,8 @@ namespace Raffle.Web.Controllers
                     {
                         Name = x.Name,
                         Amount = x.Count,
-                        Price= x.Price
+                        Price= x.Price,
+                        ImageUrls = raffleItems.First(ri => ri.Id == x.RaffleItemId).ImageUrls
                     }).ToList()
             };
             return View(model);

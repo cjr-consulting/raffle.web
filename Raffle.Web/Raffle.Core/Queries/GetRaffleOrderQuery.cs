@@ -36,7 +36,7 @@ namespace Raffle.Core.Queries
                     "State = Customer_Address_State, " +
                     "Zip = Customer_Address_Zip " +
                     " FROM RaffleOrders ro WHERE Id = @id";
-                const string getOrderLineItems = "SELECT * FROM RaffleOrderLineItems WHERE RaffleOrderId = @id";
+                const string getOrderLineItems = "SELECT * FROM RaffleOrderLineItems WHERE RaffleOrderId = @id AND Count > 0;";
 
                 var order = conn.Query<RaffleOrder, Customer, RaffleOrder>(
                     getOrder,

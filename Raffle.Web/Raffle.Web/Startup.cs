@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -40,7 +41,9 @@ namespace Raffle.Web
                 options.UseSqlServer(
                     dbConnectionString));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential 
@@ -108,6 +111,12 @@ namespace Raffle.Web
             
             services.AddScoped<IRaffleItemRepository>(services => new RaffleItemRepository(dbConnectionString));
             services.AddSingleton<EmbeddedResourceReader>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Administration", policy =>
+                    policy.Requirements.Add(new RolesAuthorizationRequirement(new[] { "Admins" })));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

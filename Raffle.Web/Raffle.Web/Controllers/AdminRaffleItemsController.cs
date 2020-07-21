@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Raffle.Core.Commands;
@@ -11,6 +12,7 @@ using System.Linq;
 
 namespace Raffle.Web.Controllers
 {
+    [Authorize(Policy = "Administration")]
     [Route("/admin/raffleitem")]
     public class AdminRaffleItemsController : Controller
     {

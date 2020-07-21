@@ -11,5 +11,8 @@
     [Customer_Address_City] NVARCHAR(150) NULL, 
     [Customer_Address_State] NVARCHAR(150) NULL, 
     [Customer_Address_Zip] NVARCHAR(11) NULL, 
-    [IsOrderConfirmed] BIT NULL DEFAULT 0
+    [IsOrderConfirmed] BIT NULL DEFAULT 0, 
+    [StartDate] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
+    [CompletedDate] DATETIME2 NULL, 
+    [UpdatedDate] DATETIME2 NULL
 )

@@ -55,10 +55,24 @@ namespace Raffle.Core.Commands
                     "Customer_AddressLine2 = @AddressLine2, " +
                     "Customer_Address_City = @City, " +
                     "Customer_Address_State = @State, " +
-                    "Customer_Address_Zip = @Zip " +
+                    "Customer_Address_Zip = @Zip, " +
+                    "CompletedDate = @CompletedDate " +
                     "WHERE Id = @OrderId";
 
-                conn.Execute(updateOrder, command);
+                conn.Execute(updateOrder, new
+                {
+                    command.OrderId,
+                    command.FirstName,
+                    command.LastName,
+                    command.PhoneNumber,
+                    command.Email,
+                    command.AddressLine1,
+                    command.AddressLine2,
+                    command.City,
+                    command.State,
+                    command.Zip,
+                    CompletedDate = DateTime.UtcNow
+                });
 
                 var order = GetOrder(conn, command.OrderId);
                 var body = BuildTemplate(reader.GetContents("Raffle.Core.EmailTemplates.OrderComplete.html"),

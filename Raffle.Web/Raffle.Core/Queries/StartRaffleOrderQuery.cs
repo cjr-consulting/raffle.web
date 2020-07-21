@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace Raffle.Core.Commands
+namespace Raffle.Core.Queries
 {
     public class StartRaffleOrderQuery : IQuery
     {
@@ -37,7 +37,7 @@ namespace Raffle.Core.Commands
                 conn.Open();
                 using (var transaction = conn.BeginTransaction())
                 {
-                    const string addOrderQuery = "INSERT INTO RaffleOrders DEFAULT VALUES; SELECT SCOPE_IDENTITY();";
+                    const string addOrderQuery = "INSERT INTO RaffleOrders (StartDate) VALUES (@StartDate); SELECT SCOPE_IDENTITY();";
                     const string addOrderItemQuery = "INSERT INTO RaffleOrderLineItems " +
                         "(RaffleOrderId, RaffleItemId, Name, Price, Count) VALUES " +
                         "(@RaffleOrderId, @RaffleItemId, @Name, @Price, @Count);";
@@ -53,7 +53,8 @@ namespace Raffle.Core.Commands
                                 lineItem.RaffleItemId,
                                 lineItem.Name,
                                 lineItem.Price,
-                                lineItem.Count
+                                lineItem.Count,
+                                StartDate = DateTime.UtcNow
                             },
                             transaction);
                     }

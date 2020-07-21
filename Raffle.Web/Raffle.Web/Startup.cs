@@ -13,6 +13,7 @@ using Raffle.Core;
 using Raffle.Core.Commands;
 using Raffle.Core.Data;
 using Raffle.Core.Models;
+using Raffle.Core.Queries;
 using Raffle.Core.Repositories;
 using Raffle.Core.Shared;
 using Raffle.Web.Data;

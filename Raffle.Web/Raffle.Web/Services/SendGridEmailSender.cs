@@ -27,7 +27,7 @@ namespace Raffle.Web.Services
             var from = new EmailAddress(fromEmail, fromName);
             var to = new EmailAddress(email);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, htmlMessage, htmlMessage);
-            // msg.SetClickTracking(false, false);
+            msg.SetClickTracking(false, false);
             var response = await client.SendEmailAsync(msg);
         }
     }

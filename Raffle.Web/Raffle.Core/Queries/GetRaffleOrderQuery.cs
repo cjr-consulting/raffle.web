@@ -34,7 +34,9 @@ namespace Raffle.Core.Queries
                     "AddressLine2 = Customer_AddressLine2, " +
                     "City = Customer_Address_City, " +
                     "State = Customer_Address_State, " +
-                    "Zip = Customer_Address_Zip " +
+                    "Zip = Customer_Address_Zip, " +
+                    "StartDate," +
+                    "CompletedDate " +
                     " FROM RaffleOrders ro WHERE Id = @id";
                 const string getOrderLineItems = "SELECT * FROM RaffleOrderLineItems WHERE RaffleOrderId = @id AND Count > 0;";
 

@@ -81,6 +81,13 @@ namespace Raffle.Web.Controllers
 
         public IActionResult Index(string sortBy, string searchFilter, string categoryFilter)
         {
+            int? orderId = null;
+
+            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            {
+                orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
+            }
+
             ViewData["itemNumberSortParam"] = sortBy == "itemNumber" ? "itemNumber_desc" : "itemNumber";
             ViewData["titleSortParam"] = sortBy == "title" ? "title_desc" : "title";
             ViewData["categorySortParam"] = sortBy == "category" ? "category_desc" : "category";
@@ -105,10 +112,9 @@ namespace Raffle.Web.Controllers
                     Pictures = x.ImageUrls
                 }).ToList();
 
-            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
-            {
-                var orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
-                var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            if(orderId.HasValue)
+            { 
+                var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId.Value });
                 foreach(var line in order.Lines)
                 {
                     raffleItems.First(x => x.Id == line.RaffleItemId).Amount = line.Count;
@@ -116,8 +122,7 @@ namespace Raffle.Web.Controllers
             } 
             else
             {
-                var startRaffleOrder = new StartRaffleOrderQuery();
-                var orderId = startOrderCommandHandler.Handle(startRaffleOrder);
+                orderId = startOrderCommandHandler.Handle(new StartRaffleOrderQuery());
                 HttpContext.Response.Cookies.Append(
                     "dfdoid",
                     orderId.ToString(),
@@ -310,6 +315,12 @@ namespace Raffle.Web.Controllers
         public IActionResult CompleteRaffle(int orderId)
         {
             var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+
+            if(order.CompletedDate.HasValue)
+            {
+                return RedirectToAction("DonationSuccessful", new { orderId });
+            }
+
             var raffleItems = raffleItemRepository.GetAll();
             var model = new CompleteRaffleModel
             {

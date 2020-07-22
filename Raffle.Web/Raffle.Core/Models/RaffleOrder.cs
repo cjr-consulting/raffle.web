@@ -10,6 +10,8 @@ namespace Raffle.Core.Models
         public string TicketNumber { get; set; }
         public Customer Customer { get; set; }
         public bool IsOrderConfirmed { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? CompletedDate { get; set; }
         public IReadOnlyList<RaffleOrderLine> Lines { get; set; }
         public int TotalPrice
         {

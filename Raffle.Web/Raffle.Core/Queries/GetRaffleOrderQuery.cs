@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Raffle.Core.Queries
 {
-    public class GetRaffleOrderQuery : IQuery
+    public class GetRaffleOrderQuery : IQuery<RaffleOrder>
     {
         public int OrderId { get; set; }
     }

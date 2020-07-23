@@ -2,12 +2,12 @@
 
 namespace Raffle.Core.Shared
 {
-    public interface IQuery
+    public interface IQuery<TOut>
     {
     }
 
-    public interface IQueryHandler<T, O> where T : IQuery
+    public interface IQueryHandler<T, TOut> where T : IQuery<TOut>
     {
-        O Handle(T query);
+        TOut Handle(T query);
     }
 }

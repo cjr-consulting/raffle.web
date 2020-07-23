@@ -110,6 +110,8 @@ namespace Raffle.Web
                 services.GetService<IRaffleEmailSender>(),
                 services.GetService<EmbeddedResourceReader>(),
                 new EmailAddress(managerEmail, managerName)));
+
+            services.AddScoped<IQueryHandler<GetRaffleOrdersQuery, GetRaffleOrdersResult>>(sevices => new GetRaffleOrdersQueryHandler(dbConnectionString));
             
             services.AddScoped<IRaffleItemRepository>(services => new RaffleItemRepository(dbConnectionString));
             services.AddSingleton<EmbeddedResourceReader>();

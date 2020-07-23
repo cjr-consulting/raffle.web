@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 
 namespace Raffle.Core.Queries
 {
-    public class StartRaffleOrderQuery : IQuery
+    public class StartRaffleOrderQuery : IQuery<int>
     {
         public List<RaffleOrderItem> RaffleOrderItems { get; set; } = new List<RaffleOrderItem>();
 

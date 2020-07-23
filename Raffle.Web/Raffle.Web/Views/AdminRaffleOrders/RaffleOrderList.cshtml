@@ -1,0 +1,36 @@
+﻿@model Raffle.Web.Models.Admin.RaffleOrder.RaffleOrderListViewModel
+@{
+    ViewData["Title"] = "RaffleItemList";
+}
+
+<h1>Raffle Orders</h1>
+
+@*@Html.ActionLink("Add", "Add", "AdminRaffleOrders", null, new { @class = "btn btn-secondary" })*@
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col" class="text-center">Ticket Number</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col" class="text-center">Order Date</th>
+            <th scope="col" class="text-center">Total Tickets</th>
+            <th scope="col" class="text-center">Total Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < Model.RaffleOrders.Count; i++)
+        {
+            <tr>
+                <td class="align-middle">@Html.ActionLink("Update", "Update", "AdminRaffleOrders", new { id = Model.RaffleOrders[i].RaffleOrderId }, new { @class = "btn btn-primary" })</td>
+                <td class="align-middle text-center">@Model.RaffleOrders[i].TicketNumber</td>
+                <td class="align-middle">@Model.RaffleOrders[i].Name</td>
+                <td class="align-middle">@Model.RaffleOrders[i].Email</td>
+                <td class="align-middle">@Model.RaffleOrders[i].CompletedDate</td>
+                <td class="align-middle text-center">@Model.RaffleOrders[i].TotalTickets</td>
+                <td class="align-middle text-center">@Model.RaffleOrders[i].TotalPoints</td>
+            </tr>
+        }
+    </tbody>
+</table>

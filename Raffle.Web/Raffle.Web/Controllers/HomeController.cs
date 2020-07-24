@@ -195,13 +195,21 @@ namespace Raffle.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Index(RaffleOrderViewModel model)
         {
+            RaffleOrder order = null;
             var raffleEvent = raffleEventRepository.GetById(1);
-            if(raffleEvent.CloseDate < DateTime.UtcNow)
+            if (DateTime.UtcNow >= raffleEvent.CloseDate)
             {
                 return RedirectToAction("Index");
             }
 
-            if (!model.RaffleItems.Where(x => x.Amount > 0).Any())
+            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            {
+                var orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
+                order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            }
+
+            if ((order != null && !order.Lines.Any(x=>x.Count > 0))
+                && !model.RaffleItems.Any(x => x.Amount > 0))
             {
                 var raffleItems = raffleItemRepository.GetAll()
                 .Select(x => new RaffleItemModel
@@ -230,12 +238,8 @@ namespace Raffle.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                int orderId = 0;
-                if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+                if (order != null)
                 {
-                    orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
-                    var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
-
                     var lineItems = order.Lines.Select(x => new UpdateOrderCommand.RaffleOrderItem
                     {
                         RaffleItemId = x.RaffleItemId,
@@ -254,7 +258,7 @@ namespace Raffle.Web.Controllers
                             }).ToList();
 
                     lineItems.AddRange(newLineItems.Where(x => !lineItems.Any(y => y.RaffleItemId == x.RaffleItemId)));
-                    foreach(var item in lineItems)
+                    foreach (var item in lineItems)
                     {
                         var newItem = newLineItems.FirstOrDefault(x => x.RaffleItemId == item.RaffleItemId);
                         if (newItem == null)
@@ -266,7 +270,7 @@ namespace Raffle.Web.Controllers
 
                     var updateOrder = new UpdateOrderCommand
                     {
-                        OrderId = orderId,
+                        OrderId = order.Id,
                         ReplaceAll = true,
                         RaffleOrderItems = lineItems
                     };
@@ -287,12 +291,13 @@ namespace Raffle.Web.Controllers
                             }).ToList()
                     };
 
-                    orderId = startOrderCommandHandler.Handle(startRaffleOrder);
+                    var orderId = startOrderCommandHandler.Handle(startRaffleOrder);
+                    order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
                 }
 
                 HttpContext.Response.Cookies.Append(
                         "dfdoid",
-                        orderId.ToString(),
+                        order.Id.ToString(),
                         new CookieOptions
                         {
                             Secure = true,
@@ -300,7 +305,7 @@ namespace Raffle.Web.Controllers
                             Expires = new DateTimeOffset(DateTime.Now.AddDays(7))
                         });
 
-                return RedirectToAction("CompleteRaffle", new { orderId });
+                return RedirectToAction("CompleteRaffle", new { orderId = order.Id });
             }
 
             return View(model);
@@ -327,7 +332,7 @@ namespace Raffle.Web.Controllers
         public IActionResult CompleteRaffle(int orderId)
         {
             var raffleEvent = raffleEventRepository.GetById(1);
-            if (raffleEvent.CloseDate < DateTime.UtcNow)
+            if (DateTime.UtcNow >= raffleEvent.CloseDate)
             {
                 return RedirectToAction("Index");
             }
@@ -360,6 +365,12 @@ namespace Raffle.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CompleteRaffle(int orderId, CompleteRaffleModel model)
         {
+            var raffleEvent = raffleEventRepository.GetById(1);
+            if (DateTime.UtcNow >= raffleEvent.CloseDate)
+            {
+                return RedirectToAction("Index");
+            }
+
             if (ModelState.IsValid)
             {
                 var command = new CompleteRaffleOrderCommand

@@ -5,7 +5,7 @@
 }
 
 @section Scripts {
-    <script type="text/javascript" src="/js/rafflecart.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/rafflecart.js" asp-append-version="true"></script>
 }
 @Html.HiddenFor(x => x.StartDate)
 <div class="row">
@@ -41,7 +41,7 @@
         }
     </div>
 </div>
-@if (Model.CloseDate >= DateTime.UtcNow)
+@if (DateTime.UtcNow < Model.CloseDate)
 {
     <form asp-action="Index" method="get">
         <div class="form-actions no-color">

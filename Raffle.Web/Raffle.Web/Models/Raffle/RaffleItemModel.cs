@@ -25,6 +25,8 @@ namespace Raffle.Web.Models.Raffle
 
     public class RaffleOrderViewModel
     {
+        public DateTime? StartDate { get; set; }
+        public DateTime? CloseDate { get; set; }
         public List<string> Categories { get; set; } = new List<string>();
         public string ErrorMessage { get; set; }
         public List<RaffleItemModel> RaffleItems { get; set; } = new List<RaffleItemModel>();

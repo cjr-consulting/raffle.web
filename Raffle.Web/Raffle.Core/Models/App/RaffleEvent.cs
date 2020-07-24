@@ -8,7 +8,7 @@ namespace Raffle.Core.Models.App
         public string Title { get; set; }
         public DateTime VisibleDate { get; set; }
         public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime? CloseDate { get; set; }
 
     }
 }

@@ -5,17 +5,22 @@
 }
 
 @section Scripts {
-<script type="text/javascript" src="/js/rafflecart.js"></script>
+    <script type="text/javascript" src="/js/rafflecart.js" asp-append-version="true"></script>
 }
+@Html.HiddenFor(x => x.StartDate)
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8">
         <img src="~/images/DFDQ-RaffleBanner.png" class="img-fluid" alt="Welcome to the Darts for Dreams Quarantine Edition Raffle" />
     </div>
 </div>
-<p>
-    <h5> The online raffle will be turned off at 2 PM ET on August 22nd!</h5>
-</p>
+<div class="text-center">
+    <h5>The online raffle will be turned off at 2 PM ET on August 22nd! </h5>
+    @if (Model.CloseDate < DateTime.UtcNow)
+    {
+        <h5><span id="timeCountdown" utc="@Model.CloseDate.Value.ToString("o")"></span></h5>
+    }
+</div>
 <p>
     Thank you for choosing to stop by and help MAWNJ via our online Darts for Dreams event in 2020.
     Your support is truly appreciated as we continue to help kids with critical illnesses in our area.
@@ -36,124 +41,135 @@
         }
     </div>
 </div>
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <div class="row">
-            <div class="col-md-6">
-                <b>Find by name:</b> <input type="text" name="searchFilter" value="@ViewData["currentFilter"]" />
-                <input type="submit" value="Search" class="btn btn-primary" /> |
-                <a asp-action="Index">clear search</a>
+@if (Model.CloseDate >= DateTime.UtcNow)
+{
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <div class="row">
+                <div class="col-md-6">
+                    <b>Find by name:</b> <input type="text" name="searchFilter" value="@ViewData["currentFilter"]" />
+                    <input type="submit" value="Search" class="btn btn-primary" /> |
+                    <a asp-action="Index">clear search</a>
 
-            </div>
-            <div class="col-md-6">
-                <div class="text-align">
-                    <select name="categoryFilter" class="btn btn-secondary dropdown-toggle" onchange="this.form.submit();">
-                        <option value="">Select a Category</option>
-                        @foreach (var category in Model.Categories)
-                        {
-                            @if (category == (string)ViewData["categoryFilter"])
+                </div>
+                <div class="col-md-6">
+                    <div class="text-align">
+                        <select name="categoryFilter" class="btn btn-secondary dropdown-toggle" onchange="this.form.submit();">
+                            <option value="">Select a Category</option>
+                            @foreach (var category in Model.Categories)
                             {
-                                <option value="@category" selected="selected">@category</option>
+                                @if (category == (string)ViewData["categoryFilter"])
+                                {
+                                    <option value="@category" selected="selected">@category</option>
+                                }
+                                else
+                                {
+                                    <option value="@category">@category</option>
+                                }
                             }
-                            else
-                            {
-                                <option value="@category">@category</option>
-                            }
-                        }
-                    </select>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 
-<form method="post">
-    <div class="row">
-        <table class="table" style="margin-top: 5px;">
-            <thead>
-                <tr>
-                    <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["itemNumberSortParam"]">Num</a></th>
-                    <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["titleSortParam"]">Item</a></th>
-                    <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["categorySortParam"]">Category</a></th>
-                    <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["pointsSortParam"]">Points</a></th>
-                    <th scope="col">How Many</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < Model.RaffleItems.Count; i++)
-                {
+    <form method="post">
+        <div class="row">
+            <table class="table" style="margin-top: 5px;">
+                <thead>
                     <tr>
-                        <td class="text-center align-middle">
-                            #@Model.RaffleItems[i].ItemNumber @Html.HiddenFor(x => x.RaffleItems[i].ItemNumber)
-                        </td>
-                        <td class=" align-middle">
-                            @Html.HiddenFor(m => m.RaffleItems[i].Id)
-                            <div style="margin-bottom: 8px;">
-                                @if (Model.RaffleItems[i].Pictures.Count == 1)
-                                {
-                                    <a href="@Model.RaffleItems[i].Pictures.First()" target="_blank" rel="noopener noreferrer">
-                                        <img src="@Model.RaffleItems[i].Pictures.First()" class="rounded float-left" style="max-width: 120px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
-                                    </a>
-                                }
-                                <h5>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</h5>
-                                <div>
-                                    @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Description))
-                                    {
-                                        @Model.RaffleItems[i].Description<br />
-                                    }
-                                    @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
-                                    {
-                                        <b>Donated By: </b><span class="font-italic">@Model.RaffleItems[i].Sponsor</span><br />
-                                    }
-                                    @if (Model.RaffleItems[i].NumberOfDraws > 1)
-                                    {
-                                        <span class="badge badge-success" title="Number of tickets drawn">@Model.RaffleItems[i].NumberOfDraws Winners</span>
-                                    }
-                                    @if (Model.RaffleItems[i].LocalPickupOnly)
-                                    {
-                                        <span class="badge badge-primary">Local Pickup Only</span>
-                                    }
-                                    @if (Model.RaffleItems[i].ForOver21)
-                                    {
-                                        <span class="badge badge-warning">Over 21</span>
-                                    }
-                                </div>
-                            </div>
-                            @if (Model.RaffleItems[i].Pictures.Count > 1)
-                            {
-                            <div>
-                                @foreach (var picture in Model.RaffleItems[i].Pictures)
-                                {
-                                <a href="@picture" target="_blank" rel="noopener noreferrer">
-                                    <img src="@picture" class="rounded float-left" style="max-width: 100px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
-                                </a>
-                                }
-                            </div>
-                            }
-                        </td>
-                        <td class="text-center align-middle">@Model.RaffleItems[i].Category</td>
-                        <td class="text-center align-middle">@Model.RaffleItems[i].Cost @Html.HiddenFor(x => x.RaffleItems[i].Cost)</td>
-                        <td class="text-center align-middle">
-                            @Html.TextBoxFor(x =>
-                                x.RaffleItems[i].Amount, 
-                                null, 
-                                new { style = "width:50px", 
-                                    @class = "form-control ticketInput", 
-                                    data_raffle_item_id=Model.RaffleItems[i].Id 
-                                })
-
-                        </td>
+                        <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["itemNumberSortParam"]">Num</a></th>
+                        <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["titleSortParam"]">Item</a></th>
+                        <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["categorySortParam"]">Category</a></th>
+                        <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["pointsSortParam"]">Points</a></th>
+                        <th scope="col">How Many</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <button type="submit" class="form-control btn btn-primary">Continue</button>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.RaffleItems.Count; i++)
+                    {
+                        <tr>
+                            <td class="text-center align-middle">
+                                #@Model.RaffleItems[i].ItemNumber @Html.HiddenFor(x => x.RaffleItems[i].ItemNumber)
+                            </td>
+                            <td class=" align-middle">
+                                @Html.HiddenFor(m => m.RaffleItems[i].Id)
+                                <div style="margin-bottom: 8px;">
+                                    @if (Model.RaffleItems[i].Pictures.Count == 1)
+                                    {
+                                        <a href="@Model.RaffleItems[i].Pictures.First()" target="_blank" rel="noopener noreferrer">
+                                            <img src="@Model.RaffleItems[i].Pictures.First()" class="rounded float-left" style="max-width: 120px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                        </a>
+                                    }
+                                    <h5>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</h5>
+                                    <div>
+                                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Description))
+                                        {
+                                            @Model.RaffleItems[i].Description<br />
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
+                                        {
+                                            <b>Donated By: </b><span class="font-italic">@Model.RaffleItems[i].Sponsor</span><br />
+                                        }
+                                        @if (Model.RaffleItems[i].NumberOfDraws > 1)
+                                        {
+                                            <span class="badge badge-success" title="Number of tickets drawn">@Model.RaffleItems[i].NumberOfDraws Winners</span>
+                                        }
+                                        @if (Model.RaffleItems[i].LocalPickupOnly)
+                                        {
+                                            <span class="badge badge-primary">Local Pickup Only</span>
+                                        }
+                                        @if (Model.RaffleItems[i].ForOver21)
+                                        {
+                                            <span class="badge badge-warning">Over 21</span>
+                                        }
+                                    </div>
+                                </div>
+                                @if (Model.RaffleItems[i].Pictures.Count > 1)
+                                {
+                                    <div>
+                                        @foreach (var picture in Model.RaffleItems[i].Pictures)
+                                        {
+                                            <a href="@picture" target="_blank" rel="noopener noreferrer">
+                                                <img src="@picture" class="rounded float-left" style="max-width: 100px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                            </a>
+                                        }
+                                    </div>
+                                }
+                            </td>
+                            <td class="text-center align-middle">@Model.RaffleItems[i].Category</td>
+                            <td class="text-center align-middle">@Model.RaffleItems[i].Cost @Html.HiddenFor(x => x.RaffleItems[i].Cost)</td>
+                            <td class="text-center align-middle">
+                                @Html.TextBoxFor(x =>
+      x.RaffleItems[i].Amount,
+      null,
+      new
+      {
+          style = "width:50px",
+          @class = "form-control ticketInput",
+          data_raffle_item_id = Model.RaffleItems[i].Id
+      })
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-        <div class="col-md-6">
-            @Html.ActionLink("Clear Donation", "ClearDonation", "Home", null, new { @class = "btn btn-warning" })
+        <div class="row">
+            <div class="col-md-6">
+                <button type="submit" class="form-control btn btn-primary">Continue</button>
+            </div>
+            <div class="col-md-6">
+                @Html.ActionLink("Clear Donation", "ClearDonation", "Home", null, new { @class = "btn btn-warning" })
+            </div>
         </div>
+    </form>
+}
+else
+{
+    <div class="text-center">
+        The raffle is complete!!
     </div>
-</form>
+}

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 
 using Raffle.Core;
 using Raffle.Core.Commands;
+using Raffle.Core.Data;
 using Raffle.Core.Models;
 using Raffle.Core.Queries;
 using Raffle.Core.Repositories;
@@ -26,16 +27,19 @@ namespace Raffle.Web.Controllers
         readonly IQueryHandler<GetRaffleOrderQuery, RaffleOrder> raffleOrderQueryHandler;
         readonly ICommandHandler<CompleteRaffleOrderCommand> completeRaffleOrderCommandHandler;
         readonly ICommandHandler<UpdateOrderCommand> updateOrderCommandHandler;
+        readonly IRaffleEventRepository raffleEventRepository;
 
         public HomeController(
             ILogger<HomeController> logger,
             IRaffleEmailSender emailSender,
             IRaffleItemRepository raffleItemRepository,
+            IRaffleEventRepository raffleEventRepository,
             IQueryHandler<StartRaffleOrderQuery, int> startOrderCommandHandler,
             IQueryHandler<GetRaffleOrderQuery, RaffleOrder> getRaffleOrderQueryHandler,
             ICommandHandler<CompleteRaffleOrderCommand> completeRaffleOrderCommandHandler,
             ICommandHandler<UpdateOrderCommand> updateOrderCommandHandler)
         {
+            this.raffleEventRepository = raffleEventRepository;
             this.updateOrderCommandHandler = updateOrderCommandHandler;
             this.completeRaffleOrderCommandHandler = completeRaffleOrderCommandHandler;
             raffleOrderQueryHandler = getRaffleOrderQueryHandler;
@@ -175,9 +179,11 @@ namespace Raffle.Web.Controllers
                     raffleItems = raffleItems.OrderByDescending(x => x.Cost).ToList();
                     break;
             }
-
+            var raffleEvent = raffleEventRepository.GetById(1);
             var model = new RaffleOrderViewModel
             {
+                StartDate = raffleEvent.StartDate,
+                CloseDate = raffleEvent.CloseDate.Value,
                 Categories = raffleItemRepository.GetUsedCategories().OrderBy(x => x).ToList(),
                 RaffleItems = raffleItems
             };
@@ -189,6 +195,12 @@ namespace Raffle.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Index(RaffleOrderViewModel model)
         {
+            var raffleEvent = raffleEventRepository.GetById(1);
+            if(raffleEvent.CloseDate >= DateTime.UtcNow)
+            {
+                return RedirectToAction("Index");
+            }
+
             if (!model.RaffleItems.Where(x => x.Amount > 0).Any())
             {
                 var raffleItems = raffleItemRepository.GetAll()
@@ -314,6 +326,12 @@ namespace Raffle.Web.Controllers
         [HttpGet("Complete/{orderId}")]
         public IActionResult CompleteRaffle(int orderId)
         {
+            var raffleEvent = raffleEventRepository.GetById(1);
+            if (raffleEvent.CloseDate >= DateTime.UtcNow)
+            {
+                return RedirectToAction("Index");
+            }
+
             var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
 
             if(order.CompletedDate.HasValue)

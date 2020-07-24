@@ -12,6 +12,16 @@
             );
             return false;
         });
+
+        var key = $("#timeCountdown").each(function (i, obj) {
+            var element = $(this);
+            var utc = element.attr("utc");
+            var d = new Date(utc);
+            var l = d.toLocaleString();
+            let dueDate = moment(d);
+            let today = moment();
+            element.text("That's just " + moment.duration(dueDate.diff(today, "minutes"), "minutes").format() + " away!!");
+        });
     });
 
 })(window);

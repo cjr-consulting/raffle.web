@@ -1,4 +1,5 @@
 ﻿using Dapper;
+
 using Raffle.Core.Models;
 using Raffle.Core.Shared;
 
@@ -6,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 
 namespace Raffle.Core.Queries
 {
@@ -76,9 +76,9 @@ namespace Raffle.Core.Queries
                     .ToList();
 
                 return new GetRaffleOrdersResult
-                    {
-                        Orders = orders
-                    };
+                {
+                    Orders = orders
+                };
             }
         }
     }

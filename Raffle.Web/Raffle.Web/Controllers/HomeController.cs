@@ -183,7 +183,7 @@ namespace Raffle.Web.Controllers
             var model = new RaffleOrderViewModel
             {
                 StartDate = raffleEvent.StartDate,
-                CloseDate = raffleEvent.CloseDate.Value,
+                CloseDate = raffleEvent.CloseDate.Value.ToUniversalTime(),
                 Categories = raffleItemRepository.GetUsedCategories().OrderBy(x => x).ToList(),
                 RaffleItems = raffleItems
             };
@@ -196,7 +196,7 @@ namespace Raffle.Web.Controllers
         public IActionResult Index(RaffleOrderViewModel model)
         {
             var raffleEvent = raffleEventRepository.GetById(1);
-            if(raffleEvent.CloseDate >= DateTime.UtcNow)
+            if(raffleEvent.CloseDate < DateTime.UtcNow)
             {
                 return RedirectToAction("Index");
             }
@@ -327,7 +327,7 @@ namespace Raffle.Web.Controllers
         public IActionResult CompleteRaffle(int orderId)
         {
             var raffleEvent = raffleEventRepository.GetById(1);
-            if (raffleEvent.CloseDate >= DateTime.UtcNow)
+            if (raffleEvent.CloseDate < DateTime.UtcNow)
             {
                 return RedirectToAction("Index");
             }

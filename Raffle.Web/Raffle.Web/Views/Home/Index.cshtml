@@ -16,7 +16,7 @@
 </div>
 <div class="text-center">
     <h5>The online raffle will be turned off at 2 PM ET on August 22nd! </h5>
-    @if (Model.CloseDate < DateTime.UtcNow)
+    @if (Model.CloseDate >= DateTime.UtcNow)
     {
         <h5><span id="timeCountdown" utc="@Model.CloseDate.Value.ToString("o")"></span></h5>
     }

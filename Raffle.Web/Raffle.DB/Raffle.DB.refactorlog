@@ -35,4 +35,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="ImageRoute" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="db6c78e8-fb04-49ca-aac6-0cb5dd2f43f4" ChangeDateTime="07/24/2020 00:15:12">
+    <Property Name="ElementName" Value="[dbo].[Raffles].[StartDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Raffles]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="VisibleDate" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="370d4a53-3c07-4801-bbeb-f17f813fd9f8" ChangeDateTime="07/24/2020 00:56:06">
+    <Property Name="ElementName" Value="[dbo].[Raffles]" />
+    <Property Name="ElementType" Value="SqlTable" />
+    <Property Name="ParentElementName" Value="[dbo]" />
+    <Property Name="ParentElementType" Value="SqlSchema" />
+    <Property Name="NewName" Value="[RaffleEvents]" />
+  </Operation>
 </Operations>

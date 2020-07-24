@@ -15,9 +15,9 @@ namespace Raffle.Core.Data
     {
         readonly string connectionString;
 
-        public RaffleItemRepository(string connectionString)
+        public RaffleItemRepository(RaffleDbConfiguration config)
         {
-            this.connectionString = connectionString;
+            connectionString = config.ConnectionString;
         }
 
         public IReadOnlyList<RaffleItem> GetAll()

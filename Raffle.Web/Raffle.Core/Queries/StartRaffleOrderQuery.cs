@@ -25,9 +25,9 @@ namespace Raffle.Core.Queries
     {
         readonly string connectionString;
 
-        public StartRaffleOrderQueryHandler(string connectionString)
+        public StartRaffleOrderQueryHandler(RaffleDbConfiguration config)
         {
-            this.connectionString = connectionString;
+            connectionString = config.ConnectionString;
         }
 
         public int Handle(StartRaffleOrderQuery command)

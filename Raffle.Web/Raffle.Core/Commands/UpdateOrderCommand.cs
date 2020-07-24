@@ -26,9 +26,10 @@ namespace Raffle.Core.Commands
     public class UpdateOrderCommandHandler : ICommandHandler<UpdateOrderCommand>
     {
         readonly string connectionString;
-        public UpdateOrderCommandHandler(string connectionString)
+
+        public UpdateOrderCommandHandler(RaffleDbConfiguration config)
         {
-            this.connectionString = connectionString;
+            this.connectionString = config.ConnectionString;
         }
 
         public void Handle(UpdateOrderCommand command)

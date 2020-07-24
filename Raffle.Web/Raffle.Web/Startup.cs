@@ -8,21 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using Raffle.Core;
-using Raffle.Core.Commands;
-using Raffle.Core.Data;
 using Raffle.Core.Models;
-using Raffle.Core.Queries;
-using Raffle.Core.Repositories;
 using Raffle.Core.Shared;
 using Raffle.Web.Data;
 using Raffle.Web.Services;
 
-using SendGrid;
-
 using System;
-using System.Linq;
+using Raffle.Web.Config;
 
 namespace Raffle.Web
 {
@@ -98,24 +91,11 @@ namespace Raffle.Web
 
             services.AddTransient<IRaffleEmailSender, SendGridRaffleEmailSender>();
             services.AddTransient<IEmailSender, SendGridEmailSender>();
+            services.AddSingleton(services => new RaffleDbConfiguration { ConnectionString = dbConnectionString });
 
-            services.AddScoped<ICommandHandler<AddRaffleItemCommand>>(services => new AddRaffleItemCommandHandler(dbConnectionString));
-            services.AddScoped<ICommandHandler<UpdateRaffleItemCommand>>(services => new UpdateRaffleItemCommandHandler(dbConnectionString));
-            services.AddScoped<IQueryHandler<GetRaffleOrderQuery, RaffleOrder>>(services => new GetRaffleOrderQueryHandler(dbConnectionString));
+            services.AddRaffleItem(new EmailAddress(managerEmail, managerName));
 
-            services.AddScoped<ICommandHandler<UpdateOrderCommand>>(services => new UpdateOrderCommandHandler(dbConnectionString));
-            services.AddScoped<IQueryHandler<StartRaffleOrderQuery, int>>(services => new StartRaffleOrderQueryHandler(dbConnectionString));
-            services.AddScoped<ICommandHandler<CompleteRaffleOrderCommand>>(services => new CompleteRaffleOrderCommandHandler(
-                dbConnectionString, 
-                services.GetService<IRaffleEmailSender>(),
-                services.GetService<EmbeddedResourceReader>(),
-                new EmailAddress(managerEmail, managerName)));
-
-            services.AddScoped<IQueryHandler<GetRaffleOrdersQuery, GetRaffleOrdersResult>>(sevices => new GetRaffleOrdersQueryHandler(dbConnectionString));
-            
-            services.AddScoped<IRaffleItemRepository>(services => new RaffleItemRepository(dbConnectionString));
             services.AddSingleton<EmbeddedResourceReader>();
-
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Administration", policy =>

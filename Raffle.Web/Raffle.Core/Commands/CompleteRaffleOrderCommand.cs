@@ -25,13 +25,13 @@ namespace Raffle.Core.Commands
 
     public class CompleteRaffleOrderCommandHandler : ICommandHandler<CompleteRaffleOrderCommand>
     {
-        readonly string dbConnectionString;
+        readonly string connectionString;
         readonly IRaffleEmailSender emailSender;
         readonly EmbeddedResourceReader reader;
         readonly EmailAddress managerEmail;
 
         public CompleteRaffleOrderCommandHandler(
-            string dbConnectionString,
+            RaffleDbConfiguration config,
             IRaffleEmailSender emailSender,
             EmbeddedResourceReader reader,
             EmailAddress managerEmail)
@@ -39,12 +39,12 @@ namespace Raffle.Core.Commands
             this.managerEmail = managerEmail;
             this.reader = reader;
             this.emailSender = emailSender;
-            this.dbConnectionString = dbConnectionString;
+            connectionString = config.ConnectionString;
         }
 
         public void Handle(CompleteRaffleOrderCommand command)
         {
-            using (var conn = new SqlConnection(dbConnectionString))
+            using (var conn = new SqlConnection(connectionString))
             {
                 const string updateOrder = "UPDATE RaffleOrders SET " +
                     "Customer_FirstName = @FirstName, " +

@@ -34,9 +34,10 @@ namespace Raffle.Core.Queries
     public class GetRaffleOrdersQueryHandler : IQueryHandler<GetRaffleOrdersQuery, GetRaffleOrdersResult>
     {
         readonly string connectionString;
-        public GetRaffleOrdersQueryHandler(string connectionString)
+
+        public GetRaffleOrdersQueryHandler(RaffleDbConfiguration config)
         {
-            this.connectionString = connectionString;
+            connectionString = config.ConnectionString;
         }
 
         public GetRaffleOrdersResult Handle(GetRaffleOrdersQuery query)

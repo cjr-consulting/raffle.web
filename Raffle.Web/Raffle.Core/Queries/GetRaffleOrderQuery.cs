@@ -18,9 +18,9 @@ namespace Raffle.Core.Queries
     {
         readonly string dbConnectionString;
 
-        public GetRaffleOrderQueryHandler(string dbConnectionString)
+        public GetRaffleOrderQueryHandler(RaffleDbConfiguration config)
         {
-            this.dbConnectionString = dbConnectionString;
+            this.dbConnectionString = config.ConnectionString;
         }
 
         public RaffleOrder Handle(GetRaffleOrderQuery query)

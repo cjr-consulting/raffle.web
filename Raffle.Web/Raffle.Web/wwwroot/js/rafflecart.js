@@ -20,6 +20,13 @@
             let dueDate = moment(d);
             element.text("That's just " + dueDate.fromNow(true) + " away!!");
         });
+
+        jQuery(".localTime").each(function (i, obj) {
+            var element = $(this);
+            var utc = element.attr("utc");
+            var d = moment(new Date(utc));
+            element.text(d.local().format('MM/DD/YYYY h:mm:ss a'))
+        })
     });
 
 })(window);

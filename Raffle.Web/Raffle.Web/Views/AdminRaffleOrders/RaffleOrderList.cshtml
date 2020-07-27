@@ -27,7 +27,7 @@
                 <td class="align-middle text-center">@Model.RaffleOrders[i].TicketNumber</td>
                 <td class="align-middle">@Model.RaffleOrders[i].Name</td>
                 <td class="align-middle">@Model.RaffleOrders[i].Email</td>
-                <td class="align-middle">@Model.RaffleOrders[i].CompletedDate</td>
+                <td class="align-middle"><span class="localTime" utc="@Model.RaffleOrders[i].CompletedDate"></span></td>
                 <td class="align-middle text-center">@Model.RaffleOrders[i].TotalTickets</td>
                 <td class="align-middle text-center">@Model.RaffleOrders[i].TotalPoints</td>
             </tr>

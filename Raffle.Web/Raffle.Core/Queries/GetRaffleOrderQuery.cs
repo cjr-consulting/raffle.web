@@ -27,16 +27,20 @@ namespace Raffle.Core.Queries
         {
             using (var conn = new SqlConnection(dbConnectionString))
             {
-                const string getOrder = "SELECT Id=Ro.Id, ro.TicketNumber, ro.IsOrderConfirmed, " +
+                const string getOrder = "SELECT " +
+                    "Id=Ro.Id, " +
+                    "ro.TicketNumber, " +
+                    "ro.IsOrderConfirmed, " +
+                    "StartDate, " +
+                    "CompletedDate, " +
+                    "UpdatedDate, " +
                     "Email = ro.Customer_Email, FirstName = ro.Customer_FirstName, LastName = ro.Customer_LastName, " +
                     "PhoneNumber = Customer_PhoneNumber, " +
                     "AddressLine1 = Customer_AddressLine1, " +
                     "AddressLine2 = Customer_AddressLine2, " +
                     "City = Customer_Address_City, " +
                     "State = Customer_Address_State, " +
-                    "Zip = Customer_Address_Zip, " +
-                    "StartDate," +
-                    "CompletedDate " +
+                    "Zip = Customer_Address_Zip " +
                     " FROM RaffleOrders ro WHERE Id = @id";
                 const string getOrderLineItems = "SELECT * FROM RaffleOrderLineItems WHERE RaffleOrderId = @id AND Count > 0;";
 

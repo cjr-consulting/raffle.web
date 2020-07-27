@@ -33,6 +33,8 @@ namespace Raffle.Web.Config
 
             services.AddScoped<IRaffleItemRepository, RaffleItemRepository>();
             services.AddScoped<IRaffleEventRepository, RaffleEventRepository>();
+
+            services.AddScoped<ICommandHandler<UpdateOrderTicketCommand>, UpdateOrderTicketNumberCommandHandler>();
         }
     }
 }

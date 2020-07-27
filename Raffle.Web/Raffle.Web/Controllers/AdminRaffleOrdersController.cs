@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
+using Raffle.Core.Commands;
+using Raffle.Core.Models;
 using Raffle.Core.Queries;
+using Raffle.Core.Repositories;
 using Raffle.Core.Shared;
 
 using Raffle.Web.Models.Admin.RaffleOrder;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Raffle.Web.Controllers
@@ -16,10 +21,20 @@ namespace Raffle.Web.Controllers
     public class AdminRaffleOrdersController : Controller
     {
         readonly IQueryHandler<GetRaffleOrdersQuery, GetRaffleOrdersResult> getRaffleOrdersQueryHandler;
+        readonly IQueryHandler<GetRaffleOrderQuery, RaffleOrder> getRaffleOrderQueryHandler;
+        readonly IRaffleItemRepository raffleItemRepository;
+        readonly ICommandHandler<UpdateOrderTicketCommand> updateOrderTicketCommandHandler;
+
         public AdminRaffleOrdersController(
-            IQueryHandler<GetRaffleOrdersQuery, GetRaffleOrdersResult> getRaffleOrdersQueryHandler
+            IQueryHandler<GetRaffleOrdersQuery, GetRaffleOrdersResult> getRaffleOrdersQueryHandler,
+            IQueryHandler<GetRaffleOrderQuery, RaffleOrder> getRaffleOrderQueryHandler,
+            ICommandHandler<UpdateOrderTicketCommand> updateOrderTicketCommandHandler,
+            IRaffleItemRepository raffleItemRepository
             )
         {
+            this.updateOrderTicketCommandHandler = updateOrderTicketCommandHandler;
+            this.raffleItemRepository = raffleItemRepository;
+            this.getRaffleOrderQueryHandler = getRaffleOrderQueryHandler;
             this.getRaffleOrdersQueryHandler = getRaffleOrdersQueryHandler;
         }
 
@@ -50,10 +65,73 @@ namespace Raffle.Web.Controllers
             return View("RaffleOrderAdd");
         }
 
-        [HttpGet("update")]
-        public IActionResult Update()
+        [HttpGet("update/{id}")]
+        public IActionResult Update(int id)
         {
-            return View("RaffleOrderUpdate");
+            var items = raffleItemRepository.GetAll();
+            var order = getRaffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = id });
+            var model = MapOrderModel(id, items, order);
+            return View("RaffleOrderUpdate", model);
+        }
+
+        private static RaffleOrderUpdateViewModel MapOrderModel(
+            int id, 
+            IReadOnlyList<RaffleItem> items, 
+            RaffleOrder order)
+        {
+            var model = new RaffleOrderUpdateViewModel
+            {
+                Id = id,
+                TicketNumber = order.TicketNumber,
+                CompleteDate = order.CompletedDate.Value,
+                UpdateDate = order.UpdatedDate,
+                TotalPrice = order.TotalPrice,
+                TotalTickets = order.TotalTickets
+            };
+            model.Customer = new RaffleOrderUpdateCustomer
+            {
+                FirstName = order.Customer.FirstName,
+                LastName = order.Customer.LastName,
+                Email = order.Customer.Email,
+                PhoneNumber = order.Customer.PhoneNumber,
+                AddressLine1 = order.Customer.AddressLine1,
+                AddressLine2 = order.Customer.AddressLine2,
+                City = order.Customer.City,
+                State = order.Customer.State,
+                Zip = order.Customer.Zip
+            };
+            model.Lines = order.Lines.Select(x =>
+            new RaffleOrderUpdateLineModel
+            {
+                RaffleItemId = x.RaffleItemId,
+                Amount = x.Count,
+                Price = x.Price,
+                Name = x.Name,
+                ImageUrls = items.First(i => i.Id == x.RaffleItemId).ImageUrls
+            }).ToList();
+            return model;
+        }
+
+        [HttpPost("update/{id}")]
+        public IActionResult Update(int id, RaffleOrderUpdateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var command = new UpdateOrderTicketCommand
+                {
+                    OrderId = id,
+                    TicketNumber = model.TicketNumber
+                };
+                updateOrderTicketCommandHandler.Handle(command);
+
+                return RedirectToAction("Index", "AdminRaffleOrders");
+            }
+
+            var items = raffleItemRepository.GetAll();
+            var order = getRaffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = id });
+            var newModel = MapOrderModel(id, items, order);
+            newModel.TicketNumber = model.TicketNumber;
+            return View("RaffleOrderUpdate", newModel);
         }
     }
 }

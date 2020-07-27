@@ -18,16 +18,16 @@ namespace Raffle.Core.Commands
     public class UpdateOrderTicketNumberCommandHandler : ICommandHandler<UpdateOrderTicketCommand>
     {
         readonly string connectionString;
-        public UpdateOrderTicketNumberCommandHandler(string connectionString)
+        public UpdateOrderTicketNumberCommandHandler(RaffleDbConfiguration config)
         {
-            this.connectionString = connectionString;
+            connectionString = config.ConnectionString;
         }
 
         public void Handle(UpdateOrderTicketCommand command)
         {
             const string query = "UPDATE RaffleOrders SET " +
                 "TicketNumber = @TicketNumber," +
-                "UpdatedDate = @TicketNumber " +
+                "UpdatedDate = @UpdatedDate " +
                 "WHERE Id = @OrderId;";
 
             using (var conn = new SqlConnection(connectionString))
@@ -35,7 +35,8 @@ namespace Raffle.Core.Commands
                 conn.Execute(query, new
                 {
                     command.OrderId,
-                    command.TicketNumber
+                    command.TicketNumber,
+                    UpdatedDate = DateTime.UtcNow
                 });
             }
         }

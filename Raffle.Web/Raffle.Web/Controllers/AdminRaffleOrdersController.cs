@@ -38,9 +38,19 @@ namespace Raffle.Web.Controllers
             this.getRaffleOrdersQueryHandler = getRaffleOrdersQueryHandler;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string sortBy)
         {
+            if(string.IsNullOrEmpty(sortBy))
+            {
+                sortBy = "completed";
+            }
+
+            ViewData["nameSortParam"] = sortBy == "name" ? "name_desc" : "name";
+            ViewData["emailSortParam"] = sortBy == "email" ? "email_desc" : "email";
+            ViewData["completedSortParam"] = sortBy == "completed" ? "completed_desc" : "completed";
+
             var orders = getRaffleOrdersQueryHandler.Handle(new GetRaffleOrdersQuery());
+
             var model = new RaffleOrderListViewModel
             {
                 RaffleOrders = orders.Orders.Select(x => new RaffleOrderRowModel
@@ -53,8 +63,32 @@ namespace Raffle.Web.Controllers
                     TotalTickets = x.TotalTickets,
                     StartDate = x.StartDate,
                     CompletedDate = x.CompletedDate
-                }).ToList()
+                })
+                .ToList()
             };
+
+            switch (sortBy)
+            {
+                case "name_desc":
+                    model.RaffleOrders = model.RaffleOrders.OrderByDescending(x => x.Name).ToList();
+                    break;
+                case "name":
+                    model.RaffleOrders = model.RaffleOrders.OrderBy(x => x.Name).ToList();
+                    break;
+                case "email_desc":
+                    model.RaffleOrders = model.RaffleOrders.OrderByDescending(x => x.Email).ToList();
+                    break;
+                case "email":
+                    model.RaffleOrders = model.RaffleOrders.OrderBy(x => x.Email).ToList();
+                    break;
+                case "completed_desc":
+                    model.RaffleOrders = model.RaffleOrders.OrderByDescending(x => x.CompletedDate).ToList();
+                    break;
+                case "completed":
+                    model.RaffleOrders = model.RaffleOrders.OrderBy(x => x.CompletedDate).ToList();
+                    break;
+            }
+
 
             return View("RaffleOrderList", model);
         }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -13,6 +15,7 @@ using Raffle.Web.Models.Admin.RaffleOrder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Raffle.Web.Controllers
 {
@@ -20,25 +23,19 @@ namespace Raffle.Web.Controllers
     [Route("/admin/raffleorder")]
     public class AdminRaffleOrdersController : Controller
     {
-        readonly IQueryHandler<GetRaffleOrdersQuery, GetRaffleOrdersResult> getRaffleOrdersQueryHandler;
-        readonly IQueryHandler<GetRaffleOrderQuery, RaffleOrder> getRaffleOrderQueryHandler;
         readonly IRaffleItemRepository raffleItemRepository;
-        readonly ICommandHandler<UpdateOrderTicketCommand> updateOrderTicketCommandHandler;
+        readonly IMediator mediator;
 
         public AdminRaffleOrdersController(
-            IQueryHandler<GetRaffleOrdersQuery, GetRaffleOrdersResult> getRaffleOrdersQueryHandler,
-            IQueryHandler<GetRaffleOrderQuery, RaffleOrder> getRaffleOrderQueryHandler,
-            ICommandHandler<UpdateOrderTicketCommand> updateOrderTicketCommandHandler,
+            IMediator mediator,
             IRaffleItemRepository raffleItemRepository
             )
         {
-            this.updateOrderTicketCommandHandler = updateOrderTicketCommandHandler;
+            this.mediator = mediator;
             this.raffleItemRepository = raffleItemRepository;
-            this.getRaffleOrderQueryHandler = getRaffleOrderQueryHandler;
-            this.getRaffleOrdersQueryHandler = getRaffleOrdersQueryHandler;
         }
 
-        public IActionResult Index(string sortBy)
+        public async Task<IActionResult> Index(string sortBy)
         {
             if(string.IsNullOrEmpty(sortBy))
             {
@@ -49,7 +46,7 @@ namespace Raffle.Web.Controllers
             ViewData["emailSortParam"] = sortBy == "email" ? "email_desc" : "email";
             ViewData["completedSortParam"] = sortBy == "completed" ? "completed_desc" : "completed";
 
-            var orders = getRaffleOrdersQueryHandler.Handle(new GetRaffleOrdersQuery());
+            var orders = (await mediator.Send(new GetRaffleOrdersQuery()));
 
             var model = new RaffleOrderListViewModel
             {
@@ -100,10 +97,10 @@ namespace Raffle.Web.Controllers
         }
 
         [HttpGet("update/{id}")]
-        public IActionResult Update(int id)
+        public async Task<IActionResult> Update(int id)
         {
             var items = raffleItemRepository.GetAll();
-            var order = getRaffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = id });
+            var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = id }));
             var model = MapOrderModel(id, items, order);
             return View("RaffleOrderUpdate", model);
         }
@@ -147,7 +144,7 @@ namespace Raffle.Web.Controllers
         }
 
         [HttpPost("update/{id}")]
-        public IActionResult Update(int id, RaffleOrderUpdateViewModel model)
+        public async Task<IActionResult> Update(int id, RaffleOrderUpdateViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -156,13 +153,13 @@ namespace Raffle.Web.Controllers
                     OrderId = id,
                     TicketNumber = model.TicketNumber
                 };
-                updateOrderTicketCommandHandler.Handle(command);
+                await mediator.Publish(command);
 
                 return RedirectToAction("Index", "AdminRaffleOrders");
             }
 
             var items = raffleItemRepository.GetAll();
-            var order = getRaffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = id });
+            var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = id }));
             var newModel = MapOrderModel(id, items, order);
             newModel.TicketNumber = model.TicketNumber;
             return View("RaffleOrderUpdate", newModel);

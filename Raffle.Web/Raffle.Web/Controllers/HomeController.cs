@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using Raffle.Core;
 using Raffle.Core.Commands;
-using Raffle.Core.Data;
 using Raffle.Core.Models;
 using Raffle.Core.Queries;
 using Raffle.Core.Repositories;
@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Raffle.Web.Controllers
 {
@@ -23,47 +24,38 @@ namespace Raffle.Web.Controllers
         private readonly ILogger<HomeController> logger;
         readonly IRaffleEmailSender emailSender;
         readonly IRaffleItemRepository raffleItemRepository;
-        readonly IQueryHandler<StartRaffleOrderQuery, int> startOrderCommandHandler;
-        readonly IQueryHandler<GetRaffleOrderQuery, RaffleOrder> raffleOrderQueryHandler;
-        readonly ICommandHandler<CompleteRaffleOrderCommand> completeRaffleOrderCommandHandler;
-        readonly ICommandHandler<UpdateOrderCommand> updateOrderCommandHandler;
         readonly IRaffleEventRepository raffleEventRepository;
+        readonly IMediator mediator;
 
         public HomeController(
             ILogger<HomeController> logger,
             IRaffleEmailSender emailSender,
             IRaffleItemRepository raffleItemRepository,
             IRaffleEventRepository raffleEventRepository,
-            IQueryHandler<StartRaffleOrderQuery, int> startOrderCommandHandler,
-            IQueryHandler<GetRaffleOrderQuery, RaffleOrder> getRaffleOrderQueryHandler,
-            ICommandHandler<CompleteRaffleOrderCommand> completeRaffleOrderCommandHandler,
-            ICommandHandler<UpdateOrderCommand> updateOrderCommandHandler)
+            IMediator mediator)
         {
+            this.mediator = mediator;
             this.raffleEventRepository = raffleEventRepository;
-            this.updateOrderCommandHandler = updateOrderCommandHandler;
-            this.completeRaffleOrderCommandHandler = completeRaffleOrderCommandHandler;
-            raffleOrderQueryHandler = getRaffleOrderQueryHandler;
-            this.startOrderCommandHandler = startOrderCommandHandler;
             this.raffleItemRepository = raffleItemRepository;
             this.emailSender = emailSender;
             this.logger = logger;
         }
 
         [HttpPost("/updateorder/updateitem/{raffleItemId}")]
-        public IActionResult UpdateTicketCount(int raffleItemId, [FromForm] UpdateOrderItemModel model)
+        public async Task<IActionResult> UpdateTicketCount(int raffleItemId, [FromForm] UpdateOrderItemModel model)
         {
             var raffleItems = raffleItemRepository.GetAll().ToList();
 
             if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
             {
                 var orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
-                var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+                var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId }));
 
                 var raffleItem = raffleItems.FirstOrDefault(x => x.Id == raffleItemId);
                 if (raffleItem == null)
                     return Json(new { Success = false });
 
-                updateOrderCommandHandler.Handle(new UpdateOrderCommand
+                await mediator.Publish(new UpdateOrderCommand
                 {
                     OrderId = orderId,
                     RaffleOrderItems = new List<UpdateOrderCommand.RaffleOrderItem> {
@@ -83,7 +75,7 @@ namespace Raffle.Web.Controllers
             return Json(new { Success = false });
         }
 
-        public IActionResult Index(string sortBy, string searchFilter, string categoryFilter)
+        public async Task<IActionResult> Index(string sortBy, string searchFilter, string categoryFilter)
         {
             int? orderId = null;
 
@@ -118,7 +110,7 @@ namespace Raffle.Web.Controllers
 
             if(orderId.HasValue)
             { 
-                var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId.Value });
+                var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId.Value }));
                 foreach(var line in order.Lines)
                 {
                     raffleItems.First(x => x.Id == line.RaffleItemId).Amount = line.Count;
@@ -126,7 +118,7 @@ namespace Raffle.Web.Controllers
             } 
             else
             {
-                orderId = startOrderCommandHandler.Handle(new StartRaffleOrderQuery());
+                orderId = (await mediator.Send(new StartRaffleOrderQuery()));
                 HttpContext.Response.Cookies.Append(
                     "dfdoid",
                     orderId.ToString(),
@@ -193,7 +185,7 @@ namespace Raffle.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Index(RaffleOrderViewModel model)
+        public async Task<IActionResult> Index(RaffleOrderViewModel model)
         {
             RaffleOrder order = null;
             var raffleEvent = raffleEventRepository.GetById(1);
@@ -205,7 +197,7 @@ namespace Raffle.Web.Controllers
             if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
             {
                 var orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
-                order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+                order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId }));
             }
 
             if ((order != null && !order.Lines.Any(x=>x.Count > 0))
@@ -274,7 +266,7 @@ namespace Raffle.Web.Controllers
                         ReplaceAll = true,
                         RaffleOrderItems = lineItems
                     };
-                    updateOrderCommandHandler.Handle(updateOrder);
+                    await mediator.Publish(updateOrder);
                 }
                 else
                 {
@@ -291,8 +283,8 @@ namespace Raffle.Web.Controllers
                             }).ToList()
                     };
 
-                    var orderId = startOrderCommandHandler.Handle(startRaffleOrder);
-                    order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+                    var orderId = (await mediator.Send(startRaffleOrder));
+                    order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId }));
                 }
 
                 HttpContext.Response.Cookies.Append(
@@ -312,7 +304,7 @@ namespace Raffle.Web.Controllers
         }
 
         [HttpGet("ClearDonation")]
-        public IActionResult ClearDonation()
+        public async Task<IActionResult> ClearDonation()
         {
             if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
             {
@@ -322,14 +314,14 @@ namespace Raffle.Web.Controllers
                     OrderId = orderId,
                     ReplaceAll = true,
                 };
-                updateOrderCommandHandler.Handle(updateOrder);
+                await mediator.Publish(updateOrder);
             }
 
             return RedirectToAction("Index");
         }
 
         [HttpGet("Complete/{orderId}")]
-        public IActionResult CompleteRaffle(int orderId)
+        public async Task<IActionResult> CompleteRaffle(int orderId)
         {
             var raffleEvent = raffleEventRepository.GetById(1);
             if (DateTime.UtcNow >= raffleEvent.CloseDate)
@@ -337,7 +329,7 @@ namespace Raffle.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId }));
 
             if(order.CompletedDate.HasValue)
             {
@@ -363,7 +355,7 @@ namespace Raffle.Web.Controllers
 
         [HttpPost("Complete/{orderId}")]
         [ValidateAntiForgeryToken]
-        public IActionResult CompleteRaffle(int orderId, CompleteRaffleModel model)
+        public async Task<IActionResult> CompleteRaffle(int orderId, CompleteRaffleModel model)
         {
             var raffleEvent = raffleEventRepository.GetById(1);
             if (DateTime.UtcNow >= raffleEvent.CloseDate)
@@ -388,12 +380,12 @@ namespace Raffle.Web.Controllers
 
                 };
 
-                completeRaffleOrderCommandHandler.Handle(command);
+                await mediator.Publish(command);
                 HttpContext.Response.Cookies.Delete("dfdoid");
                 return RedirectToAction("DonationSuccessful", new { orderId });
             }
 
-            var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId }));
             var raffleItems = raffleItemRepository.GetAll();
             model.Items = order.Lines.Select(x => new CompleteRaffleLineItemModel
             {
@@ -409,9 +401,9 @@ namespace Raffle.Web.Controllers
         }
 
         [HttpGet("DonationSuccess/{orderId}")]
-        public IActionResult DonationSuccessful(int orderId)
+        public async Task<IActionResult> DonationSuccessful(int orderId)
         {
-            var order = raffleOrderQueryHandler.Handle(new GetRaffleOrderQuery { OrderId = orderId });
+            var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId }));
             var raffleItems = raffleItemRepository.GetAll();
 
             var model = new SuccessDonationViewModel

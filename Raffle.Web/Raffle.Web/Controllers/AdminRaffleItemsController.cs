@@ -1,4 +1,6 @@
 ﻿
+using MediatR;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +12,7 @@ using Raffle.Web.Models.Admin.RaffleItem;
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Raffle.Web.Controllers
 {
@@ -17,18 +20,15 @@ namespace Raffle.Web.Controllers
     [Route("/admin/raffleitem")]
     public class AdminRaffleItemsController : Controller
     {
-        readonly ICommandHandler<UpdateRaffleItemCommand> updateHandler;
-        readonly ICommandHandler<AddRaffleItemCommand> addHandler;
         readonly IRaffleItemRepository raffleItemRepository;
+        readonly IMediator mediator;
 
         public AdminRaffleItemsController(
             IRaffleItemRepository raffleItemRepository,
-            ICommandHandler<AddRaffleItemCommand> addHandler,
-            ICommandHandler<UpdateRaffleItemCommand> updateHandler)
+            IMediator mediator)
         {
+            this.mediator = mediator;
             this.raffleItemRepository = raffleItemRepository;
-            this.addHandler = addHandler;
-            this.updateHandler = updateHandler;
         }
 
         [HttpGet()]
@@ -48,7 +48,8 @@ namespace Raffle.Web.Controllers
                     IsAvailable = x.IsAvailable,
                     ForOver21 = x.ForOver21,
                     LocalPickupOnly = x.LocalPickupOnly,
-                    NumberOfDraws = x.NumberOfDraws
+                    NumberOfDraws = x.NumberOfDraws,
+                    WinningTickets = x.WinningTickets
                 }).ToList();
             return View("RaffleItemList", model);
         }
@@ -61,11 +62,11 @@ namespace Raffle.Web.Controllers
 
         [HttpPost("add")]
         [ValidateAntiForgeryToken]
-        public IActionResult Add(RaffleItemAddModel model)
+        public async Task<IActionResult> Add(RaffleItemAddModel model)
         {
             if (ModelState.IsValid)
             {
-                addHandler.Handle(new AddRaffleItemCommand
+                await mediator.Publish(new AddRaffleItemCommand
                 {
                     ItemNumber = model.ItemNumber,
                     Title = model.Title,
@@ -104,14 +105,15 @@ namespace Raffle.Web.Controllers
                 ForOver21 = raffleItem.ForOver21,
                 LocalPickupOnly = raffleItem.LocalPickupOnly,
                 NumberOfDraws = raffleItem.NumberOfDraws,
-                Order = raffleItem.Order
+                Order = raffleItem.Order,
+                WinningTickets = raffleItem.WinningTickets
             };
             return View("RaffleItemUpdate", model);
         }
 
         [HttpPost("{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int id, RaffleItemUpdateModel model)
+        public async Task<IActionResult> Update(int id, RaffleItemUpdateModel model)
         {
             if (ModelState.IsValid)
             {
@@ -129,9 +131,10 @@ namespace Raffle.Web.Controllers
                     ForOver21 = model.ForOver21,
                     LocalPickupOnly = model.LocalPickupOnly,
                     NumberOfDraws = model.NumberOfDraws,
-                    Order = model.Order
+                    Order = model.Order,
+                    WinningTickets = model.WinningTickets
                 };
-                updateHandler.Handle(command);
+                await mediator.Publish(command);
                 return RedirectToAction("Index");
             }
 

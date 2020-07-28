@@ -43,6 +43,10 @@
                 <label>Cost</label>
                 @Html.TextBoxFor(x => x.Cost, null, new { @class = "form-control" })
             </div>
+            <div class="mb-3">
+                <label>Winning Tickets</label>
+                @Html.TextBoxFor(x => x.WinningTickets, null, new { @class = "form-control" })
+            </div>
             <div class="row">
                 <div class="col-md-2">
                     <label>
@@ -69,16 +73,15 @@
                     </label>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <button type="submit" class="form-control btn btn-primary">Update</button>
-                </div>
-                <div class="col-md-6">
-                    @Html.ActionLink("Cancel", "Index", "AdminRaffleItems", null, new { @class = "btn btn-warning" })
-                </div>
-            </div>
         </div>
-
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <button type="submit" class="form-control btn btn-primary">Update</button>
+        </div>
+        <div class="col-md-6">
+            @Html.ActionLink("Cancel", "Index", "AdminRaffleItems", null, new { @class = "btn btn-warning" })
+        </div>
     </div>
 </form>
 

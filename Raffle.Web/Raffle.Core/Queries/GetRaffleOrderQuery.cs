@@ -1,31 +1,35 @@
 ﻿using Dapper;
 
+using MediatR;
+
 using Raffle.Core.Models;
 using Raffle.Core.Shared;
 
 using System;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Raffle.Core.Queries
 {
-    public class GetRaffleOrderQuery : IQuery<RaffleOrder>
+    public class GetRaffleOrderQuery : IRequest<RaffleOrder>
     {
         public int OrderId { get; set; }
     }
 
-    public class GetRaffleOrderQueryHandler : IQueryHandler<GetRaffleOrderQuery, RaffleOrder>
+    public class GetRaffleOrderQueryHandler : IRequestHandler<GetRaffleOrderQuery, RaffleOrder>
     {
-        readonly string dbConnectionString;
+        readonly string connectionString;
 
         public GetRaffleOrderQueryHandler(RaffleDbConfiguration config)
         {
-            this.dbConnectionString = config.ConnectionString;
+            connectionString = config.ConnectionString;
         }
 
-        public RaffleOrder Handle(GetRaffleOrderQuery query)
+        public async Task<RaffleOrder> Handle(GetRaffleOrderQuery request, CancellationToken cancellationToken)
         {
-            using (var conn = new SqlConnection(dbConnectionString))
+            using (var conn = new SqlConnection(connectionString))
             {
                 const string getOrder = "SELECT " +
                     "Id=Ro.Id, " +
@@ -44,19 +48,19 @@ namespace Raffle.Core.Queries
                     " FROM RaffleOrders ro WHERE Id = @id";
                 const string getOrderLineItems = "SELECT * FROM RaffleOrderLineItems WHERE RaffleOrderId = @id AND Count > 0;";
 
-                var order = conn.Query<RaffleOrder, Customer, RaffleOrder>(
+                var order = (await conn.QueryAsync<RaffleOrder, Customer, RaffleOrder>(
                     getOrder,
                     (raffleOrder, customer) =>
                     {
                         raffleOrder.Customer = customer;
                         return raffleOrder;
                     },
-                    new { id = query.OrderId },
-                    splitOn: "Email")
+                    new { id = request.OrderId },
+                    splitOn: "Email"))
                     .Distinct()
                     .SingleOrDefault();
 
-                order.Lines = conn.Query<RaffleOrderLine>(getOrderLineItems, new { id = query.OrderId }).ToList();
+                order.Lines = (await conn.QueryAsync<RaffleOrderLine>(getOrderLineItems, new { id = request.OrderId })).ToList();
                 return order;
             }
         }

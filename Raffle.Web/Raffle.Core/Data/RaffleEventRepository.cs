@@ -1,6 +1,8 @@
 ﻿using Dapper;
 
 using Raffle.Core.Models.App;
+using Raffle.Core.Repositories;
+
 using System;
 using System.Data.Common;
 using System.Data.SqlClient;

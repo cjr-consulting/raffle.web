@@ -1,6 +1,6 @@
 ﻿using Raffle.Core.Models.App;
 
-namespace Raffle.Core.Data
+namespace Raffle.Core.Repositories
 {
     public interface IRaffleEventRepository
     {

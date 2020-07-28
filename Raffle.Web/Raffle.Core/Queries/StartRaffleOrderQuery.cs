@@ -1,14 +1,18 @@
 ﻿using Dapper;
 
+using MediatR;
+
 using Raffle.Core.Shared;
 
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Raffle.Core.Queries
 {
-    public class StartRaffleOrderQuery : IQuery<int>
+    public class StartRaffleOrderQuery : IRequest<int>
     {
         public List<RaffleOrderItem> RaffleOrderItems { get; set; } = new List<RaffleOrderItem>();
 
@@ -21,7 +25,7 @@ namespace Raffle.Core.Queries
         }
     }
 
-    public class StartRaffleOrderQueryHandler : IQueryHandler<StartRaffleOrderQuery, int>
+    public class StartRaffleOrderQueryHandler : IRequestHandler<StartRaffleOrderQuery, int>
     {
         readonly string connectionString;
 
@@ -30,7 +34,7 @@ namespace Raffle.Core.Queries
             connectionString = config.ConnectionString;
         }
 
-        public int Handle(StartRaffleOrderQuery command)
+        public async Task<int> Handle(StartRaffleOrderQuery request, CancellationToken cancellationToken)
         {
             using (var conn = new SqlConnection(connectionString))
             {
@@ -42,10 +46,10 @@ namespace Raffle.Core.Queries
                         "(RaffleOrderId, RaffleItemId, Name, Price, Count) VALUES " +
                         "(@RaffleOrderId, @RaffleItemId, @Name, @Price, @Count);";
 
-                    var orderId = conn.ExecuteScalar<int>(addOrderQuery, new { StartDate = DateTime.UtcNow }, transaction);
-                    foreach (var lineItem in command.RaffleOrderItems)
+                    var orderId = (await conn.ExecuteScalarAsync<int>(addOrderQuery, new { StartDate = DateTime.UtcNow }, transaction));
+                    foreach (var lineItem in request.RaffleOrderItems)
                     {
-                        conn.Execute(
+                        await conn.ExecuteAsync(
                             addOrderItemQuery,
                             new
                             {

@@ -16,6 +16,7 @@ using Raffle.Web.Services;
 
 using System;
 using Raffle.Web.Config;
+using MediatR;
 
 namespace Raffle.Web
 {
@@ -72,7 +73,6 @@ namespace Raffle.Web
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
             });
-
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
@@ -84,16 +84,17 @@ namespace Raffle.Web
                 options.SlidingExpiration = true;
             });
 
-            services.Configure<SendGridEmailSenderOptions>(Configuration.GetSection("SendGrid"));
+            services.AddMediatR(typeof(Startup), typeof(RaffleDbConfiguration));
 
-            string managerEmail = Configuration["raffleManager:Email"];
-            string managerName = Configuration["raffleManager:Name"];
+            services.Configure<SendGridEmailSenderOptions>(Configuration.GetSection("SendGrid"));
 
             services.AddTransient<IRaffleEmailSender, SendGridRaffleEmailSender>();
             services.AddTransient<IEmailSender, SendGridEmailSender>();
             services.AddSingleton(services => new RaffleDbConfiguration { ConnectionString = dbConnectionString });
 
-            services.AddRaffleItem(new EmailAddress(managerEmail, managerName));
+            services.AddSingleton(services => new EmailAddress(Configuration["raffleManager:Email"], Configuration["raffleManager:Name"]));
+
+            services.AddRaffleItem();
 
             services.AddSingleton<EmbeddedResourceReader>();
             services.AddAuthorization(options =>

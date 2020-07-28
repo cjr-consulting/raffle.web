@@ -1,14 +1,18 @@
 ﻿using Dapper;
 
+using MediatR;
+
 using Raffle.Core.Shared;
 
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Raffle.Core.Commands
 {
-    public class UpdateOrderCommand : ICommand
+    public class UpdateOrderCommand : INotification
     {
         public int OrderId { get; set; }
         public bool ReplaceAll { get; set; }
@@ -23,16 +27,16 @@ namespace Raffle.Core.Commands
         }
     }
 
-    public class UpdateOrderCommandHandler : ICommandHandler<UpdateOrderCommand>
+    public class UpdateOrderCommandHandler : INotificationHandler<UpdateOrderCommand>
     {
         readonly string connectionString;
 
         public UpdateOrderCommandHandler(RaffleDbConfiguration config)
         {
-            this.connectionString = config.ConnectionString;
+            connectionString = config.ConnectionString;
         }
 
-        public void Handle(UpdateOrderCommand command)
+        public async Task Handle(UpdateOrderCommand notification, CancellationToken cancellationToken)
         {
             using (var conn = new SqlConnection(connectionString))
             {
@@ -55,20 +59,20 @@ namespace Raffle.Core.Commands
                         "  (@RaffleOrderId, @RaffleItemId, @Name, @Price, @Count); " +
                         "END ";
 
-                    if (command.ReplaceAll)
+                    if (notification.ReplaceAll)
                     {
-                        conn.Execute(clearLineItemsQuery, new { RaffleOrderId = command.OrderId }, transaction);
+                        await conn.ExecuteAsync(clearLineItemsQuery, new { RaffleOrderId = notification.OrderId }, transaction);
                     }
 
-                    foreach (var lineItem in command.RaffleOrderItems)
+                    foreach (var lineItem in notification.RaffleOrderItems)
                     {
                         if (lineItem.Count > 0)
                         {
-                            conn.Execute(
+                            await conn.ExecuteAsync(
                                 upsertOrderItemQuery,
                                 new
                                 {
-                                    RaffleOrderId = command.OrderId,
+                                    RaffleOrderId = notification.OrderId,
                                     lineItem.RaffleItemId,
                                     lineItem.Name,
                                     lineItem.Price,
@@ -78,11 +82,11 @@ namespace Raffle.Core.Commands
                         }
                         else
                         {
-                            conn.Execute(
+                            await conn.ExecuteAsync(
                                 clearLineItemQuery,
                                 new
                                 {
-                                    RaffleOrderId = command.OrderId,
+                                    RaffleOrderId = notification.OrderId,
                                     lineItem.RaffleItemId
                                 },
                                 transaction);

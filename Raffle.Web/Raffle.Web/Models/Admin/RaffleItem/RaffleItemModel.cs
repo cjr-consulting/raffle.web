@@ -19,5 +19,6 @@ namespace Raffle.Web.Models.Admin.RaffleItem
         public bool ForOver21 { get; set; }
         public bool LocalPickupOnly { get; set; }
         public int NumberOfDraws { get; set; }
+        public string WinningTickets { get; set; }
     }
 }

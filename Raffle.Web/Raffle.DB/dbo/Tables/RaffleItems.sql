@@ -12,6 +12,7 @@
     [ForOver21]    BIT           NOT NULL DEFAULT 0,
     [LocalPickupOnly] BIT        NOT NULL DEFAULT 0,
     [NumberOfDraws] INT          NOT NULL DEFAULT 1,
+    [WinningTickets] NVARCHAR(100) NOT NULL DEFAULT '',
     [Order] INT NOT NULL DEFAULT 0, 
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );

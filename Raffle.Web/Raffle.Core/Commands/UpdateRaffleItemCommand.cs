@@ -1,13 +1,17 @@
 ﻿using Dapper;
 
+using MediatR;
+
 using Raffle.Core.Shared;
 
 using System;
 using System.Data.SqlClient;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Raffle.Core.Commands
 {
-    public class UpdateRaffleItemCommand : ICommand
+    public class UpdateRaffleItemCommand : INotification
     {
         public int Id { get; set; }
         public int ItemNumber { get; set; }
@@ -23,9 +27,10 @@ namespace Raffle.Core.Commands
         public bool ForOver21 { get; set; } = true;
         public bool LocalPickupOnly { get; set; } = true;
         public int NumberOfDraws { get; set; } = 1;
+        public string WinningTickets { get; set; }
     }
 
-    public class UpdateRaffleItemCommandHandler : ICommandHandler<UpdateRaffleItemCommand>
+    public class UpdateRaffleItemCommandHandler : INotificationHandler<UpdateRaffleItemCommand>
     {
         readonly string connectionString;
         public UpdateRaffleItemCommandHandler(RaffleDbConfiguration config)
@@ -33,7 +38,7 @@ namespace Raffle.Core.Commands
             connectionString = config.ConnectionString;
         }
 
-        public void Handle(UpdateRaffleItemCommand command)
+        public async Task Handle(UpdateRaffleItemCommand notification, CancellationToken cancellationToken)
         {
             const string query = "UPDATE [RaffleItems] SET" +
                 " ItemNumber = @ItemNumber, " +
@@ -47,11 +52,12 @@ namespace Raffle.Core.Commands
                 " IsAvailable = @IsAvailable, " +
                 " ForOver21 = @ForOver21, " +
                 " LocalPickupOnly = @LocalPickupOnly," +
-                " NumberOfDraws = @NumberOfDraws " +
+                " NumberOfDraws = @NumberOfDraws," +
+                " WinningTickets = @WinningTickets " +
                 "WHERE Id = @Id";
             using (var conn = new SqlConnection(connectionString))
             {
-                conn.Execute(query, command);
+                await conn.ExecuteAsync(query, notification);
             }
         }
     }

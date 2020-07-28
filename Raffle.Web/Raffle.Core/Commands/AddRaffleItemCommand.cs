@@ -1,13 +1,15 @@
 ﻿using Dapper;
-
+using MediatR;
 using Raffle.Core.Shared;
 
 using System;
 using System.Data.SqlClient;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Raffle.Core.Commands
 {
-    public class AddRaffleItemCommand : ICommand
+    public class AddRaffleItemCommand : INotification
     {
         public int ItemNumber { get; set; }
         public string Title { get; set; }
@@ -24,7 +26,7 @@ namespace Raffle.Core.Commands
         public int NumberOfDraws { get; set; } = 1;
     }
 
-    public class AddRaffleItemCommandHandler : ICommandHandler<AddRaffleItemCommand>
+    public class AddRaffleItemCommandHandler : INotificationHandler<AddRaffleItemCommand>
     {
         readonly string connectionString;
 
@@ -33,14 +35,15 @@ namespace Raffle.Core.Commands
             connectionString = config.ConnectionString;
         }
 
-        public void Handle(AddRaffleItemCommand command)
+        public async Task Handle(AddRaffleItemCommand notification, CancellationToken cancellationToken)
         {
             const string query = "INSERT INTO [RaffleItems] " +
-                "(ItemNumber, Title, Description, ImageUrl, Category, Sponsor, ItemValue, Cost, IsAvailable, ForOver21, LocalPickupOnly, NumberOfDraws) VALUES " +
+                "(ItemNumber, Title, Description, ImageUrl, Category, Sponsor, ItemValue, Cost, IsAvailable, ForOver21, LocalPickupOnly, NumberOfDraws) " +
+                "VALUES " +
                 "(@ItemNumber, @Title, @Description, @ImageUrl, @Category, @Sponsor, @ItemValue, @Cost, @IsAvailable, @ForOver21, @LocakPickupOnly, @NumberOfDraws)";
             using (var conn = new SqlConnection(connectionString))
             {
-                conn.Execute(query, command);
+                await conn.ExecuteAsync(query, notification);
             }
         }
     }

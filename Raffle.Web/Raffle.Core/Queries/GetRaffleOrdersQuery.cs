@@ -1,5 +1,5 @@
 ﻿using Dapper;
-
+using MediatR;
 using Raffle.Core.Models;
 using Raffle.Core.Shared;
 
@@ -7,10 +7,12 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Raffle.Core.Queries
 {
-    public class GetRaffleOrdersQuery : IQuery<GetRaffleOrdersResult>
+    public class GetRaffleOrdersQuery : IRequest<GetRaffleOrdersResult>
     {
     }
 
@@ -31,7 +33,7 @@ namespace Raffle.Core.Queries
         public DateTime? UpdatedDate { get; set; }
     }
 
-    public class GetRaffleOrdersQueryHandler : IQueryHandler<GetRaffleOrdersQuery, GetRaffleOrdersResult>
+    public class GetRaffleOrdersQueryHandler : IRequestHandler<GetRaffleOrdersQuery, GetRaffleOrdersResult>
     {
         readonly string connectionString;
 
@@ -40,7 +42,7 @@ namespace Raffle.Core.Queries
             connectionString = config.ConnectionString;
         }
 
-        public GetRaffleOrdersResult Handle(GetRaffleOrdersQuery query)
+        public async Task<GetRaffleOrdersResult> Handle(GetRaffleOrdersQuery request, CancellationToken cancellationToken)
         {
             using (var conn = new SqlConnection(connectionString))
             {
@@ -64,7 +66,7 @@ namespace Raffle.Core.Queries
                     "FROM RaffleOrders ro " +
                     "WHERE CompletedDate IS NOT NULL;";
 
-                var orders = conn.Query<GetRaffleOrder, Customer, GetRaffleOrder>(
+                var orders = (await conn.QueryAsync<GetRaffleOrder, Customer, GetRaffleOrder>(
                     getOrder,
                     (raffleOrder, customer) =>
                     {
@@ -72,7 +74,7 @@ namespace Raffle.Core.Queries
                         return raffleOrder;
                     },
                     null,
-                    splitOn: "Email")
+                    splitOn: "Email"))
                     .Distinct()
                     .ToList();
 

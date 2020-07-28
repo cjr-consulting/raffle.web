@@ -1,21 +1,25 @@
 ﻿using Dapper;
 
+using MediatR;
+
 using Raffle.Core.Shared;
 
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Raffle.Core.Commands
 {
-    public class UpdateOrderTicketCommand : ICommand
+    public class UpdateOrderTicketCommand : INotification
     {
         public int OrderId { get; set; }
         public string TicketNumber { get; set; }
     }
 
-    public class UpdateOrderTicketNumberCommandHandler : ICommandHandler<UpdateOrderTicketCommand>
+    public class UpdateOrderTicketNumberCommandHandler : INotificationHandler<UpdateOrderTicketCommand>
     {
         readonly string connectionString;
         public UpdateOrderTicketNumberCommandHandler(RaffleDbConfiguration config)
@@ -23,7 +27,7 @@ namespace Raffle.Core.Commands
             connectionString = config.ConnectionString;
         }
 
-        public void Handle(UpdateOrderTicketCommand command)
+        public async Task Handle(UpdateOrderTicketCommand notification, CancellationToken cancellationToken)
         {
             const string query = "UPDATE RaffleOrders SET " +
                 "TicketNumber = @TicketNumber," +
@@ -32,10 +36,10 @@ namespace Raffle.Core.Commands
 
             using (var conn = new SqlConnection(connectionString))
             {
-                conn.Execute(query, new
+                await conn.ExecuteAsync(query, new
                 {
-                    command.OrderId,
-                    command.TicketNumber,
+                    notification.OrderId,
+                    notification.TicketNumber,
                     UpdatedDate = DateTime.UtcNow
                 });
             }

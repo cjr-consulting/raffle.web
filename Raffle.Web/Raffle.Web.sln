@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Raffle.Core", "Raffle.Core\
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Raffle.DB", "Raffle.DB\Raffle.DB.sqlproj", "{5655C134-1A3F-4AB2-B193-DB2229258A30}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{106E4603-AFB4-4B93-ABA2-D083C2C00ACF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadRaffleFromCsv", "LoadRaffleFromCsv\LoadRaffleFromCsv.csproj", "{8B62AC36-A8BE-456E-B547-18D1A3916D9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,9 +33,16 @@ Global
 		{5655C134-1A3F-4AB2-B193-DB2229258A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5655C134-1A3F-4AB2-B193-DB2229258A30}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5655C134-1A3F-4AB2-B193-DB2229258A30}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{8B62AC36-A8BE-456E-B547-18D1A3916D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B62AC36-A8BE-456E-B547-18D1A3916D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B62AC36-A8BE-456E-B547-18D1A3916D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B62AC36-A8BE-456E-B547-18D1A3916D9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8B62AC36-A8BE-456E-B547-18D1A3916D9D} = {106E4603-AFB4-4B93-ABA2-D083C2C00ACF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D57A93A-0995-4B9A-ABC0-27BBFA961BDF}

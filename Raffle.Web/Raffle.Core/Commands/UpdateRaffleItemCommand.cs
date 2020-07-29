@@ -27,7 +27,7 @@ namespace Raffle.Core.Commands
         public bool ForOver21 { get; set; } = true;
         public bool LocalPickupOnly { get; set; } = true;
         public int NumberOfDraws { get; set; } = 1;
-        public string WinningTickets { get; set; }
+        public string WinningTickets { get; set; } = string.Empty;
     }
 
     public class UpdateRaffleItemCommandHandler : INotificationHandler<UpdateRaffleItemCommand>

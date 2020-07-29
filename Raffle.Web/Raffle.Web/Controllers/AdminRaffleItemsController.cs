@@ -132,7 +132,7 @@ namespace Raffle.Web.Controllers
                     LocalPickupOnly = model.LocalPickupOnly,
                     NumberOfDraws = model.NumberOfDraws,
                     Order = model.Order,
-                    WinningTickets = model.WinningTickets
+                    WinningTickets = model.WinningTickets ?? string.Empty
                 };
                 await mediator.Publish(command);
                 return RedirectToAction("Index");

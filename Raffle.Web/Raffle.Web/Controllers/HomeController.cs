@@ -174,6 +174,8 @@ namespace Raffle.Web.Controllers
                 case "points_desc":
                     raffleItems = raffleItems.OrderByDescending(x => x.Cost).ToList();
                     break;
+                default:
+                    raffleItems = raffleItems.OrderBy(x => x.ItemNumber).ToList();
             }
             var raffleEvent = raffleEventRepository.GetById(1);
             var model = new RaffleOrderViewModel

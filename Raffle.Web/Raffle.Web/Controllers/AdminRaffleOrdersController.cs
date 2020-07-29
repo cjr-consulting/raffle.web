@@ -39,7 +39,7 @@ namespace Raffle.Web.Controllers
         {
             if(string.IsNullOrEmpty(sortBy))
             {
-                sortBy = "completed";
+                sortBy = "completed_desc";
             }
 
             ViewData["nameSortParam"] = sortBy == "name" ? "name_desc" : "name";

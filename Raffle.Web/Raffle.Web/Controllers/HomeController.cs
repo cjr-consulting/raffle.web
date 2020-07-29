@@ -225,6 +225,9 @@ namespace Raffle.Web.Controllers
                 }).ToList();
                 model = new RaffleOrderViewModel
                 {
+                    StartDate = raffleEvent.StartDate,
+                    CloseDate = raffleEvent.CloseDate.Value.ToUniversalTime(),
+                    Categories = raffleItemRepository.GetUsedCategories().OrderBy(x => x).ToList(),
                     RaffleItems = raffleItems,
                     ErrorMessage = "A raffle needs to be selected."
                 };

@@ -40,7 +40,7 @@ namespace Raffle.Core.Commands
             const string query = "INSERT INTO [RaffleItems] " +
                 "(ItemNumber, Title, Description, ImageUrl, Category, Sponsor, ItemValue, Cost, IsAvailable, ForOver21, LocalPickupOnly, NumberOfDraws) " +
                 "VALUES " +
-                "(@ItemNumber, @Title, @Description, @ImageUrl, @Category, @Sponsor, @ItemValue, @Cost, @IsAvailable, @ForOver21, @LocakPickupOnly, @NumberOfDraws)";
+                "(@ItemNumber, @Title, @Description, @ImageUrl, @Category, @Sponsor, @ItemValue, @Cost, @IsAvailable, @ForOver21, @LocalPickupOnly, @NumberOfDraws)";
             using (var conn = new SqlConnection(connectionString))
             {
                 await conn.ExecuteAsync(query, notification);

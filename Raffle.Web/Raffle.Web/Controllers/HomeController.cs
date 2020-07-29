@@ -82,6 +82,10 @@ namespace Raffle.Web.Controllers
             if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
             {
                 orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
+                if (!await mediator.Send(new RaffleOrderExistsQuery { OrderId = orderId.Value }))
+                {
+                    orderId = null;
+                }
             }
 
             ViewData["itemNumberSortParam"] = sortBy == "itemNumber" ? "itemNumber_desc" : "itemNumber";

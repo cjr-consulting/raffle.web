@@ -95,23 +95,19 @@
                             </td>
                             <td class=" align-middle">
                                 @Html.HiddenFor(m => m.RaffleItems[i].Id)
-                                <div style="margin-bottom: 8px;">
-                                    @if (Model.RaffleItems[i].Pictures.Count == 1)
+                                <div class="row">
+                                    @if (Model.RaffleItems[i].Pictures.Count >= 1)
                                     {
+                                    <div class="col-md-3">
                                         <a href="@Model.RaffleItems[i].Pictures.First()" target="_blank" rel="noopener noreferrer">
-                                            <img src="@Model.RaffleItems[i].Pictures.First()" class="rounded float-left" style="max-width: 120px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                            <img src="@Model.RaffleItems[i].Pictures.First()" class="img-fluid rounded" alt="@Model.RaffleItems[i].Title">
                                         </a>
+                                    </div>
                                     }
+                                <div class="col-md-@(Model.RaffleItems[i].Pictures.Count >= 1? "9" : "12")">
                                     <h5>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</h5>
+
                                     <div>
-                                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Description))
-                                        {
-                                            @Model.RaffleItems[i].Description<br />
-                                        }
-                                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
-                                        {
-                                            <b>Donated By: </b><span class="font-italic">@Model.RaffleItems[i].Sponsor</span><br />
-                                        }
                                         @if (Model.RaffleItems[i].NumberOfDraws > 1)
                                         {
                                             <span class="badge badge-success" title="Number of tickets drawn">@Model.RaffleItems[i].NumberOfDraws Winners</span>
@@ -125,18 +121,34 @@
                                             <span class="badge badge-warning">Over 21</span>
                                         }
                                     </div>
-                                </div>
-                                @if (Model.RaffleItems[i].Pictures.Count > 1)
-                                {
+
                                     <div>
-                                        @foreach (var picture in Model.RaffleItems[i].Pictures)
+                                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Value))
                                         {
-                                            <a href="@picture" target="_blank" rel="noopener noreferrer">
-                                                <img src="@picture" class="rounded float-left" style="max-width: 100px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
-                                            </a>
+                                            <b>Est. value of @Model.RaffleItems[i].Value</b><br />
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Description))
+                                        {
+                                            @Model.RaffleItems[i].Description<br />
+                                        }
+                                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
+                                        {
+                                            <b>Donated By: </b><span class="font-italic">@Model.RaffleItems[i].Sponsor</span><br />
                                         }
                                     </div>
-                                }
+                                    @if (Model.RaffleItems[i].Pictures.Count > 0)
+                                    {
+                                        <div>
+                                            @foreach (var picture in Model.RaffleItems[i].Pictures.Skip(1))
+                                            {
+                                                <a href="@picture" target="_blank" rel="noopener noreferrer">
+                                                    <img src="@picture" class="rounded float-left" style="max-width: 80px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                                </a>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                                    </div>
                             </td>
                             <td class="text-center align-middle">@Model.RaffleItems[i].Category</td>
                             <td class="text-center align-middle">@Model.RaffleItems[i].Cost @Html.HiddenFor(x => x.RaffleItems[i].Cost)</td>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,6 +16,10 @@ namespace Raffle.Web.Models.Raffle
         [Required]
         [Display(Name = "Last Name")]
         public string CustomerLastName { get; set; }
+
+        [Required]
+        [Display(Name = "Confirm 21 Years Old")]
+        public bool Confirmed21 { get; set; }
 
         [Required]
         [Phone]
@@ -37,17 +43,20 @@ namespace Raffle.Web.Models.Raffle
 
         public string AddressLine2 { get; set; }
 
-        [Required]
         [Display(Name = "City")]
         public string City { get; set; }
 
-        [Required]
         [Display(Name = "State")]
         public string State { get; set; }
 
-        [Required]
         [Display(Name = "Zip")]
         public string Zip { get; set; }
+
+        [Display(Name = "Address Outside the USA")]
+        public bool IsInternational { get; set; }
+
+        [Display(Name = "International Address Text")]
+        public string InternationalAddress { get; set; }
 
         public int TotalPrice { get; set; }
         public int TotalTickets { get; set; }
@@ -61,6 +70,39 @@ namespace Raffle.Web.Models.Raffle
                 yield return new ValidationResult(
                     $"Emails don't match.",
                     new[] { nameof(CustomerEmailRepeat) });
+            }
+
+            if (IsInternational)
+            {
+                if (string.IsNullOrEmpty(InternationalAddress))
+                {
+                    yield return new ValidationResult(
+                        $"International Address is Required.",
+                        new[] { nameof(InternationalAddress) });
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(City))
+                {
+                    yield return new ValidationResult(
+                        $"City is Required.",
+                        new[] { nameof(City) });
+                }
+
+                if (string.IsNullOrEmpty(State))
+                {
+                    yield return new ValidationResult(
+                        $"State is Required.",
+                        new[] { nameof(State) });
+                }
+
+                if (string.IsNullOrEmpty(Zip))
+                {
+                    yield return new ValidationResult(
+                        $"Zip is Required.",
+                        new[] { nameof(Zip) });
+                }
             }
         }
     }

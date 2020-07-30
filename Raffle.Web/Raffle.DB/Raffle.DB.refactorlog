@@ -49,4 +49,18 @@
     <Property Name="ParentElementType" Value="SqlSchema" />
     <Property Name="NewName" Value="[RaffleEvents]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="a55512e2-ccf2-49d5-8927-ba3d3f8760fb" ChangeDateTime="07/30/2020 00:17:26">
+    <Property Name="ElementName" Value="[dbo].[RaffleOrders].[Confirm21]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RaffleOrders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Confirmed21" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8d9e803c-1980-49ce-afca-0526479a9a2b" ChangeDateTime="07/30/2020 02:43:42">
+    <Property Name="ElementName" Value="[dbo].[RaffleOrders].[Customer_International]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[RaffleOrders]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Customer_IsInternational" />
+  </Operation>
 </Operations>

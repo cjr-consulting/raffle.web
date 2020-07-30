@@ -4,6 +4,10 @@
     ViewData["Title"] = "Raffle - Complete";
 }
 
+@section Scripts {
+    <script type="text/javascript" src="~/js/completedonation.js" asp-append-version="true"></script>
+}
+
 <div class="text-center">
     <h1 class="display-4">Raffle Selection Complete</h1>
     <p>You're almost there!</p>
@@ -22,7 +26,7 @@
 </div>
 <form method="post">
     <div class="row">
-        <div class="col-md-4 order-md-2 mb-4">
+        <div class="col-md-6 order-md-2 mb-3">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
                 <span class="text-muted">Raffle Tickets</span>
                 <span class="badge badge-secondary badge-pill">@Model.TotalTickets</span>
@@ -31,8 +35,9 @@
                 @for (int i = 0; i < Model.Items.Count; i++)
                 {
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
-                        <div>
-                            <h6 class="my-0">@Model.Items[i].Name</h6>
+                        <div class="d-flex flex-fill">
+                            <img src="@Model.Items[i].ImageUrls.First()" class="rounded float-left" style="max-width: 90px; margin-right:8px;" />
+                            <h6 class="my-0">@Model.Items[i].Name </h6>
                             <small class="text-muted">@Model.Items[i].Amount tix</small>
                         </div>
                         <span class="text-muted">@Model.Items[i].Cost</span>
@@ -48,7 +53,7 @@
             </div>
         </div>
 
-        <div class="col-md-8 order-md-1">
+        <div class="col-md-6 order-md-1">
 
             <h4 class="mb-3">Customer Information</h4>
             @if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))
@@ -75,30 +80,50 @@
                 <label>Email Again</label>
                 @Html.TextBoxFor(x => x.CustomerEmailRepeat, null, new { @class = "form-control", placeholder = "", required = "required" })
             </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(x => x.Confirmed21, new { @class = "form-check-input", placeholder = "" })
+                        <lablel class="form-check-label">I am 21 years old</lablel>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-check">
+                        @Html.CheckBoxFor(x => x.IsInternational, new { @class = "form-check-input", placeholder = "" })
+                        <lablel class="form-check-label">Outside of the USA</lablel>
+                    </div>
+                </div>
+            </div>
             <div class="mb-3">
                 <label>Address 1</label>
                 @Html.TextBoxFor(x => x.AddressLine1, null, new { @class = "form-control", placeholder = "", required = "required" })
                 <label>Address 2</label>
                 @Html.TextBoxFor(x => x.AddressLine2, null, new { @class = "form-control" })
             </div>
-            <div class="row">
+            <div class="row" id="us_address">
                 <div class="col-md-5 mb-3">
                     <label>City</label>
-                    @Html.TextBoxFor(x => x.City, null, new { @class = "form-control", placeholder = "", required = "required" })
+                    @Html.TextBoxFor(x => x.City, null, new { @class = "form-control", placeholder = "" })
                 </div>
                 <div class="col-md-4 mb-3">
                     <label>State</label>
-                    @Html.TextBoxFor(x => x.State, null, new { @class = "form-control", placeholder = "", required = "required" })
+                    @Html.TextBoxFor(x => x.State, null, new { @class = "form-control", placeholder = "" })
                     <div class="invalid-feedback">
                         Please provide a valid state.
                     </div>
                 </div>
                 <div class="col-md-3 mb-3">
                     <label>Zip</label>
-                    @Html.TextBoxFor(x => x.Zip, null, new { @class = "form-control", placeholder = "", required = "required" })
+                    @Html.TextBoxFor(x => x.Zip, null, new { @class = "form-control", placeholder = "" })
                     <div class="invalid-feedback">
                         Zip code required.
                     </div>
+                </div>
+            </div>
+            <div class="row" id="international_address">
+                <div class="col-md-12 mb-3">
+                    <label>International Address</label>
+                    @Html.TextAreaFor(x => x.InternationalAddress, 4, 60, new { @class = "form-control", placeholder = "" })
                 </div>
             </div>
             <div class="row">

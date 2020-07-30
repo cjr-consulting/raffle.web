@@ -115,6 +115,7 @@ namespace Raffle.Web.Controllers
                 Id = id,
                 TicketNumber = order.TicketNumber,
                 CompleteDate = order.CompletedDate.Value,
+                Confirmed21 = order.Confirmed21,
                 UpdateDate = order.UpdatedDate,
                 TotalPrice = order.TotalPrice,
                 TotalTickets = order.TotalTickets
@@ -129,7 +130,9 @@ namespace Raffle.Web.Controllers
                 AddressLine2 = order.Customer.AddressLine2,
                 City = order.Customer.City,
                 State = order.Customer.State,
-                Zip = order.Customer.Zip
+                Zip = order.Customer.Zip,
+                IsInternational = order.Customer.IsInternational,
+                InternationalAddress = order.Customer.InternationalAddress
             };
             model.Lines = order.Lines.Select(x =>
             new RaffleOrderUpdateLineModel

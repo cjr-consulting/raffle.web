@@ -10,6 +10,7 @@ namespace Raffle.Core.Models
         public string TicketNumber { get; set; }
         public Customer Customer { get; set; }
         public bool IsOrderConfirmed { get; set; }
+        public bool Confirmed21 { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? CompletedDate { get; set; }
         public DateTime? UpdatedDate{ get; set; }
@@ -49,11 +50,13 @@ namespace Raffle.Core.Models
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
 
+        public bool IsInternational { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string Zip { get; set; }
+        public string InternationalAddress { get; set; }
     }
 
     public class RaffleOrderLine

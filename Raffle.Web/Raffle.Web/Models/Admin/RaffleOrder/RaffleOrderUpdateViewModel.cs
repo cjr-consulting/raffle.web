@@ -8,6 +8,7 @@ namespace Raffle.Web.Models.Admin.RaffleOrder
     {
         public int Id { get; set; }
         public string TicketNumber { get; set; }
+        public bool Confirmed21 { get; set; }
         public RaffleOrderUpdateCustomer Customer { get; set; }
         public int TotalPrice { get; set; }
         public int TotalTickets { get; set; }
@@ -37,5 +38,7 @@ namespace Raffle.Web.Models.Admin.RaffleOrder
         public string City { get; set; }
         public string State { get; set; }
         public string Zip { get; set; }
+        public bool IsInternational { get; set; }
+        public string InternationalAddress { get; set; }
     }
 }

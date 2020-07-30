@@ -32,16 +32,37 @@
                 <h3>Customer Details</h3>
             </div>
             <div class="mb-3">
+                @if (Model.Confirmed21)
+                {
+                    <span class="badge-pill badge-primary">Confirmed 21</span>
+                }
+                @if (Model.Customer.IsInternational)
+                {
+                    <span class="badge-pill badge-danger">International</span>
+                }
+                @if (Model.Confirmed21 || Model.Customer.IsInternational)
+                {
+                    <br/>
+                }
                 @Model.Customer.FirstName
-                @Model.Customer.LastName<br/>
+                @Model.Customer.LastName<br />
                 @Model.Customer.Email <br />
                 @Model.Customer.PhoneNumber<br />
+                <hr />
                 @Model.Customer.AddressLine1<br />
                 @if (!string.IsNullOrEmpty(Model.Customer.AddressLine2))
                 {
                     @Model.Customer.AddressLine2<br />
                 }
-                @Model.Customer.City, @Model.Customer.State  @Model.Customer.Zip<br />
+                @if (Model.Customer.IsInternational)
+                {
+                    @Model.Customer.InternationalAddress
+                }
+
+                @if (!Model.Customer.IsInternational)
+                {
+                    @(Model.Customer.City + ", " + Model.Customer.State + "  " + Model.Customer.Zip)
+                }
             </div>
         </div>
     </div>

@@ -19,12 +19,15 @@ namespace Raffle.Core.Commands
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public bool Confirmed21 { get; set; }
         public string PhoneNumber { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string Zip { get; set; }
+        public bool IsInternational { get; set; }
+        public string InternationalAddress { get; set; }
     }
 
     public class CompleteRaffleOrderCommandHandler : INotificationHandler<CompleteRaffleOrderCommand>
@@ -44,6 +47,100 @@ namespace Raffle.Core.Commands
             this.reader = reader;
             this.emailSender = emailSender;
             connectionString = config.ConnectionString;
+        }
+
+
+        public async Task Handle(CompleteRaffleOrderCommand notification, CancellationToken cancellationToken)
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                const string updateOrder = "UPDATE RaffleOrders SET " +
+                    "Confirmed21 = @Confirmed21, " +
+                    "Customer_FirstName = @FirstName, " +
+                    "Customer_LastName = @LastName, " +
+                    "Customer_PhoneNumber = @PhoneNumber, " +
+                    "Customer_Email = @Email, " +
+                    "Customer_AddressLine1 = @AddressLine1, " +
+                    "Customer_AddressLine2 = @AddressLine2, " +
+                    "Customer_Address_City = @City, " +
+                    "Customer_Address_State = @State, " +
+                    "Customer_Address_Zip = @Zip, " +
+                    "Customer_IsInternational = @IsInternational, " +
+                    "Customer_IAddressText = @InternationalAddress, " +
+                    "CompletedDate = @CompletedDate " +
+                    "WHERE Id = @OrderId";
+
+                await conn.ExecuteAsync(updateOrder, new
+                {
+                    notification.OrderId,
+                    notification.Confirmed21,
+                    notification.FirstName,
+                    notification.LastName,
+                    notification.PhoneNumber,
+                    notification.Email,
+                    notification.IsInternational,
+                    notification.AddressLine1,
+                    notification.AddressLine2,
+                    notification.City,
+                    notification.State,
+                    notification.Zip,
+                    notification.InternationalAddress,
+                    CompletedDate = DateTime.UtcNow
+                });
+
+                var order = await GetOrder(conn, notification.OrderId);
+                var body = BuildTemplate(reader.GetContents("Raffle.Core.EmailTemplates.OrderComplete.html"),
+                    order,
+                    notification);
+
+                var text = BuildTextTemplate(order, notification);
+
+                await emailSender.SendEmailAsync(
+                    notification.Email,
+                    $"{notification.FirstName} {notification.LastName}",
+                    $"Receipt for Darts For Dreams 15 Raffle Order# {notification.OrderId}",
+                    text,
+                    body);
+
+                await emailSender.SendEmailAsync(
+                    managerEmail.Email,
+                    managerEmail.Name,
+                    $"Receipt for Darts For Dreams 15 Raffle Order# {notification.OrderId}",
+                    text,
+                    body);
+            }
+        }
+
+        public async Task<RaffleOrder> GetOrder(SqlConnection conn, int orderId)
+        {
+            const string getOrder = "SELECT Id = Ro.Id, ro.TicketNumber, ro.IsOrderConfirmed, " +
+                    "ro.Confirmed21, " +
+                    "Email = ro.Customer_Email, FirstName = ro.Customer_FirstName, LastName = ro.Customer_LastName, " +
+                    "PhoneNumber = Customer_PhoneNumber, " +
+                    "AddressLine1 = Customer_AddressLine1, " +
+                    "AddressLine2 = Customer_AddressLine2, " +
+                    "City = Customer_Address_City, " +
+                    "State = Customer_Address_State, " +
+                    "Zip = Customer_Address_Zip, " +
+                    "IsInternational = Customer_IsInternational, " +
+                    "InternationalAddress = Customer_IAddressText " +
+                    " FROM RaffleOrders ro WHERE Id  =  @id";
+            const string getOrderLineItems = "SELECT * FROM RaffleOrderLineItems WHERE RaffleOrderId = @id";
+
+            var order = (await conn.QueryAsync<RaffleOrder, Customer, RaffleOrder>(
+                getOrder,
+                (raffleOrder, customer) =>
+                {
+                    raffleOrder.Customer = customer;
+                    return raffleOrder;
+                },
+                new { id = orderId },
+                splitOn: "Email"))
+                .Distinct()
+                .SingleOrDefault();
+
+            order.Lines = (await conn.QueryAsync<RaffleOrderLine>(getOrderLineItems, new { id = orderId })).ToList();
+            return order;
         }
 
         private string BuildTextTemplate(RaffleOrder order, CompleteRaffleOrderCommand command)
@@ -108,90 +205,6 @@ namespace Raffle.Core.Commands
                 .Replace("${raffle.tickets}", ticketDetail)
                 .Replace("${raffle.price}", order.TotalPrice.ToString());
             return result;
-        }
-
-        public async Task<RaffleOrder> GetOrder(SqlConnection conn, int orderId)
-        {
-            const string getOrder = "SELECT Id = Ro.Id, ro.TicketNumber, ro.IsOrderConfirmed, " +
-                    "Email = ro.Customer_Email, FirstName = ro.Customer_FirstName, LastName = ro.Customer_LastName, " +
-                    "PhoneNumber = Customer_PhoneNumber, " +
-                    "AddressLine1 = Customer_AddressLine1, " +
-                    "AddressLine2 = Customer_AddressLine2, " +
-                    "City = Customer_Address_City, " +
-                    "State = Customer_Address_State, " +
-                    "Zip = Customer_Address_Zip " +
-                    " FROM RaffleOrders ro WHERE Id  =  @id";
-            const string getOrderLineItems = "SELECT * FROM RaffleOrderLineItems WHERE RaffleOrderId = @id";
-
-            var order = (await conn.QueryAsync<RaffleOrder, Customer, RaffleOrder>(
-                getOrder,
-                (raffleOrder, customer) =>
-                {
-                    raffleOrder.Customer = customer;
-                    return raffleOrder;
-                },
-                new { id = orderId },
-                splitOn: "Email"))
-                .Distinct()
-                .SingleOrDefault();
-
-            order.Lines = (await conn.QueryAsync<RaffleOrderLine>(getOrderLineItems, new { id = orderId })).ToList();
-            return order;
-        }
-
-        public async Task Handle(CompleteRaffleOrderCommand notification, CancellationToken cancellationToken)
-        {
-            using (var conn = new SqlConnection(connectionString))
-            {
-                const string updateOrder = "UPDATE RaffleOrders SET " +
-                    "Customer_FirstName = @FirstName, " +
-                    "Customer_LastName = @LastName, " +
-                    "Customer_PhoneNumber = @PhoneNumber, " +
-                    "Customer_Email = @Email, " +
-                    "Customer_AddressLine1 = @AddressLine1, " +
-                    "Customer_AddressLine2 = @AddressLine2, " +
-                    "Customer_Address_City = @City, " +
-                    "Customer_Address_State = @State, " +
-                    "Customer_Address_Zip = @Zip, " +
-                    "CompletedDate = @CompletedDate " +
-                    "WHERE Id = @OrderId";
-
-                await conn.ExecuteAsync(updateOrder, new
-                {
-                    notification.OrderId,
-                    notification.FirstName,
-                    notification.LastName,
-                    notification.PhoneNumber,
-                    notification.Email,
-                    notification.AddressLine1,
-                    notification.AddressLine2,
-                    notification.City,
-                    notification.State,
-                    notification.Zip,
-                    CompletedDate = DateTime.UtcNow
-                });
-
-                var order = await GetOrder(conn, notification.OrderId);
-                var body = BuildTemplate(reader.GetContents("Raffle.Core.EmailTemplates.OrderComplete.html"),
-                    order,
-                    notification);
-
-                var text = BuildTextTemplate(order, notification);
-
-                await emailSender.SendEmailAsync(
-                    notification.Email,
-                    $"{notification.FirstName} {notification.LastName}",
-                    $"Receipt for Darts For Dreams 15 Raffle Order# {notification.OrderId}",
-                    text,
-                    body);
-
-                await emailSender.SendEmailAsync(
-                    managerEmail.Email,
-                    managerEmail.Name,
-                    $"Receipt for Darts For Dreams 15 Raffle Order# {notification.OrderId}",
-                    text,
-                    body);
-            }
         }
     }
 }

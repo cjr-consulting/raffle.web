@@ -35,6 +35,7 @@ namespace Raffle.Core.Queries
                     "Id=Ro.Id, " +
                     "ro.TicketNumber, " +
                     "ro.IsOrderConfirmed, " +
+                    "ro.Confirmed21, " +
                     "StartDate, " +
                     "CompletedDate, " +
                     "UpdatedDate, " +
@@ -44,7 +45,9 @@ namespace Raffle.Core.Queries
                     "AddressLine2 = Customer_AddressLine2, " +
                     "City = Customer_Address_City, " +
                     "State = Customer_Address_State, " +
-                    "Zip = Customer_Address_Zip " +
+                    "Zip = Customer_Address_Zip, " +
+                    "IsInternational = Customer_IsInternational," +
+                    "InternationalAddress = Customer_IAddressText " +
                     " FROM RaffleOrders ro WHERE Id = @id";
                 const string getOrderLineItems = "SELECT * FROM RaffleOrderLineItems WHERE RaffleOrderId = @id AND Count > 0;";
 

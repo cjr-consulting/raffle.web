@@ -176,6 +176,7 @@ namespace Raffle.Web.Controllers
                     break;
                 default:
                     raffleItems = raffleItems.OrderBy(x => x.ItemNumber).ToList();
+                    break;
             }
             var raffleEvent = raffleEventRepository.GetById(1);
             var model = new RaffleOrderViewModel
@@ -338,10 +339,15 @@ namespace Raffle.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId }));
+            var order = await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId });
 
             if(order.CompletedDate.HasValue)
             {
+                if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+                {
+                    HttpContext.Response.Cookies.Delete("dfdoid");
+                }
+
                 return RedirectToAction("DonationSuccessful", new { orderId });
             }
 
@@ -377,6 +383,7 @@ namespace Raffle.Web.Controllers
                 var command = new CompleteRaffleOrderCommand
                 {
                     OrderId = orderId,
+                    Confirmed21 = model.Confirmed21,
                     FirstName = model.CustomerFirstName,
                     LastName = model.CustomerLastName,
                     PhoneNumber = model.PhoneNumber,
@@ -386,7 +393,8 @@ namespace Raffle.Web.Controllers
                     City = model.City,
                     State = model.State,
                     Zip = model.Zip,
-
+                    IsInternational = model.IsInternational,
+                    InternationalAddress = model.InternationalAddress,
                 };
 
                 await mediator.Publish(command);
@@ -418,6 +426,7 @@ namespace Raffle.Web.Controllers
             var model = new SuccessDonationViewModel
             {
                 CustomerEmail = order.Customer.Email,
+                Confirmed21 = order.Confirmed21,
                 CustomerFirstName = order.Customer.FirstName,
                 CustomerLastName = order.Customer.LastName,
                 PhoneNumber = order.Customer.PhoneNumber,
@@ -426,6 +435,8 @@ namespace Raffle.Web.Controllers
                 City = order.Customer.City,
                 State = order.Customer.State,
                 Zip = order.Customer.Zip,
+                IsInternational = order.Customer.IsInternational,
+                InternationalAddress = order.Customer.InternationalAddress,
                 TicketNumber = order.TicketNumber,
                 TotalPrice = order.TotalPrice,
                 TotalTickets = order.TotalTickets,
@@ -438,6 +449,12 @@ namespace Raffle.Web.Controllers
                         ImageUrls = raffleItems.First(ri => ri.Id == x.RaffleItemId).ImageUrls
                     }).ToList()
             };
+
+            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            {
+                HttpContext.Response.Cookies.Delete("dfdoid");
+            }
+
             return View(model);
         }
 

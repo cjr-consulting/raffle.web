@@ -42,6 +42,7 @@ namespace Raffle.Web.Controllers
                 sortBy = "completed_desc";
             }
 
+            ViewData["orderIdSortParam"] = sortBy == "orderId" ? "orderId_desc" : "orderId";
             ViewData["nameSortParam"] = sortBy == "name" ? "name_desc" : "name";
             ViewData["emailSortParam"] = sortBy == "email" ? "email_desc" : "email";
             ViewData["completedSortParam"] = sortBy == "completed" ? "completed_desc" : "completed";
@@ -66,6 +67,12 @@ namespace Raffle.Web.Controllers
 
             switch (sortBy)
             {
+                case "orderId_desc":
+                    model.RaffleOrders = model.RaffleOrders.OrderByDescending(x => x.RaffleOrderId).ToList();
+                    break;
+                case "orderId":
+                    model.RaffleOrders = model.RaffleOrders.OrderBy(x => x.RaffleOrderId).ToList();
+                    break;
                 case "name_desc":
                     model.RaffleOrders = model.RaffleOrders.OrderByDescending(x => x.Name).ToList();
                     break;

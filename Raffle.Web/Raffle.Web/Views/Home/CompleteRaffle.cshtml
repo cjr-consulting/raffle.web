@@ -36,7 +36,10 @@
                 {
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div class="d-flex flex-fill">
+                            @if (@Model.Items[i].ImageUrls.Any())
+                            {
                             <img src="@Model.Items[i].ImageUrls.First()" class="rounded float-left" style="max-width: 90px; margin-right:8px;" />
+                            }
                             <h6 class="my-0">@Model.Items[i].Name </h6>
                             <small class="text-muted">@Model.Items[i].Amount tix</small>
                         </div>

@@ -49,21 +49,33 @@ namespace Raffle.Core.Queries
                     "IsInternational = Customer_IsInternational," +
                     "InternationalAddress = Customer_IAddressText " +
                     " FROM RaffleOrders ro WHERE Id = @id";
-                const string getOrderLineItems = "SELECT * FROM RaffleOrderLineItems WHERE RaffleOrderId = @id AND Count > 0;";
+
+                const string getOrderLineItems = "SELECT " +
+                    "li.RaffleOrderId, " +
+                    "li.RaffleItemId, " +
+                    "RaffleItemNumber = ri.ItemNumber, " +
+                    "li.Name, " +
+                    "li.Price, " +
+                    "li.Count " +
+                    "FROM RaffleOrderLineItems li JOIN RaffleItems ri ON li.RaffleItemId = ri.Id " +
+                    "WHERE RaffleOrderId = @id AND Count > 0 " +
+                    "ORDER BY ri.ItemNumber;";
 
                 var order = (await conn.QueryAsync<RaffleOrder, Customer, RaffleOrder>(
-                    getOrder,
-                    (raffleOrder, customer) =>
-                    {
-                        raffleOrder.Customer = customer;
-                        return raffleOrder;
-                    },
-                    new { id = request.OrderId },
-                    splitOn: "Email"))
-                    .Distinct()
-                    .SingleOrDefault();
+                                getOrder,
+                                (raffleOrder, customer) =>
+                                    {
+                                        raffleOrder.Customer = customer;
+                                        return raffleOrder;
+                                    },
+                                new { id = request.OrderId },
+                                splitOn: "Email"))
+                                .Distinct()
+                                .SingleOrDefault();
 
-                order.Lines = (await conn.QueryAsync<RaffleOrderLine>(getOrderLineItems, new { id = request.OrderId })).ToList();
+                order.Lines = (await conn.QueryAsync<RaffleOrderLine>(getOrderLineItems, new { id = request.OrderId }))
+                                .OrderBy(x => x.RaffleItemNumber)
+                                .ToList();
                 return order;
             }
         }

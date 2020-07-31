@@ -62,6 +62,7 @@ namespace Raffle.Core.Models
     public class RaffleOrderLine
     {
         public int RaffleItemId { get; set; }
+        public int RaffleItemNumber { get; set; }
         public string Name { get; set; }
         public int Price { get; set; }
         public int Count { get; set; }

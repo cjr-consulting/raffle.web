@@ -48,7 +48,8 @@ namespace LoadRaffleFromCsv
                 Sponsor = record.Sponsor.Trim(),
                 Cost = int.Parse(record.Cost.Trim()),
                 ForOver21 = record.Over21.Trim() == "T",
-                LocalPickupOnly = record.LocalPickup.Trim() == "T"
+                LocalPickupOnly = record.LocalPickup.Trim() == "T",
+                NumberOfDraws = string.IsNullOrEmpty(record.Multiple) ? 1 : int.Parse(record.Multiple.Trim())
             };
         }
 

@@ -7,6 +7,7 @@ namespace Raffle.Web.Models.Admin.RaffleItem
     {
         public int Id { get; set; }
         public int ItemNumber { get; set; }
+        public int TotalTicketsEntered { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }

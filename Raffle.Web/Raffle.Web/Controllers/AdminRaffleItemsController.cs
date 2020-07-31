@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Raffle.Core.Commands;
-
+using Raffle.Core.Queries;
 using Raffle.Core.Repositories;
 using Raffle.Core.Shared;
 using Raffle.Web.Models.Admin.RaffleItem;
@@ -32,13 +32,15 @@ namespace Raffle.Web.Controllers
         }
 
         [HttpGet()]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var model = raffleItemRepository.GetAll()
+            var model = (await mediator.Send(new GetAdminRaffleItemsQuery()))
+                .RaffleItems
                 .Select(x => new RaffleItemModel
                 {
                     Id = x.Id,
                     ItemNumber = x.ItemNumber,
+                    TotalTicketsEntered = x.TotalTicketsEntered,
                     Title = x.Title,
                     Description = x.Description,
                     Category = x.Category,

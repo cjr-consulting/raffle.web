@@ -17,7 +17,7 @@
                     <th scope="col">Action</th>
                     <th scope="col">#</th>
                     <th scope="col">Title</th>
-                    <th scope="col">Description</th>
+                    @*<th scope="col">Description</th>*@
                     <th scope="col">Category</th>
                     <th scope="col">Sponsor</th>
                     <th scope="col">Cost</th>
@@ -31,10 +31,22 @@
                 @for (var i = 0; i < Model.Count; i++)
                 {
                     <tr>
-                        <td class="align-middle">@Html.ActionLink("Update", "Update", "AdminRaffleItems", new { id = Model[i].Id }, new { @class = "btn btn-primary" })</td>
+                        <td class="align-middle text-center">
+                            @Html.ActionLink("Update", "Update", "AdminRaffleItems", new { id = Model[i].Id }, new { @class = "btn btn-primary" })<br />
+                        </td>
                         <td class="align-middle">#@Model[i].ItemNumber</td>
-                        <td>@Model[i].Title</td>
-                        <td>@Model[i].Description</td>
+                        <td class="align-middle" width="25%">
+                            @Model[i].Title<br />
+                            @if (Model[i].TotalTicketsEntered > 0)
+                            {
+                                <span class="badge badge-pill badge-info">@Model[i].TotalTicketsEntered</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-pill badge-light">@Model[i].TotalTicketsEntered</span>
+                            }
+                        </td>
+                        @*<td>@Model[i].Description</td>*@
                         <td class="align-middle">@Model[i].Category</td>
                         <td class="align-middle">@Model[i].Sponsor</td>
                         <td class="text-center align-middle">@Model[i].Cost</td>

@@ -5,6 +5,7 @@ using Raffle.Core.Models;
 using Raffle.Core.Shared;
 
 using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -105,11 +106,18 @@ namespace Raffle.Core.Handlers
                 .Replace("${phoneNumber}", order.Customer.PhoneNumber)
                 .Replace("${address.line1}", order.Customer.AddressLine1)
                 .Replace("${address.line2}", order.Customer.AddressLine2)
-                .Replace("${address.city}", order.Customer.City)
-                .Replace("${address.state}", order.Customer.State)
-                .Replace("${address.zip}", order.Customer.Zip)
                 .Replace("${raffle.tickets}", ticketDetail)
                 .Replace("${raffle.price}", order.TotalPrice.ToString());
+
+            if (order.Customer.IsInternational)
+            {
+                result = result.Replace("${address.city_state_zip}", order.Customer.InternationalAddress.Replace("\r\n", "<br />"));
+            }
+            else
+            {
+                result = result.Replace("${address.city_state_zip}", $"{order.Customer.City}, {order.Customer.State} {order.Customer.Zip}");
+            }
+
             return result;
         }
     }

@@ -2,6 +2,7 @@
 
 using MediatR;
 
+using Raffle.Core.Events;
 using Raffle.Core.Models;
 using Raffle.Core.Shared;
 
@@ -33,22 +34,15 @@ namespace Raffle.Core.Commands
     public class CompleteRaffleOrderCommandHandler : INotificationHandler<CompleteRaffleOrderCommand>
     {
         readonly string connectionString;
-        readonly IRaffleEmailSender emailSender;
-        readonly EmbeddedResourceReader reader;
-        readonly EmailAddress managerEmail;
+        readonly IMediator mediator;
 
         public CompleteRaffleOrderCommandHandler(
             RaffleDbConfiguration config,
-            IRaffleEmailSender emailSender,
-            EmbeddedResourceReader reader,
-            EmailAddress managerEmail)
+            IMediator mediator)
         {
-            this.managerEmail = managerEmail;
-            this.reader = reader;
-            this.emailSender = emailSender;
+            this.mediator = mediator;
             connectionString = config.ConnectionString;
         }
-
 
         public async Task Handle(CompleteRaffleOrderCommand notification, CancellationToken cancellationToken)
         {
@@ -89,25 +83,10 @@ namespace Raffle.Core.Commands
                 });
 
                 var order = await GetOrder(conn, notification.OrderId);
-                var body = BuildTemplate(reader.GetContents("Raffle.Core.EmailTemplates.OrderComplete.html"),
-                    order,
-                    notification);
-
-                var text = BuildTextTemplate(order, notification);
-
-                await emailSender.SendEmailAsync(
-                    notification.Email,
-                    $"{notification.FirstName} {notification.LastName}",
-                    $"Receipt for Darts For Dreams 15 Raffle Order# {notification.OrderId}",
-                    text,
-                    body);
-
-                await emailSender.SendEmailAsync(
-                    managerEmail.Email,
-                    managerEmail.Name,
-                    $"Receipt for Darts For Dreams 15 Raffle Order# {notification.OrderId}",
-                    text,
-                    body);
+                await mediator.Publish(new RaffleOrderCompleteEvent
+                    {
+                        Order = order
+                    });
             }
         }
 
@@ -154,68 +133,5 @@ namespace Raffle.Core.Commands
             return order;
         }
 
-        private string BuildTextTemplate(RaffleOrder order, CompleteRaffleOrderCommand command)
-        {
-            var text = $"Dart for Dreams - Raffle Receipt" + Environment.NewLine;
-            text += $"{command.FirstName} {command.LastName}" + Environment.NewLine;
-            text += $"{command.PhoneNumber} " + Environment.NewLine;
-            text += $"{command.Email}" + Environment.NewLine;
-            text += $"{command.AddressLine1}" + Environment.NewLine;
-            text += $"{command.AddressLine2}" + Environment.NewLine;
-            text += $"{command.City}, {command.State}  {command.Zip}" + Environment.NewLine;
-            text += $"" + Environment.NewLine + Environment.NewLine;
-
-            foreach(var line in order.Lines)
-            {
-                text += $"{line.Name}  {line.Price}p x {line.Count}tix" + Environment.NewLine;
-            }
-
-            text += Environment.NewLine;
-            text += $"TOTAL POINTS: {order.TotalPrice}" + Environment.NewLine;
-
-            text += Environment.NewLine + Environment.NewLine;
-
-            text += "To complete the order please go to" + Environment.NewLine +
-                "http://site.wish.org/goto/DartsforDreams15" + Environment.NewLine +
-                $"and enter a donation for ${order.TotalPrice} to complete the purchase." + Environment.NewLine;
-
-            return text;
-        }
-
-        private string BuildTemplate(string template, RaffleOrder order, CompleteRaffleOrderCommand command)
-        {
-            const string token = "${privacy.url}";
-
-            var ticketDetail = "";
-            foreach (var line in order.Lines)
-            {
-                ticketDetail += "<tr>" +
-                    "<td style=\"font-family:'Open Sans', Arial, sans-serif; font-size:18px; line-height:22px; color: #fbeb59; letter-spacing:2px; padding-bottom:12px;\" valign=\"top\" align=\"left\" width=\"70%\">" +
-                    $"{line.Name}" +
-                    "</td>" +
-                    "<td style=\"font-family:'Open Sans', Arial, sans-serif; font-size:18px; line-height:22px; color: #fbeb59; letter-spacing:2px; padding-bottom:12px;\" valign=\"top\" align=\"center\">" +
-                    $"{line.Price} p" +
-                    "</td>" +
-                    "<td style=\"font-family:'Open Sans', Arial, sans-serif; font-size:18px; line-height:22px; color: #fbeb59; letter-spacing:2px; padding-bottom:12px;\" valign=\"top\" align=\"center\">" +
-                    $"{line.Count} tix" +
-                    "</td>" +
-                    "</tr>";
-            }
-
-            var result = template.Replace(token, $"https://raffle.dartsfordreams.com/home/privacy")
-                .Replace("${raffle.orderid}", order.Id.ToString())
-                .Replace("${donor.email}", command.Email)
-                .Replace("${name.first}", command.FirstName)
-                .Replace("${name.last}", command.LastName)
-                .Replace("${phoneNumber}", command.PhoneNumber)
-                .Replace("${address.line1}", command.AddressLine1)
-                .Replace("${address.line2}", command.AddressLine2)
-                .Replace("${address.city}", command.City)
-                .Replace("${address.state}", command.State)
-                .Replace("${address.zip}", command.Zip)
-                .Replace("${raffle.tickets}", ticketDetail)
-                .Replace("${raffle.price}", order.TotalPrice.ToString());
-            return result;
-        }
     }
 }

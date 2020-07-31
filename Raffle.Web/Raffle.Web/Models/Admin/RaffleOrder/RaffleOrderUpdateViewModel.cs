@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Raffle.Web.Models.Admin.RaffleOrder
@@ -14,6 +15,9 @@ namespace Raffle.Web.Models.Admin.RaffleOrder
         public int TotalTickets { get; set; }
         public DateTime? CompleteDate { get; set; }
         public DateTime? UpdateDate { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        public DateTime? DonationDate { get; set; }
+        public string DonationNote { get; set; }
         public List<RaffleOrderUpdateLineModel> Lines { get; set; } = new List<RaffleOrderUpdateLineModel>();
     }
 

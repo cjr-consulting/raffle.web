@@ -17,6 +17,8 @@ namespace Raffle.Core.Commands
     {
         public int OrderId { get; set; }
         public string TicketNumber { get; set; }
+        public DateTime? DonationDate { get; set; }
+        public string DonationNote { get; set; }
     }
 
     public class UpdateOrderTicketNumberCommandHandler : INotificationHandler<UpdateOrderTicketCommand>
@@ -31,7 +33,9 @@ namespace Raffle.Core.Commands
         {
             const string query = "UPDATE RaffleOrders SET " +
                 "TicketNumber = @TicketNumber," +
-                "UpdatedDate = @UpdatedDate " +
+                "UpdatedDate = @UpdatedDate," +
+                "DonationDate = @DonationDate," +
+                "DonationNote = @DonationNote " +
                 "WHERE Id = @OrderId;";
 
             using (var conn = new SqlConnection(connectionString))
@@ -40,7 +44,9 @@ namespace Raffle.Core.Commands
                 {
                     notification.OrderId,
                     notification.TicketNumber,
-                    UpdatedDate = DateTime.UtcNow
+                    UpdatedDate = DateTime.UtcNow,
+                    notification.DonationDate,
+                    notification.DonationNote
                 });
             }
         }

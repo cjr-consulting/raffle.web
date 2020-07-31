@@ -25,6 +25,7 @@ namespace Raffle.Core.Queries
     {
         public int Id { get; set; }
         public string TicketNumber { get; set; }
+        public DateTime? DonationDate { get; set; }
         public Customer Customer { get; set; }
         public int TotalTickets { get; set; }
         public int TotalPoints { get; set; }
@@ -51,8 +52,9 @@ namespace Raffle.Core.Queries
                     "ro.IsOrderConfirmed, " +
                     "TotalTickets = (SELECT SUM(Count) FROM RaffleOrderLineItems WHERE RaffleOrderId = ro.Id), " +
                     "TotalPoints = (SELECT SUM(Count * Price) FROM RaffleOrderLineItems WHERE RaffleOrderId = ro.Id), " +
-                    "StartDate," +
-                    "CompletedDate," +
+                    "StartDate, " +
+                    "CompletedDate, " +
+                    "DonationDate, " +
 
                     "Email = ro.Customer_Email, " +
                     "FirstName = ro.Customer_FirstName, " +

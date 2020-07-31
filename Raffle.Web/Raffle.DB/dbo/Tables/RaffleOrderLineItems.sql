@@ -12,3 +12,7 @@
 GO
 
 CREATE INDEX [IX_RaffleOrderLineItems_RaffleOrderId] ON [dbo].[RaffleOrderLineItems] ([RaffleOrderId])
+
+GO
+
+CREATE INDEX [IX_RaffleOrderLineItems_RaffleItemId] ON [dbo].[RaffleOrderLineItems] ([RaffleItemId])

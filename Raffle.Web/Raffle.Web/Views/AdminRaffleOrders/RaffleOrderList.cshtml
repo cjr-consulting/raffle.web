@@ -11,6 +11,7 @@
         <tr>
             <th scope="col"></th>
             <th scope="col" class="text-center">Ticket Number</th>
+            <th scope="col" class="text-center">Donation Date</th>
             <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["orderIdSortParam"]">Order #</a></th>
             <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["nameSortParam"]">Name</a></th>
             <th scope="col"><a asp-action="Index" asp-route-sortBy="@ViewData["emailSortParam"]">Email</a></th>
@@ -25,6 +26,9 @@
         <tr>
             <td class="align-middle">@Html.ActionLink("Update", "Update", "AdminRaffleOrders", new { id = Model.RaffleOrders[i].RaffleOrderId }, new { @class = "btn btn-primary" })</td>
             <td class="align-middle">@Model.RaffleOrders[i].TicketNumber</td>
+            <td class="align-middle text-center">
+                @(Model.RaffleOrders[i].DonationDate.HasValue ? Model.RaffleOrders[i].DonationDate.Value.ToString("MM/dd/yyyy") : "")
+            </td>
             <td class="align-middle text-center"># @Model.RaffleOrders[i].RaffleOrderId</td>
             <td class="align-middle">@Model.RaffleOrders[i].Name</td>
             <td class="align-middle">@Model.RaffleOrders[i].Email</td>

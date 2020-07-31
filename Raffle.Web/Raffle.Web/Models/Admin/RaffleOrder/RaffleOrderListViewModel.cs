@@ -13,6 +13,7 @@ namespace Raffle.Web.Models.Admin.RaffleOrder
     {
         public int RaffleOrderId { get; set; }
         public string TicketNumber { get; set; }
+        public DateTime? DonationDate { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
         public DateTime StartDate { get; set; }

@@ -17,5 +17,7 @@
     [IsOrderConfirmed] BIT NULL DEFAULT 0, 
     [StartDate] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
     [CompletedDate] DATETIME2 NULL, 
-    [UpdatedDate] DATETIME2 NULL
+    [UpdatedDate] DATETIME2 NULL,
+    [DonationDate] DATETIME2 NULL,
+    [DonationNote] NVARCHAR(800) NOT NULL DEFAULT ''
 )

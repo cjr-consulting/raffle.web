@@ -17,14 +17,26 @@
                     @Html.TextBoxFor(x => x.TicketNumber, null, new { @class = "form-control" })
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Date of Donation</label>
+                    <input asp-for="DonationDate" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Donation Notes</label>
+                    @Html.TextBoxFor(x => x.DonationNote, null, new { @class = "form-control" })
+                </div>
+            </div>
             @if (Model.UpdateDate.HasValue)
             {
-                <div class="row">
-                    <div class="col-md-12">
-                        <label>Last Update</label>
-                        <span class="localTime" utc="@Model.UpdateDate.Value"></span>
-                    </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Last Update</label>
+                    <span class="localTime" utc="@Model.UpdateDate.Value"></span>
                 </div>
+            </div>
             }
         </div>
         <div class="col-md-6">

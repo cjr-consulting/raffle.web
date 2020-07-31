@@ -55,6 +55,7 @@ namespace Raffle.Web.Controllers
                 {
                     RaffleOrderId = x.Id,
                     TicketNumber = x.TicketNumber,
+                    DonationDate = x.DonationDate,
                     Email = x.Customer.Email,
                     Name = $"{x.Customer.FirstName} {x.Customer.LastName}",
                     TotalPoints = x.TotalPoints,
@@ -112,9 +113,33 @@ namespace Raffle.Web.Controllers
             return View("RaffleOrderUpdate", model);
         }
 
+        [HttpPost("update/{id}")]
+        public async Task<IActionResult> Update(int id, RaffleOrderUpdateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var command = new UpdateOrderTicketCommand
+                {
+                    OrderId = id,
+                    TicketNumber = model.TicketNumber,
+                    DonationDate = model.DonationDate,
+                    DonationNote = model.DonationNote ?? string.Empty
+                };
+                await mediator.Publish(command);
+
+                return RedirectToAction("Index", "AdminRaffleOrders");
+            }
+
+            var items = raffleItemRepository.GetAll();
+            var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = id }));
+            var newModel = MapOrderModel(id, items, order);
+            newModel.TicketNumber = model.TicketNumber;
+            return View("RaffleOrderUpdate", newModel);
+        }
+
         private static RaffleOrderUpdateViewModel MapOrderModel(
-            int id, 
-            IReadOnlyList<RaffleItem> items, 
+            int id,
+            IReadOnlyList<RaffleItem> items,
             RaffleOrder order)
         {
             var model = new RaffleOrderUpdateViewModel
@@ -124,6 +149,8 @@ namespace Raffle.Web.Controllers
                 CompleteDate = order.CompletedDate.Value.ToUniversalTime(),
                 Confirmed21 = order.Confirmed21,
                 UpdateDate = order.UpdatedDate,
+                DonationDate = order.DonationDate,
+                DonationNote = order.DonationNote,
                 TotalPrice = order.TotalPrice,
                 TotalTickets = order.TotalTickets
             };
@@ -153,26 +180,5 @@ namespace Raffle.Web.Controllers
             return model;
         }
 
-        [HttpPost("update/{id}")]
-        public async Task<IActionResult> Update(int id, RaffleOrderUpdateViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var command = new UpdateOrderTicketCommand
-                {
-                    OrderId = id,
-                    TicketNumber = model.TicketNumber
-                };
-                await mediator.Publish(command);
-
-                return RedirectToAction("Index", "AdminRaffleOrders");
-            }
-
-            var items = raffleItemRepository.GetAll();
-            var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = id }));
-            var newModel = MapOrderModel(id, items, order);
-            newModel.TicketNumber = model.TicketNumber;
-            return View("RaffleOrderUpdate", newModel);
-        }
     }
 }

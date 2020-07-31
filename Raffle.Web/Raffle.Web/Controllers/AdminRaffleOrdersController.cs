@@ -60,7 +60,7 @@ namespace Raffle.Web.Controllers
                     TotalPoints = x.TotalPoints,
                     TotalTickets = x.TotalTickets,
                     StartDate = x.StartDate,
-                    CompletedDate = x.CompletedDate
+                    CompletedDate = x.CompletedDate.Value.ToUniversalTime()
                 })
                 .ToList()
             };
@@ -121,7 +121,7 @@ namespace Raffle.Web.Controllers
             {
                 Id = id,
                 TicketNumber = order.TicketNumber,
-                CompleteDate = order.CompletedDate.Value,
+                CompleteDate = order.CompletedDate.Value.ToUniversalTime(),
                 Confirmed21 = order.Confirmed21,
                 UpdateDate = order.UpdatedDate,
                 TotalPrice = order.TotalPrice,

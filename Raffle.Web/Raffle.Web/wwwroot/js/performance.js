@@ -13,7 +13,7 @@ fetch('/api/orders')
     .then(data => {
         console.log("data", data);
         let availableDate = data
-            .map(i => moment(i.completedDate).local().format('MM/DD/YYYY'))
+            .map(i => moment(new Date(i.completedDate)).local().format('MM/DD/YYYY'))
             .filter(onlyUnique);
         console.log("availableDate", availableDate);
 
@@ -21,7 +21,7 @@ fetch('/api/orders')
             .reduce((r, a) => {
                 console.log("a", a);
                 console.log('r', r);
-                r[moment(a.completedDate).local().format('MM/DD/YYYY')] = [...r[moment(a.completedDate).local().format('MM/DD/YYYY')] || [], a];
+                r[moment(new Date(a.completedDate)).local().format('MM/DD/YYYY')] = [...r[moment(new Date(a.completedDate)).local().format('MM/DD/YYYY')] || [], a];
                 return r;
             }, {});
 
@@ -92,9 +92,13 @@ fetch('/api/orders')
                 aspectRatio: 1.2,
                 scales: {
                     yAxes: [{
+                        stacked: true,
                         ticks: {
                             stepSize: 1
                         }
+                    }],
+                    xAxes: [{
+                        stacked: true
                     }]
                 }
             }

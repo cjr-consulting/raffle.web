@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Raffle.Core.Queries;
+using Raffle.Web.Models.Admin.RaffleOrder;
 
 namespace Raffle.Web.Api
 {
@@ -24,11 +25,22 @@ namespace Raffle.Web.Api
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<GetRaffleOrder>>> Get()
+        public async Task<ActionResult<List<RaffleOrderRowModel>>> Get()
         {
             var ordersResult = await mediator.Send(new GetRaffleOrdersQuery());
 
-            return ordersResult.Orders.ToList();
+            return ordersResult.Orders.Select(x => new RaffleOrderRowModel
+            {
+                RaffleOrderId = x.Id,
+                TicketNumber = x.TicketNumber,
+                DonationDate = x.DonationDate,
+                Email = x.Customer.Email,
+                Name = $"{x.Customer.FirstName} {x.Customer.LastName}",
+                TotalPoints = x.TotalPoints,
+                TotalTickets = x.TotalTickets,
+                StartDate = x.StartDate,
+                CompletedDate = x.CompletedDate.Value.ToUniversalTime()
+            }).ToList();
         }
     } 
 }

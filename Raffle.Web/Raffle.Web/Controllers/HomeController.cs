@@ -384,17 +384,17 @@ namespace Raffle.Web.Controllers
                 {
                     OrderId = orderId,
                     Confirmed21 = model.Confirmed21,
-                    FirstName = model.CustomerFirstName,
-                    LastName = model.CustomerLastName,
-                    PhoneNumber = model.PhoneNumber,
-                    Email = model.CustomerEmail,
-                    AddressLine1 = model.AddressLine1,
-                    AddressLine2 = model.AddressLine2,
-                    City = model.City,
-                    State = model.State,
-                    Zip = model.Zip,
+                    FirstName = model.CustomerFirstName.Trim(),
+                    LastName = model.CustomerLastName.Trim(),
+                    PhoneNumber = model.PhoneNumber.Trim(),
+                    Email = model.CustomerEmail.Trim(),
+                    AddressLine1 = model.AddressLine1.Trim(),
+                    AddressLine2 = model.AddressLine2?.Trim(),
+                    City = model.City?.Trim(),
+                    State = model.State?.Trim(),
+                    Zip = model.Zip?.Trim(),
                     IsInternational = model.IsInternational,
-                    InternationalAddress = model.InternationalAddress,
+                    InternationalAddress = model.InternationalAddress?.Trim(),
                 };
 
                 await mediator.Publish(command);

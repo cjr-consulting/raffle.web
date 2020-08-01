@@ -16,6 +16,14 @@
     {
       "library": "moment-duration-format@2.3.2",
       "destination": "wwwroot/lib/moment-duration-format/"
+    },
+    {
+      "library": "Chart.js@2.9.3",
+      "destination": "wwwroot/lib/Chart.js/",
+      "files": [
+        "Chart.min.js",
+        "Chart.min.css"
+      ]
     }
   ]
 }

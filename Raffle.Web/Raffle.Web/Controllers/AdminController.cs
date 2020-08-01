@@ -16,5 +16,10 @@ namespace Raffle.Web.Controllers
         {
             return View();
         }
+
+        public IActionResult Performance()
+        {
+            return View();
+        }
     }
 }

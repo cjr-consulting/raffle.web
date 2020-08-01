@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewData["Title"] = "Raffle Performance";
+}
+
+<h1>Raffle Performance</h1>
+
+@section Scripts {
+    <script type="text/javascript" src="~/lib/Chart.js/Chart.min.js"></script>
+    <script type="text/javascript" src="~/js/performance.js"></script> @*asp-append-version="true"></script>*@
+}
+
+<form>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-light">Soon to be chart filtering options</div>
+        </div>
+    </div>
+</form>
+<div class="clearfix">
+    <div>
+        <canvas id="ordersChart" width="700" height="300"></canvas>
+    </div>
+</div>

@@ -87,7 +87,7 @@
                         <th scope="col"></th>
                         <th scope="col">Raffle Item</th>
                         <th scope="col" class="text-center">Points</th>
-                        <th scope="col" class="text-center">Tickets</th>
+                        <th scope="col" class="text-right">Tickets</th>
                         <th scope="col" class="text-right">Sub Total</th>
                     </tr>
                 </thead>
@@ -103,13 +103,14 @@
                             </td>
                             <td class="align-middle">@item.Name</td>
                             <td class="text-center align-middle">@item.Price</td>
-                            <td class="text-center align-middle">@item.Amount</td>
+                            <td class="text-right align-middle">@item.Amount</td>
                             <td class="text-right align-middle">@item.Cost</td>
                         </tr>
                     }
                     <tr class="table-primary">
                         <td><b>Total Points</b></td>
-                        <td colspan="4" class="text-right"><b>@Model.TotalPrice</b></td>
+                        <td colspan="3" class="text-right"><b>@Model.TotalTickets</b></td>
+                        <td class="text-right"><b>@Model.TotalPrice</b></td>
                     </tr>
                 </tbody>
             </table>

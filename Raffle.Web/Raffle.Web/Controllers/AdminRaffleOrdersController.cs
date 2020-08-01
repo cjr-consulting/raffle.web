@@ -148,11 +148,14 @@ namespace Raffle.Web.Controllers
                 TicketNumber = order.TicketNumber,
                 CompleteDate = order.CompletedDate.Value.ToUniversalTime(),
                 Confirmed21 = order.Confirmed21,
-                UpdateDate = order.UpdatedDate,
+                UpdateDate = order.UpdatedDate.HasValue ? order.UpdatedDate.Value.ToUniversalTime() : order.UpdatedDate,
                 DonationDate = order.DonationDate,
                 DonationNote = order.DonationNote,
                 TotalPrice = order.TotalPrice,
-                TotalTickets = order.TotalTickets
+                TotalTickets = order.TotalTickets,
+                TotalTicketsFromSheet = order.TotalTicketsFromSheet,
+                TotalTicketsOne = order.TotalOneTickets,
+                TotalTicketsTwo = order.TotalTwoTickets
             };
             model.Customer = new RaffleOrderUpdateCustomer
             {

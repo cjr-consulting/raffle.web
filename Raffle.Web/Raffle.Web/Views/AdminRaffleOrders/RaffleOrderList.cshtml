@@ -4,7 +4,23 @@
 }
 
 <h1>Raffle Orders</h1>
-
+<div class="row">
+    <div class="col-md-4 text-center">
+        <h5>Orders</h5>
+        <b>Total:</b> @Model.RaffleOrders.Count - 
+        <b>Confirmed: </b> @Model.RaffleOrders.Where(x => !string.IsNullOrEmpty(x.TicketNumber)).Count()
+    </div>
+    <div class="col-md-4 text-center">
+        <h5>Tickets</h5>
+        <b>Total: </b> @Model.RaffleOrders.Sum(x => x.TotalTickets) - 
+        <b>Confirmed: </b>@Model.RaffleOrders.Where(x => !string.IsNullOrEmpty(x.TicketNumber)).Sum(x => x.TotalTickets)
+    </div>
+    <div class="col-md-4 text-center">
+        <h5>Points</h5>
+        <b>Total: </b> @Model.RaffleOrders.Sum(x => x.TotalPoints) - 
+        <b>Confirmed: </b> @Model.RaffleOrders.Where(x => !string.IsNullOrEmpty(x.TicketNumber)).Sum(x => x.TotalPoints)
+    </div>
+</div>
 @*@Html.ActionLink("Add", "Add", "AdminRaffleOrders", null, new { @class = "btn btn-secondary" })*@
 <table class="table table-sm">
     <thead>
@@ -23,19 +39,19 @@
     <tbody>
         @for (var i = 0; i < Model.RaffleOrders.Count; i++)
         {
-        <tr>
-            <td class="align-middle">@Html.ActionLink("Update", "Update", "AdminRaffleOrders", new { id = Model.RaffleOrders[i].RaffleOrderId }, new { @class = "btn btn-primary" })</td>
-            <td class="align-middle">@Model.RaffleOrders[i].TicketNumber</td>
-            <td class="align-middle text-center">
-                @(Model.RaffleOrders[i].DonationDate.HasValue ? Model.RaffleOrders[i].DonationDate.Value.ToString("MM/dd/yyyy") : "")
-            </td>
-            <td class="align-middle text-center"># @Model.RaffleOrders[i].RaffleOrderId</td>
-            <td class="align-middle">@Model.RaffleOrders[i].Name</td>
-            <td class="align-middle">@Model.RaffleOrders[i].Email</td>
-            <td class="align-middle"><span class="localTime" utc="@Model.RaffleOrders[i].CompletedDate.Value.ToString("o")"></span></td>
-            <td class="align-middle text-center">@Model.RaffleOrders[i].TotalTickets</td>
-            <td class="align-middle text-center">@Model.RaffleOrders[i].TotalPoints</td>
-        </tr>
+            <tr>
+                <td class="align-middle">@Html.ActionLink("Update", "Update", "AdminRaffleOrders", new { id = Model.RaffleOrders[i].RaffleOrderId }, new { @class = "btn btn-primary" })</td>
+                <td class="align-middle">@Model.RaffleOrders[i].TicketNumber</td>
+                <td class="align-middle text-center">
+                    @(Model.RaffleOrders[i].DonationDate.HasValue ? Model.RaffleOrders[i].DonationDate.Value.ToString("MM/dd/yyyy") : "")
+                </td>
+                <td class="align-middle text-center"># @Model.RaffleOrders[i].RaffleOrderId</td>
+                <td class="align-middle">@Model.RaffleOrders[i].Name</td>
+                <td class="align-middle">@Model.RaffleOrders[i].Email</td>
+                <td class="align-middle"><span class="localTime" utc="@Model.RaffleOrders[i].CompletedDate.Value.ToString("o")"></span></td>
+                <td class="align-middle text-center">@Model.RaffleOrders[i].TotalTickets</td>
+                <td class="align-middle text-center">@Model.RaffleOrders[i].TotalPoints</td>
+            </tr>
         }
     </tbody>
 </table>

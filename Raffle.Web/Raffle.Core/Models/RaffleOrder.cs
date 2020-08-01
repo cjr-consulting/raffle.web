@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Raffle.Core.Models
 {
@@ -41,6 +42,50 @@ namespace Raffle.Core.Models
                 }
 
                 return tickets;
+            }
+        }
+
+        public int TotalTicketsFromSheet
+        {
+            get
+            {
+                var tickets = 0;
+                foreach (var line in Lines.Where(x => x.RaffleItemNumber != 1 && x.RaffleItemNumber != 2))
+                {
+                    tickets += line.Count;
+                }
+
+                return tickets;
+            }
+        }
+
+        public int TotalOneTickets
+        {
+            get
+            {
+                var tickets = 0;
+                foreach (var line in Lines.Where(x => x.RaffleItemNumber == 1))
+                {
+                    tickets += line.Count;
+                }
+
+                return tickets;
+
+            }
+        }
+
+        public int TotalTwoTickets
+        {
+            get
+            {
+                var tickets = 0;
+                foreach (var line in Lines.Where(x => x.RaffleItemNumber == 2))
+                {
+                    tickets += line.Count;
+                }
+
+                return tickets;
+
             }
         }
     }

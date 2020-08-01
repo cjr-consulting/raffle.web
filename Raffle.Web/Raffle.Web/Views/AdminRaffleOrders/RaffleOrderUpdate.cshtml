@@ -34,7 +34,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <label>Last Update</label>
-                    <span class="localTime" utc="@Model.UpdateDate.Value"></span>
+                    <span class="localTime" utc="@Model.UpdateDate.Value.ToString("o")"></span>
                 </div>
             </div>
             }
@@ -86,30 +86,34 @@
                     <tr>
                         <th scope="col"></th>
                         <th scope="col">Raffle Item</th>
-                        <th scope="col" class="text-center">Points</th>
                         <th scope="col" class="text-right">Tickets</th>
+                        <th scope="col" class="text-right">Points</th>
                         <th scope="col" class="text-right">Sub Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model.Lines)
                     {
-                        <tr>
-                            <td>
-                                @if (item.ImageUrls.Any())
-                                {
-                                    <img src="@item.ImageUrls.First()" alt="@item.Name" class="rounded float-left" style="max-width: 100px; margin-right:8px;" />
-                                }
-                            </td>
-                            <td class="align-middle">@item.Name</td>
-                            <td class="text-center align-middle">@item.Price</td>
-                            <td class="text-right align-middle">@item.Amount</td>
-                            <td class="text-right align-middle">@item.Cost</td>
-                        </tr>
+                    <tr>
+                        <td>
+                            @if (item.ImageUrls.Any())
+                            {
+                                <img src="@item.ImageUrls.First()" alt="@item.Name" class="rounded float-left" style="max-width: 100px; margin-right:8px;" />
+                            }
+                        </td>
+                        <td class="align-middle">@item.Name</td>
+                        <td class="text-right align-middle">@item.Amount</td>
+                        <td class="text-right align-middle">@item.Price</td>
+                        <td class="text-right align-middle">@item.Cost</td>
+                    </tr>
                     }
                     <tr class="table-primary">
                         <td><b>Total Points</b></td>
-                        <td colspan="3" class="text-right"><b>@Model.TotalTickets</b></td>
+                        <td colspan="3" class="text-right">
+                            <b>#1</b> - @Model.TotalTicketsOne /                           
+                            <b>#2</b> - @Model.TotalTicketsTwo /                             
+                            <b>Sheet Tickets</b> - @Model.TotalTicketsFromSheet
+                        </td>
                         <td class="text-right"><b>@Model.TotalPrice</b></td>
                     </tr>
                 </tbody>

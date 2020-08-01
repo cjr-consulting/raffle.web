@@ -19,6 +19,9 @@ namespace Raffle.Web.Models.Admin.RaffleOrder
         public DateTime? DonationDate { get; set; }
         public string DonationNote { get; set; }
         public List<RaffleOrderUpdateLineModel> Lines { get; set; } = new List<RaffleOrderUpdateLineModel>();
+        public int TotalTicketsFromSheet { get; set; }
+        public int TotalTicketsOne { get; set; }
+        public int TotalTicketsTwo { get; set; }
     }
 
     public class RaffleOrderUpdateLineModel

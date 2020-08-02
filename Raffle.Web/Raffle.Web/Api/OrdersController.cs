@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Raffle.Core.Queries;
 using Raffle.Web.Models.Admin.RaffleOrder;
+using Raffle.Core.Repositories;
 
 namespace Raffle.Web.Api
 {
@@ -18,9 +20,11 @@ namespace Raffle.Web.Api
     public class OrdersController : ControllerBase
     {
         readonly IMediator mediator;
+        readonly IRaffleItemRepository raffleItemRepository;
 
-        public OrdersController(IMediator mediator)
+        public OrdersController(IMediator mediator, IRaffleItemRepository raffleItemRepository)
         {
+            this.raffleItemRepository = raffleItemRepository;
             this.mediator = mediator;
         }
 
@@ -42,5 +46,27 @@ namespace Raffle.Web.Api
                 CompletedDate = x.CompletedDate.Value.ToUniversalTime()
             }).ToList();
         }
-    } 
+
+        [HttpGet("raffleitems")]
+        public async Task<ActionResult<List<AdminListRaffleItem>>> GetRaffleItems()
+        {
+            var adminRaffleItems = await mediator.Send(new GetAdminRaffleItemsQuery());
+            return adminRaffleItems.RaffleItems.OrderByDescending(x => x.TotalTicketsEntered).ToList();           
+        }
+    }
+
+    public class RaffleItemStatsModel
+    {
+        public int ItemNumber { get; set; }
+        public string Title { get; set; }
+        public int Price { get; set; }
+        public List<RaffleItemTicketModel> Tickets { get; set; }
+    }
+
+    public class RaffleItemTicketModel
+    {
+        public DateTime CompletedDate { get; set; }
+        public int Count { get; set; }
+        public bool IsConfirmed { get; set; }
+    }
 }

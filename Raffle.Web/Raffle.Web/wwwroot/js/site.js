@@ -8,10 +8,13 @@
     jQuery(document).ready(jQuery => {
         
         jQuery(".localTime").each(function (i, obj) {
-            var element = $(this);
-            var utc = element.attr("utc");
-            var d = moment(new Date(utc));
-            element.text(d.local().format('MM/DD/YYYY h:mm:ss a'))
+            let element = $(this);
+            let utc = element.attr("utc");
+            let format = element.attr("format");
+            format = format || 'MM/DD/YYYY h:mm a';
+            let d = moment(new Date(utc));
+
+            element.text(d.local().format(format))
         })
     });
 

@@ -1,5 +1,7 @@
 ﻿using MediatR;
 
+using Microsoft.Extensions.Logging;
+
 using Raffle.Core.Events;
 using Raffle.Core.Models;
 using Raffle.Core.Shared;
@@ -16,12 +18,15 @@ namespace Raffle.Core.Handlers
         readonly IRaffleEmailSender emailSender;
         readonly EmbeddedResourceReader reader;
         readonly EmailAddress managerEmail;
+        readonly ILogger<CompletedOrderEmailCustomerHandler> logger;
 
         public CompletedOrderEmailCustomerHandler(
+            ILogger<CompletedOrderEmailCustomerHandler> logger,
             IRaffleEmailSender emailSender,
             EmbeddedResourceReader reader,
             EmailAddress managerEmail)
         {
+            this.logger = logger;
             this.managerEmail = managerEmail;
             this.reader = reader;
             this.emailSender = emailSender;
@@ -29,25 +34,40 @@ namespace Raffle.Core.Handlers
 
         public async Task Handle(RaffleOrderCompleteEvent notification, CancellationToken cancellationToken)
         {
-            var order = notification.Order;
-            var body = BuildTemplate(reader.GetContents("Raffle.Core.EmailTemplates.OrderComplete.html"),
-                    order);
+            try
+            {
+                var order = notification.Order;
+                var body = BuildTemplate(reader.GetContents("Raffle.Core.EmailTemplates.OrderComplete.html"),
+                        order);
 
-            var text = BuildTextTemplate(notification.Order);
+                var text = BuildTextTemplate(notification.Order);
+                await SendCustomerReceiptEmail(order, body, text);
+                await SendOrderReceivedEmail(order, body, text);
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(ex, "Failed to send emails after order completed");
+            }
+        }
 
+        private async Task SendOrderReceivedEmail(RaffleOrder order, string body, string text)
+        {
             await emailSender.SendEmailAsync(
-                order.Customer.Email,
-                $"{order.Customer.FirstName} {order.Customer.LastName}",
-                $"Receipt for Darts For Dreams 15 Raffle Order# {order.Id}",
-                text,
-                body);
+                            managerEmail.Email,
+                            managerEmail.Name,
+                            $"Receipt for Darts For Dreams 15 Raffle Order# {order.Id}",
+                            text,
+                            body);
+        }
 
+        private async Task SendCustomerReceiptEmail(RaffleOrder order, string body, string text)
+        {
             await emailSender.SendEmailAsync(
-                managerEmail.Email,
-                managerEmail.Name,
-                $"Receipt for Darts For Dreams 15 Raffle Order# {order.Id}",
-                text,
-                body);
+                            order.Customer.Email,
+                            $"{order.Customer.FirstName} {order.Customer.LastName}",
+                            $"Receipt for Darts For Dreams 15 Raffle Order# {order.Id}",
+                            text,
+                            body);
         }
 
         private string BuildTextTemplate(RaffleOrder order)

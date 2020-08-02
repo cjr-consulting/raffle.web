@@ -3,10 +3,6 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "fetch@3.1.0",
-      "destination": "wwwroot/lib/fetch/"
-    },
-    {
       "library": "moment.js@2.27.0",
       "destination": "wwwroot/lib/moment.js/",
       "files": [
@@ -24,6 +20,23 @@
         "Chart.min.js",
         "Chart.min.css"
       ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "micromodal@0.4.6",
+      "destination": "wwwroot/lib/micromodal/",
+      "files": [
+        "dist/micromodal.min.js"
+      ]
     }
+  ,
+{
+  "provider": "unpkg",
+  "library": "whatwg-fetch@3.2.0",
+  "destination": "wwwroot/lib/whatwg-fetch/",
+  "files": [
+    "dist/fetch.umd.js"
   ]
+}
+]
 }

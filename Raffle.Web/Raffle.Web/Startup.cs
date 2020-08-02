@@ -1,22 +1,23 @@
+using MediatR;
+
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Raffle.Core;
 using Raffle.Core.Models;
 using Raffle.Core.Shared;
+using Raffle.Web.Config;
+
 using Raffle.Web.Data;
-using Raffle.Web.Services;
 
 using System;
-using Raffle.Web.Config;
-using MediatR;
 
 namespace Raffle.Web
 {
@@ -86,12 +87,9 @@ namespace Raffle.Web
 
             services.AddMediatR(typeof(Startup), typeof(RaffleDbConfiguration));
 
-            services.Configure<SendGridEmailSenderOptions>(Configuration.GetSection("SendGrid"));
+            services.AddEmailService(Configuration);
 
-            services.AddTransient<IRaffleEmailSender, SendGridRaffleEmailSender>();
-            services.AddTransient<IEmailSender, SendGridEmailSender>();
             services.AddSingleton(services => new RaffleDbConfiguration { ConnectionString = dbConnectionString });
-
             services.AddSingleton(services => new EmailAddress(Configuration["raffleManager:Email"], Configuration["raffleManager:Name"]));
 
             services.AddRaffleItem();

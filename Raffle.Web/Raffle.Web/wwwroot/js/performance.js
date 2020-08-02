@@ -13,7 +13,7 @@ fetch('/api/orders')
     .then(data => {
         console.log("data", data);
         let availableDate = data
-            .map(i => moment(new Date(i.completedDate)).local().format('MM/DD/YYYY'))
+            .map(i => moment(new Date(i.completedDate)).local().format('MM-DD'))
             .filter(onlyUnique);
         console.log("availableDate", availableDate);
 
@@ -21,7 +21,7 @@ fetch('/api/orders')
             .reduce((r, a) => {
                 console.log("a", a);
                 console.log('r', r);
-                r[moment(new Date(a.completedDate)).local().format('MM/DD/YYYY')] = [...r[moment(new Date(a.completedDate)).local().format('MM/DD/YYYY')] || [], a];
+                r[moment(new Date(a.completedDate)).local().format('MM-DD')] = [...r[moment(new Date(a.completedDate)).local().format('MM-DD')] || [], a];
                 return r;
             }, {});
 
@@ -29,7 +29,7 @@ fetch('/api/orders')
             .reduce((r, a) => {
                 console.log("a", a);
                 console.log('r', r);
-                r[moment(a.completedDate).local().format('MM/DD/YYYY')] = [...r[moment(a.completedDate).local().format('MM/DD/YYYY')] || [], a];
+                r[moment(a.completedDate).local().format('MM-DD')] = [...r[moment(a.completedDate).local().format('MM-DD')] || [], a];
                 return r;
             }, {});
 
@@ -40,7 +40,7 @@ fetch('/api/orders')
         let labels = [];
 
         while (startDate <= endDate) {
-            labels.push(startDate.format('MM/DD/YYYY'));
+            labels.push(startDate.format('MM-DD'));
             startDate = startDate.add(1, "days");
         }
 
@@ -50,7 +50,7 @@ fetch('/api/orders')
             if (outstanding[value] === undefined) {
                 return 0;
             } else {
-                return outstanding[value].length;
+                return outstanding[value].reduce((total, item) => { return total + item.totalPoints }, 0);
             }
         })
 
@@ -61,12 +61,11 @@ fetch('/api/orders')
             if (complete[value] === undefined) {
                 return 0;
             } else {
-                return complete[value].length;
+                return complete[value].reduce((total, item) => { return total + item.totalPoints }, 0);
             }
         })
 
         console.log("dataComplete", dataComplete);
-
 
         var chart = new Chart(ordersChartctx, {
             // The type of chart we want to create
@@ -88,13 +87,17 @@ fetch('/api/orders')
 
             // Configuration options go here
             options: {
+                title: {
+                    display: true,
+                    text: 'Completed Order By Points'
+                },
                 responsive: true,
                 aspectRatio: 1.2,
                 scales: {
                     yAxes: [{
                         stacked: true,
                         ticks: {
-                            stepSize: 1
+                            stepSize: 10
                         }
                     }],
                     xAxes: [{

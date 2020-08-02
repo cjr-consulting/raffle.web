@@ -46,7 +46,7 @@
                     @(Model.RaffleOrders[i].DonationDate.HasValue ? Model.RaffleOrders[i].DonationDate.Value.ToString("MM/dd/yyyy") : "")
                 </td>
                 <td class="align-middle text-center"># @Model.RaffleOrders[i].RaffleOrderId</td>
-                <td class="align-middle">@Model.RaffleOrders[i].Name</td>
+                <td class="align-middle" nowrap="nowrap">@Model.RaffleOrders[i].Name</td>
                 <td class="align-middle">@Model.RaffleOrders[i].Email</td>
                 <td class="align-middle" nowrap="nowrap"><span class="localTime" utc="@Model.RaffleOrders[i].CompletedDate.Value.ToString("o")" format="MM/DD h:mm a"></span></td>
                 <td class="align-middle text-center">@Model.RaffleOrders[i].TotalTickets</td>

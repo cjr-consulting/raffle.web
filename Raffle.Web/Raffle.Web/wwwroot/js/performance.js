@@ -116,7 +116,7 @@ fetch('/api/orders')
                     yAxes: [{
                         stacked: true,
                         ticks: {
-                            stepSize: 10
+                            stepSize: 25
                         }
                     }],
                     xAxes: [{

@@ -1,10 +1,16 @@
-﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+﻿@using Microsoft.Extensions.Hosting
+@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Darts for Dreams</title>
+    @if (!env.IsDevelopment() && (ViewBag["hideAnalytics"] == null || ViewBag["hideAnalylitics"] != true))
+    {
+        <partial src="_GoogleAnalytics" />
+    }
     @Html.Raw(JavaScriptSnippet.FullScript)
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />

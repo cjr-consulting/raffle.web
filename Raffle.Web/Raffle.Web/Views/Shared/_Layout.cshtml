@@ -7,9 +7,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Darts for Dreams</title>
-    @if (!env.IsDevelopment() && (ViewBag["hideAnalytics"] == null || ViewBag["hideAnalylitics"] != true))
+    @if (!env.IsDevelopment() && (ViewData["hideAnalytics"] == null || ((bool)ViewData["hideAnalylitics"]) != true))
     {
-        <partial src="_GoogleAnalytics" />
+        <partial name="_GoogleAnalytics" />
     }
     @Html.Raw(JavaScriptSnippet.FullScript)
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />

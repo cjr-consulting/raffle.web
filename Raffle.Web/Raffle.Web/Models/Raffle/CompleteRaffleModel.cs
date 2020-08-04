@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 using System;
 using System.Collections.Generic;
@@ -58,10 +59,27 @@ namespace Raffle.Web.Models.Raffle
         [Display(Name = "International Address Text")]
         public string InternationalAddress { get; set; }
 
+        public string HowDidYouHear { get; set; }
+        [MaxLength(500)]
+        public string HowDidYouHearOther { get; set; }
         public int TotalPrice { get; set; }
         public int TotalTickets { get; set; }
 
         public List<CompleteRaffleLineItemModel> Items { get; set; } = new List<CompleteRaffleLineItemModel>();
+
+        public List<SelectListItem> HowDidYouHearList { get; set; }
+
+        public CompleteRaffleModel()
+        {
+            HowDidYouHearList = new List<SelectListItem>
+            {
+                new SelectListItem("You've been to the event in the past or know people who have",  "You've been to the event in the past or know people who have"),
+                new SelectListItem("You found us on FB directly or via a share in a community FB group", "You found us on FB directly or via a share in a community FB group"),
+                new SelectListItem("You saw it posted on FB in a darts related group", "You saw it posted on FB in a darts related group"),
+                new SelectListItem("You heard it from a friend who... heard it from a friend....", "You heard it from a friend who... heard it from a friend...."),
+                new SelectListItem("Other: Please let me know","Other: Please let me know")
+            };
+        }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

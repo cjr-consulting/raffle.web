@@ -408,6 +408,8 @@ namespace Raffle.Web.Controllers
                     Zip = model.Zip?.Trim(),
                     IsInternational = model.IsInternational,
                     InternationalAddress = model.InternationalAddress?.Trim(),
+                    HowDidYouHear = model.HowDidYouHear?.Trim(),
+                    HowDidYouHearOther = model.HowDidYouHearOther?.Trim()
                 };
 
                 await mediator.Publish(command);

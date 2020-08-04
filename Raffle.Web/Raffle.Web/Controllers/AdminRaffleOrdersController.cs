@@ -155,7 +155,9 @@ namespace Raffle.Web.Controllers
                 TotalTickets = order.TotalTickets,
                 TotalTicketsFromSheet = order.TotalTicketsFromSheet,
                 TotalTicketsOne = order.TotalOneTickets,
-                TotalTicketsTwo = order.TotalTwoTickets
+                TotalTicketsTwo = order.TotalTwoTickets,
+                HowDidYouHear = order.HowDidYouHear,
+                HOwDidYouHearOther = order.HowDidYouHearOther
             };
             model.Customer = new RaffleOrderUpdateCustomer
             {

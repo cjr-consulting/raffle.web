@@ -41,6 +41,8 @@ namespace Raffle.Core.Queries
                     "UpdatedDate, " +
                     "DonationDate, " +
                     "DonationNote, " +
+                    "HowDidYouHear, " +
+                    "HowDidYouHearOther, " +
                     "Email = ro.Customer_Email, FirstName = ro.Customer_FirstName, LastName = ro.Customer_LastName, " +
                     "PhoneNumber = Customer_PhoneNumber, " +
                     "AddressLine1 = Customer_AddressLine1, " +

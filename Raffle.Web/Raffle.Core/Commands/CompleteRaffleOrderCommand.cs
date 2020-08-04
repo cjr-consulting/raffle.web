@@ -29,6 +29,8 @@ namespace Raffle.Core.Commands
         public string Zip { get; set; }
         public bool IsInternational { get; set; }
         public string InternationalAddress { get; set; }
+        public string HowDidYouHear { get; set; }
+        public string HowDidYouHearOther { get; set; }
     }
 
     public class CompleteRaffleOrderCommandHandler : INotificationHandler<CompleteRaffleOrderCommand>
@@ -61,7 +63,9 @@ namespace Raffle.Core.Commands
                     "Customer_Address_Zip = @Zip, " +
                     "Customer_IsInternational = @IsInternational, " +
                     "Customer_IAddressText = @InternationalAddress, " +
-                    "CompletedDate = @CompletedDate " +
+                    "CompletedDate = @CompletedDate, " +
+                    "HowDidYouHear = @HowDidYouHear, " +
+                    "HowDidYouHearOther = @HowDidYouHearOther " +
                     "WHERE Id = @OrderId";
 
                 await conn.ExecuteAsync(updateOrder, new
@@ -79,6 +83,8 @@ namespace Raffle.Core.Commands
                     notification.State,
                     notification.Zip,
                     notification.InternationalAddress,
+                    notification.HowDidYouHear,
+                    notification.HowDidYouHearOther,
                     CompletedDate = DateTime.UtcNow
                 });
 

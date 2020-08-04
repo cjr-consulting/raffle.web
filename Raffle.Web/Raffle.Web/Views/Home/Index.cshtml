@@ -6,13 +6,14 @@
 }
 
 @section Scripts {
+    <script type="text/javascript" src="~/lib/lazysizes/lazysizes.min.js"></script>
     <script type="text/javascript" src="~/js/rafflecart.js" asp-append-version="true"></script>
 }
 @Html.HiddenFor(x => x.StartDate)
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8">
-        <img src="~/images/DFDQ-RaffleBanner.png" class="img-fluid" alt="Welcome to the Darts for Dreams Quarantine Edition Raffle" />
+        <img src="~/images/DFDQ-RaffleBanner.jpg" class="img-fluid" alt="Welcome to the Darts for Dreams Quarantine Edition Raffle" />
     </div>
 </div>
 <div class="text-center">
@@ -125,7 +126,14 @@
                                     {
                                     <div class="col-md-3">
                                         <a href="@Model.RaffleItems[i].Pictures.First()" target="_blank" rel="noopener noreferrer">
-                                            <img src="@Model.RaffleItems[i].Pictures.First()" class="img-fluid rounded" alt="@Model.RaffleItems[i].Title">
+                                            @if (i < 2)
+                                            {
+                                                <img src="@Model.RaffleItems[i].Pictures.First()" class="img-fluid rounded" alt="@Model.RaffleItems[i].Title">
+                                            }
+                                            else
+                                            {
+                                                <img data-src="@Model.RaffleItems[i].Pictures.First()" class="lazyload img-fluid rounded" alt="@Model.RaffleItems[i].Title">
+                                            }
                                         </a>
                                     </div>
                                     }
@@ -166,9 +174,16 @@
                                         <div>
                                             @foreach (var picture in Model.RaffleItems[i].Pictures.Skip(1))
                                             {
-                                                <a href="@picture" target="_blank" rel="noopener noreferrer">
+                                            <a href="@picture" target="_blank" rel="noopener noreferrer">
+                                                @if (i < 2)
+                                                {
                                                     <img src="@picture" class="rounded float-left" style="max-width: 80px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
-                                                </a>
+                                                }
+                                                else
+                                                {
+                                                    <img data-src="@picture" class="lazyload rounded float-left" style="max-width: 80px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                                }
+                                            </a>
                                             }
                                         </div>
                                     }

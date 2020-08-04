@@ -19,5 +19,7 @@
     [CompletedDate] DATETIME2 NULL, 
     [UpdatedDate] DATETIME2 NULL,
     [DonationDate] DATETIME2 NULL,
-    [DonationNote] NVARCHAR(800) NOT NULL DEFAULT ''
+    [DonationNote] NVARCHAR(800) NOT NULL DEFAULT '', 
+    [HowDidYouHear] NVARCHAR(100) NOT NULL DEFAULT '', 
+    [HowDidYouHearOther] NVARCHAR(500) NOT NULL DEFAULT ''
 )

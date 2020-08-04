@@ -17,6 +17,8 @@ namespace Raffle.Core.Models
         public DateTime? UpdatedDate{ get; set; }
         public DateTime? DonationDate { get; set; }
         public string DonationNote { get; set; }
+        public string HowDidYouHear { get; set; }
+        public string HowDidYouHearOther { get; set; }
         public IReadOnlyList<RaffleOrderLine> Lines { get; set; }
         public int TotalPrice
         {

@@ -130,6 +130,13 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-12">
+                    <label>How did you find us?</label>
+                    @Html.DropDownListFor(x => x.HowDidYouHear, Model.HowDidYouHearList, "Select How", new { @class = "form-control" })
+                    @Html.TextAreaFor(x => x.HowDidYouHearOther, 3, 80, new { @class = "form-control", placeholder = "" })
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6">
                     <button type="submit" class="form-control btn btn-primary">Complete</button>
                 </div>

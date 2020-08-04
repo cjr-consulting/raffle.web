@@ -22,6 +22,8 @@ namespace Raffle.Web.Models.Admin.RaffleOrder
         public int TotalTicketsFromSheet { get; set; }
         public int TotalTicketsOne { get; set; }
         public int TotalTicketsTwo { get; set; }
+        public string HowDidYouHear { get; set; }
+        public string HOwDidYouHearOther { get; set; }
     }
 
     public class RaffleOrderUpdateLineModel

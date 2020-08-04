@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 
 using Raffle.Core;
 using Raffle.Core.Commands;
@@ -86,6 +87,15 @@ namespace Raffle.Web.Controllers
                 {
                     orderId = null;
                 }
+            }
+
+            if(HttpContext.Request.Query["emoji"] == "on")
+            {
+                ViewData["emoji"] = "on";
+            }
+            if (HttpContext.Request.Query["menu"] == "on")
+            {
+                ViewData["graph"] = "on";
             }
 
             ViewData["itemNumberSortParam"] = sortBy == "itemNumber" ? "itemNumber_desc" : "itemNumber";

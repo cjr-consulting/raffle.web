@@ -93,7 +93,7 @@
                         <tr>
                             <td class="text-center align-middle">
                                 #@Model.RaffleItems[i].ItemNumber @Html.HiddenFor(x => x.RaffleItems[i].ItemNumber)
-                                @if (flagManager.Get("RaffleItemEmoji") == "on")
+                                @if (flagManager.Get("RaffleItemEmoji") == "on" || ViewData["emoji"] == "on")
                                 {
                                     <br />
                                     @if (Model.RaffleItems[i].TotalTicketsEntered == 0)

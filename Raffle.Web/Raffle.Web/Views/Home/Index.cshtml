@@ -1,4 +1,5 @@
 ﻿@model Raffle.Web.Models.Raffle.RaffleOrderViewModel
+@inject Raffle.Web.Services.FlagManager flagManager
 
 @{
     ViewData["Title"] = "Raffle";
@@ -92,6 +93,30 @@
                         <tr>
                             <td class="text-center align-middle">
                                 #@Model.RaffleItems[i].ItemNumber @Html.HiddenFor(x => x.RaffleItems[i].ItemNumber)
+                                @if (flagManager.Get("RaffleItemEmoji") == "on")
+                                {
+                                    <br />
+                                    @if (Model.RaffleItems[i].TotalTicketsEntered == 0)
+                                    {
+                                        <img src="~/images/glyphicons-smileys-37-sleeping.png" style="filter: invert(51%) sepia(31%) saturate(7453%) hue-rotate(333deg) brightness(105%) contrast(113%);" title="0 tix" alt="0 tix" />
+                                    }
+                                    else if (Model.RaffleItems[i].TotalTicketsEntered > 0 && Model.RaffleItems[i].TotalTicketsEntered <= 20)
+                                    {
+                                        <img src="~/images/glyphicons-smileys-29-smirking.png" style="filter: invert(55%) sepia(13%) saturate(3251%) hue-rotate(341deg) brightness(86%) contrast(89%); " title="1-20 tix" alt="1-20 tix" />
+                                    }
+                                    else if (Model.RaffleItems[i].TotalTicketsEntered > 20 && Model.RaffleItems[i].TotalTicketsEntered <= 50)
+                                    {
+                                        <img src="~/images/glyphicons-smileys-38-relieved.png" style="filter: invert(73%) sepia(98%) saturate(1957%) hue-rotate(6deg) brightness(112%) contrast(105%);" title="21-50 tix" alt="21-50 tix" />
+                                    }
+                                    else if (Model.RaffleItems[i].TotalTicketsEntered > 50 && Model.RaffleItems[i].TotalTicketsEntered <= 100)
+                                    {
+                                        <img src="~/images/glyphicons-smileys-65-screaming-in-fear.png" style="filter: invert(51%) sepia(54%) saturate(2641%) hue-rotate(95deg) brightness(100%) contrast(90%);" title="51-100 tix" alt="51-100 tix" />
+                                    }
+                                    else if (Model.RaffleItems[i].TotalTicketsEntered > 100)
+                                    {
+                                        <img src="~/images/glyphicons-smileys-84-partying.png" style="filter: invert(51%) sepia(54%) saturate(2641%) hue-rotate(95deg) brightness(100%) contrast(90%);" title="100+ tix" alt="100+ tix" />
+                                    }
+                                }
                             </td>
                             <td class=" align-middle">
                                 @Html.HiddenFor(m => m.RaffleItems[i].Id)

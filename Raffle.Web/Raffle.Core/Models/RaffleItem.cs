@@ -19,6 +19,7 @@ namespace Raffle.Core.Models
         public bool LocalPickupOnly { get; set; }
         public int NumberOfDraws { get; set; }
         public string WinningTickets { get; set; }
+        public int TotalTicketsEntered { get; set; }
 
         public List<string> ImageUrls { get; set; } = new List<string>();
     }

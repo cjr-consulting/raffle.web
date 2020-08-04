@@ -1,6 +1,7 @@
 ﻿@using Microsoft.Extensions.Hosting
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
+@inject Raffle.Web.Services.FlagManager flagManager
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,8 +32,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         @*<li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Raffle">Raffle</a>
-                            </li>*@
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Raffle">Raffle</a>
+                        </li>*@
+                        @if (flagManager.Get("HowManyTickets") == "on")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="HowManyTickets">How Many Tickets</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" href="mailto:events@trentondarts.com">Contact</a>
                         </li>

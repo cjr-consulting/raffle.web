@@ -24,13 +24,17 @@ namespace Raffle.Core.Data
         {
             using (var conn = new SqlConnection(connectionString))
             {
-                const string query = "SELECT ri.*, " +
+                const string query = "SELECT " +
+                    "ri.*, " +
+                    "TotalTicketsEntered = (SELECT SUM(roii.Count) " +
+                    "   FROM RaffleOrders ro JOIN RaffleOrderLineItems roii " +
+                    "       ON ro.Id = roii.RaffleOrderId " +
+                    "   WHERE ro.TicketNumber <> '' AND roii.RaffleItemId = ri.Id), " +
                     " rii.ImageRoute " +
                     "FROM RaffleItems ri " +
                     "LEFT JOIN RaffleItemImages rii ON ri.Id = rii.RaffleItemId";
 
                 var raffleItemDictionary = new Dictionary<int, RaffleItem>();
-
                 var list = conn.Query<RaffleItem, string, RaffleItem>(
                     query,
                     (raffleItem, imageRoute) =>

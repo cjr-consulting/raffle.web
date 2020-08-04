@@ -16,8 +16,10 @@ using Raffle.Core.Shared;
 using Raffle.Web.Config;
 
 using Raffle.Web.Data;
+using Raffle.Web.Services;
 
 using System;
+using System.Collections.Generic;
 
 namespace Raffle.Web
 {
@@ -88,6 +90,15 @@ namespace Raffle.Web
             services.AddMediatR(typeof(Startup), typeof(RaffleDbConfiguration));
 
             services.AddEmailService(Configuration);
+
+            var section = Configuration.GetSection("Flags");
+            var flags = new Dictionary<string, string>();
+            foreach(var child in section.GetChildren())
+            {
+                flags.Add(child.Key, child.Value);
+            }
+
+            services.AddSingleton(x => new FlagManager(flags));
 
             services.AddSingleton(services => new RaffleDbConfiguration { ConnectionString = dbConnectionString });
             services.AddSingleton(services => new EmailAddress(Configuration["raffleManager:Email"], Configuration["raffleManager:Name"]));

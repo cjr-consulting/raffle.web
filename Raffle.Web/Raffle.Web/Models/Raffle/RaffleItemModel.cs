@@ -20,6 +20,7 @@ namespace Raffle.Web.Models.Raffle
         public bool ForOver21 { get; set; }
         public bool LocalPickupOnly { get; set; }
         public int NumberOfDraws { get; set; }
+        public int TotalTicketsEntered { get; set; }
         public List<string> Pictures { get; set; } = new List<string>();
     }
 

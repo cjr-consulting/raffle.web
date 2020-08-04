@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "How Many Tickets";
+}
+
+@section Scripts {
+    <script type="text/javascript" src="~/lib/Chart.js/Chart.min.js"></script>
+    <script type="text/javascript" src="~/js/howmanytickets.js" asp-append-version="true"></script>
+}
+
+<h1 class="display-4">How Many Tickets?</h1>
+
+<div>
+    <div class="row">
+        <div class="col-md">
+            <canvas id="raffleItems" width="700" height="1200"></canvas>
+        </div>
+    </div>
+</div>

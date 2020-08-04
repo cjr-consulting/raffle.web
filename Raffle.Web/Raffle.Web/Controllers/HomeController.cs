@@ -109,6 +109,7 @@ namespace Raffle.Web.Controllers
                     ForOver21 = x.ForOver21,
                     LocalPickupOnly = x.LocalPickupOnly,
                     NumberOfDraws = x.NumberOfDraws,
+                    TotalTicketsEntered = x.TotalTicketsEntered,
                     Pictures = x.ImageUrls
                 }).ToList();
 
@@ -178,6 +179,7 @@ namespace Raffle.Web.Controllers
                     raffleItems = raffleItems.OrderBy(x => x.ItemNumber).ToList();
                     break;
             }
+
             var raffleEvent = raffleEventRepository.GetById(1);
             var model = new RaffleOrderViewModel
             {
@@ -224,6 +226,7 @@ namespace Raffle.Web.Controllers
                     ForOver21 = x.ForOver21,
                     LocalPickupOnly = x.LocalPickupOnly,
                     NumberOfDraws = x.NumberOfDraws,
+                    TotalTicketsEntered = x.TotalTicketsEntered,
                     Pictures = x.ImageUrls
                 }).ToList();
                 model = new RaffleOrderViewModel
@@ -467,6 +470,12 @@ namespace Raffle.Web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet("HowManyTickets")]
+        public IActionResult HowManyTickets()
+        {
+            return View();
         }
     }
 }

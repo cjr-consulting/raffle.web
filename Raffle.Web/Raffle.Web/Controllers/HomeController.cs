@@ -1,16 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 
 using Raffle.Core;
 using Raffle.Core.Commands;
 using Raffle.Core.Models;
 using Raffle.Core.Queries;
 using Raffle.Core.Repositories;
-using Raffle.Core.Shared;
 using Raffle.Web.Models;
 using Raffle.Web.Models.Raffle;
 using Raffle.Web.Services;
@@ -410,9 +407,9 @@ namespace Raffle.Web.Controllers
                     State = model.State?.Trim(),
                     Zip = model.Zip?.Trim(),
                     IsInternational = model.IsInternational,
-                    InternationalAddress = model.InternationalAddress?.Trim(),
-                    HowDidYouHear = model.HowDidYouHear?.Trim(),
-                    HowDidYouHearOther = model.HowDidYouHearOther?.Trim()
+                    InternationalAddress = model.InternationalAddress?.Trim() ?? string.Empty,
+                    HowDidYouHear = model.HowDidYouHear?.Trim() ?? string.Empty,
+                    HowDidYouHearOther = model.HowDidYouHearOther?.Trim() ?? string.Empty
                 };
 
                 await mediator.Publish(command);

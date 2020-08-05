@@ -22,9 +22,6 @@
         format = format || "MM/DD/YYYY h:mm a";
         let d = moment(new Date(utc));
         timeCountDown.textContent = "That's just " + d.fromNow(true) + " away!!";
-
-        element.text("That's just " + dueDate.fromNow(true) + " away!!");
-
     }
 
     function setupTicketInput() {

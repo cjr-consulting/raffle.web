@@ -1,32 +1,49 @@
 ﻿
 (function (win) {
-    jQuery(document).ready(jQuery => {
-        jQuery(".ticketInput").on("blur", (event) => {
-            let id = jQuery(event.currentTarget).data("raffleItemId");
-            let value =parseInt(event.currentTarget.value);
-            jQuery.post("/updateorder/updateitem/" + id,
-                { Amount: value },
-                (data) => {
-                    console.log(data);
-                }
-            );
-            return false;
+    async function postData(url = '', data = {}) {
+        const response = await fetch(url, {
+            method: 'POST',
+            mode: 'same-origin',
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+            body: JSON.stringify(data)
         });
+        return response.json();
+    }
 
-        var key = $("#timeCountdown").each(function (i, obj) {
-            var element = $(this);
-            var utc = element.attr("utc");
-            var d = new Date(utc);
-            let dueDate = moment(d);
-            element.text("That's just " + dueDate.fromNow(true) + " away!!");
-        });
+    function setupCountdown() {
+        let timeCountDown = document.getElementById("timeCountdown");
+        let utc = timeCountDown.getAttribute("utc");
+        let format = timeCountDown.getAttribute("format");
+        format = format || "MM/DD/YYYY h:mm a";
+        let d = moment(new Date(utc));
+        timeCountDown.textContent = "That's just " + d.fromNow(true) + " away!!";
 
-        jQuery(".localTime").each(function (i, obj) {
-            var element = $(this);
-            var utc = element.attr("utc");
-            var d = moment(new Date(utc));
-            element.text(d.local().format('MM/DD/YYYY h:mm:ss a'))
-        })
-    });
+        element.text("That's just " + dueDate.fromNow(true) + " away!!");
+
+    }
+
+    function setupTicketInput() {
+        var elements = document.getElementsByClassName("ticketInput")
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].addEventListener("blur", updateOrder, true);
+        }
+    }
+
+    function updateOrder(event) {
+        let id = event.currentTarget.dataset.raffleItemId;
+        let value = parseInt(event.currentTarget.value);
+        postData("/updateorder/updateitem/" + id, { Amount: value })
+            .then(data => {
+                console.debug(data);
+            });
+    }
+
+    setupTicketInput();
+    setupCountdown();
 
 })(window);

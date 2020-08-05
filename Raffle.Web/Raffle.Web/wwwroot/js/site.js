@@ -5,17 +5,14 @@
 
 
 (function (win) {
-    jQuery(document).ready(jQuery => {
-        
-        jQuery(".localTime").each(function (i, obj) {
-            let element = $(this);
-            let utc = element.attr("utc");
-            let format = element.attr("format");
-            format = format || 'MM/DD/YYYY h:mm a';
-            let d = moment(new Date(utc));
+    let timeElements = document.getElementsByClassName("localTime");
 
-            element.text(d.local().format(format))
-        })
-    });
+    for (let i = 0; i < timeElements.length; i++) {
+        let utc = timeElements[i].getAttribute("utc");
+        let format = timeElements[i].getAttribute("format");
+        format = format || "MM/DD/YYYY h:mm a";
+        let d = moment(new Date(utc));
 
+        timeElements[i].textContent = d.local().format(format);
+    }
 })(window);

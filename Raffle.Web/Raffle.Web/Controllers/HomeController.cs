@@ -43,7 +43,7 @@ namespace Raffle.Web.Controllers
         }
 
         [HttpPost("/updateorder/updateitem/{raffleItemId}")]
-        public async Task<IActionResult> UpdateTicketCount(int raffleItemId, [FromForm] UpdateOrderItemModel model)
+        public async Task<IActionResult> UpdateTicketCount(int raffleItemId, [FromBody] UpdateOrderItemModel model)
         {
             var raffleItems = raffleItemRepository.GetAll().ToList();
 

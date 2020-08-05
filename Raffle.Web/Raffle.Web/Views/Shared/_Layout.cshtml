@@ -34,7 +34,7 @@
                         @*<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Raffle">Raffle</a>
                         </li>*@
-                        @if (flagManager.Get("HowManyTickets") == "on" || ViewData["graph"] == "on")
+                        @if (flagManager.Get("HowManyTickets") == "on" || (string)ViewData["graph"] == "on")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="HowManyTickets">How Many Tickets</a>

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MediatR;
+using Raffle.Core.Events;
 using Raffle.Core.Shared;
 
 using System;
@@ -29,9 +30,11 @@ namespace Raffle.Core.Commands
     public class AddRaffleItemCommandHandler : INotificationHandler<AddRaffleItemCommand>
     {
         readonly string connectionString;
+        readonly IMediator mediator;
 
-        public AddRaffleItemCommandHandler(RaffleDbConfiguration config)
+        public AddRaffleItemCommandHandler(RaffleDbConfiguration config, IMediator mediator)
         {
+            this.mediator = mediator;
             connectionString = config.ConnectionString;
         }
 
@@ -45,6 +48,8 @@ namespace Raffle.Core.Commands
             {
                 await conn.ExecuteAsync(query, notification);
             }
+
+            await mediator.Publish(new RaffleItemUpdated(), cancellationToken);
         }
     }
 }

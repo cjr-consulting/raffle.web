@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Raffle.Core;
+using Raffle.Core.Cache;
 using Raffle.Core.Models;
 using Raffle.Core.Shared;
 using Raffle.Web.Config;
@@ -104,6 +105,8 @@ namespace Raffle.Web
             services.AddSingleton(services => new EmailAddress(Configuration["raffleManager:Email"], Configuration["raffleManager:Name"]));
 
             services.AddRaffleItem();
+            services.AddRaffleItemCache();
+            services.AddSingleton<ICacheManager, CacheManager>();
 
             services.AddSingleton<EmbeddedResourceReader>();
             services.AddAuthorization(options =>
@@ -118,6 +121,7 @@ namespace Raffle.Web
         {
             if (env.IsDevelopment())
             {
+                app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 
@@ -12,6 +13,8 @@ using Raffle.Core.Repositories;
 using Raffle.Core.Shared;
 using Raffle.Web.Models;
 using Raffle.Web.Models.Raffle;
+using Raffle.Web.Services;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,9 +50,9 @@ namespace Raffle.Web.Controllers
         {
             var raffleItems = raffleItemRepository.GetAll().ToList();
 
-            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            if (HttpContext.Request.Cookies.ContainsKey(CookieKeys.RaffleOrderId))
             {
-                var orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
+                var orderId = int.Parse(HttpContext.Request.Cookies[CookieKeys.RaffleOrderId]);
                 var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId }));
 
                 var raffleItem = raffleItems.FirstOrDefault(x => x.Id == raffleItemId);
@@ -80,9 +83,9 @@ namespace Raffle.Web.Controllers
         {
             int? orderId = null;
 
-            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            if (HttpContext.Request.Cookies.ContainsKey(CookieKeys.RaffleOrderId))
             {
-                orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
+                orderId = int.Parse(HttpContext.Request.Cookies[CookieKeys.RaffleOrderId]);
                 if (!await mediator.Send(new RaffleOrderExistsQuery { OrderId = orderId.Value }))
                 {
                     orderId = null;
@@ -135,7 +138,7 @@ namespace Raffle.Web.Controllers
             {
                 orderId = (await mediator.Send(new StartRaffleOrderQuery()));
                 HttpContext.Response.Cookies.Append(
-                    "dfdoid",
+                    CookieKeys.RaffleOrderId,
                     orderId.ToString(),
                     new CookieOptions
                     {
@@ -213,9 +216,9 @@ namespace Raffle.Web.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            if (HttpContext.Request.Cookies.ContainsKey(CookieKeys.RaffleOrderId))
             {
-                var orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
+                var orderId = int.Parse(HttpContext.Request.Cookies[CookieKeys.RaffleOrderId]);
                 order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId }));
             }
 
@@ -311,7 +314,7 @@ namespace Raffle.Web.Controllers
                 }
 
                 HttpContext.Response.Cookies.Append(
-                        "dfdoid",
+                        CookieKeys.RaffleOrderId,
                         order.Id.ToString(),
                         new CookieOptions
                         {
@@ -329,9 +332,9 @@ namespace Raffle.Web.Controllers
         [HttpGet("ClearDonation")]
         public async Task<IActionResult> ClearDonation()
         {
-            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            if (HttpContext.Request.Cookies.ContainsKey(CookieKeys.RaffleOrderId))
             {
-                var orderId = int.Parse(HttpContext.Request.Cookies["dfdoid"]);
+                var orderId = int.Parse(HttpContext.Request.Cookies[CookieKeys.RaffleOrderId]);
                 var updateOrder = new UpdateOrderCommand
                 {
                     OrderId = orderId,
@@ -356,9 +359,9 @@ namespace Raffle.Web.Controllers
 
             if(order.CompletedDate.HasValue)
             {
-                if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+                if (HttpContext.Request.Cookies.ContainsKey(CookieKeys.RaffleOrderId))
                 {
-                    HttpContext.Response.Cookies.Delete("dfdoid");
+                    HttpContext.Response.Cookies.Delete(CookieKeys.RaffleOrderId);
                 }
 
                 return RedirectToAction("DonationSuccessful", new { orderId });
@@ -413,7 +416,7 @@ namespace Raffle.Web.Controllers
                 };
 
                 await mediator.Publish(command);
-                HttpContext.Response.Cookies.Delete("dfdoid");
+                HttpContext.Response.Cookies.Delete(CookieKeys.RaffleOrderId);
                 return RedirectToAction("DonationSuccessful", new { orderId });
             }
 
@@ -465,9 +468,9 @@ namespace Raffle.Web.Controllers
                     }).ToList()
             };
 
-            if (HttpContext.Request.Cookies.ContainsKey("dfdoid"))
+            if (HttpContext.Request.Cookies.ContainsKey(CookieKeys.RaffleOrderId))
             {
-                HttpContext.Response.Cookies.Delete("dfdoid");
+                HttpContext.Response.Cookies.Delete(CookieKeys.RaffleOrderId);
             }
 
             return View(model);

@@ -118,6 +118,7 @@ namespace Raffle.Web.Controllers
                     Value = x.ItemValue,
                     ForOver21 = x.ForOver21,
                     LocalPickupOnly = x.LocalPickupOnly,
+                    IsAvailable = x.IsAvailable,
                     NumberOfDraws = x.NumberOfDraws,
                     TotalTicketsEntered = x.TotalTicketsEntered,
                     Pictures = x.ImageUrls
@@ -236,6 +237,7 @@ namespace Raffle.Web.Controllers
                     ForOver21 = x.ForOver21,
                     LocalPickupOnly = x.LocalPickupOnly,
                     NumberOfDraws = x.NumberOfDraws,
+                    IsAvailable = x.IsAvailable,
                     TotalTicketsEntered = x.TotalTicketsEntered,
                     Pictures = x.ImageUrls
                 }).ToList();

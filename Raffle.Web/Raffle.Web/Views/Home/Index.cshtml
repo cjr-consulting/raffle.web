@@ -193,16 +193,22 @@
                             <td class="text-center align-middle">@Model.RaffleItems[i].Category</td>
                             <td class="text-center align-middle">@Model.RaffleItems[i].Cost @Html.HiddenFor(x => x.RaffleItems[i].Cost)</td>
                             <td class="text-center align-middle">
+                                @if (Model.RaffleItems[i].IsAvailable)
+                                {
                                 @Html.TextBoxFor(x =>
-      x.RaffleItems[i].Amount,
-      null,
-      new
-      {
-          style = "width:50px",
-          @class = "form-control ticketInput",
-          data_raffle_item_id = Model.RaffleItems[i].Id
-      })
-
+                                           x.RaffleItems[i].Amount,
+                                           null,
+                                           new
+                                           {
+                                               style = "width:50px",
+                                               @class = "form-control ticketInput",
+                                               data_raffle_item_id = Model.RaffleItems[i].Id
+                                           })
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">No More Tixs</span>
+                                }
                             </td>
                         </tr>
                     }

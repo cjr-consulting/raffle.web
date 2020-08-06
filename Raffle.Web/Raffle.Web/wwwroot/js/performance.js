@@ -1,4 +1,5 @@
-﻿(function (window) {
+﻿"use strict";
+(function (window) {
     let ordersChartctx = document.getElementById('ordersChart').getContext('2d');
     let totalPointsChartctx = document.getElementById('totalPointsChart').getContext('2d');
     let raffleItemChartctx = document.getElementById('raffleItems').getContext('2d');

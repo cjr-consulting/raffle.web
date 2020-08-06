@@ -1,4 +1,4 @@
-﻿
+﻿"use strict";
 (function (win) {
     jQuery(document).ready(jQuery => {
         jQuery("#IsInternational").on("click", (event) => {

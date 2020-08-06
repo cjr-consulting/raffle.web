@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
+using Microsoft.Extensions.Logging;
 using Raffle.Core;
 using Raffle.Core.Cache;
 using Raffle.Core.Models;
@@ -18,7 +18,7 @@ using Raffle.Web.Config;
 
 using Raffle.Web.Data;
 using Raffle.Web.Services;
-
+using StackifyLib;
 using System;
 using System.Collections.Generic;
 
@@ -119,6 +119,8 @@ namespace Raffle.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.ConfigureStackifyLogging(Configuration);
+
             if (env.IsDevelopment())
             {
                 app.UseMiddleware<StackifyMiddleware.RequestTracerMiddleware>();

@@ -1,4 +1,5 @@
-﻿(function (window) {
+﻿"use strict";
+(function (window) {
     let raffleItemChartctx = document.getElementById('raffleItems').getContext('2d');
 
     fetch('/api/orders/raffleitems')

@@ -50,7 +50,12 @@ namespace Raffle.Web.Controllers
             if (HttpContext.Request.Cookies.ContainsKey(CookieKeys.RaffleOrderId))
             {
                 var orderId = int.Parse(HttpContext.Request.Cookies[CookieKeys.RaffleOrderId]);
-                var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId }));
+                var order = await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId });
+                if(order == null)
+                {
+                    logger.LogWarning($"No order found for RaffleOrderId: {orderId}");
+                    return Json(new { Success = false });
+                }
 
                 var raffleItem = raffleItems.FirstOrDefault(x => x.Id == raffleItemId);
                 if (raffleItem == null)
@@ -72,7 +77,8 @@ namespace Raffle.Web.Controllers
 
                 return Json(new { Success = true });
             }
-
+            
+            logger.LogWarning("No RaffleOrderId cookie exists.");
             return Json(new { Success = false });
         }
 

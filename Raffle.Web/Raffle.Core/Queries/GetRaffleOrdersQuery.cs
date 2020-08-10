@@ -1,7 +1,8 @@
 ﻿using Dapper;
+
 using MediatR;
+
 using Raffle.Core.Models;
-using Raffle.Core.Shared;
 
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace Raffle.Core.Queries
         public Customer Customer { get; set; }
         public int TotalTickets { get; set; }
         public int TotalPoints { get; set; }
+        public string HowDidYouHear { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? CompletedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
@@ -55,6 +57,7 @@ namespace Raffle.Core.Queries
                     "StartDate, " +
                     "CompletedDate, " +
                     "DonationDate, " +
+                    "HowDidYouHear, " +
 
                     "Email = ro.Customer_Email, " +
                     "FirstName = ro.Customer_FirstName, " +

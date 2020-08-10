@@ -59,7 +59,10 @@ namespace Raffle.Web.Controllers
 
                 var raffleItem = raffleItems.FirstOrDefault(x => x.Id == raffleItemId);
                 if (raffleItem == null)
+                {
+                    logger.LogWarning($"RaffleItemId: {raffleItemId} wasn't found to update count on order");
                     return Json(new { Success = false });
+                }
 
                 await mediator.Publish(new UpdateOrderCommand
                 {
@@ -78,7 +81,7 @@ namespace Raffle.Web.Controllers
                 return Json(new { Success = true });
             }
             
-            logger.LogWarning("No RaffleOrderId cookie exists.");
+            logger.LogWarning("No RaffleOrderId cookie exists");
             return Json(new { Success = false });
         }
 
@@ -140,7 +143,8 @@ namespace Raffle.Web.Controllers
             } 
             else
             {
-                orderId = (await mediator.Send(new StartRaffleOrderQuery()));
+                logger.LogInformation("No Order Found.");
+                orderId = await mediator.Send(new StartRaffleOrderQuery());
                 HttpContext.Response.Cookies.Append(
                     CookieKeys.RaffleOrderId,
                     orderId.ToString(),
@@ -150,6 +154,7 @@ namespace Raffle.Web.Controllers
                         SameSite = SameSiteMode.Strict,
                         Expires = new DateTimeOffset(DateTime.Now.AddDays(7))
                     });
+                logger.LogInformation($"New Order Created (OrderId: {orderId})");
             }
 
             if(!string.IsNullOrEmpty(searchFilter))

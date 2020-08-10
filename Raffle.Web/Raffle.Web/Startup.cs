@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
 using Raffle.Core;
 using Raffle.Core.Cache;
 using Raffle.Core.Models;
@@ -18,7 +18,9 @@ using Raffle.Web.Config;
 
 using Raffle.Web.Data;
 using Raffle.Web.Services;
+
 using StackifyLib;
+
 using System;
 using System.Collections.Generic;
 
@@ -36,6 +38,7 @@ namespace Raffle.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var dbConnectionString = Configuration.GetConnectionString("DefaultConnection");
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     dbConnectionString));
@@ -94,7 +97,7 @@ namespace Raffle.Web
 
             var section = Configuration.GetSection("Flags");
             var flags = new Dictionary<string, string>();
-            foreach(var child in section.GetChildren())
+            foreach (var child in section.GetChildren())
             {
                 flags.Add(child.Key, child.Value);
             }

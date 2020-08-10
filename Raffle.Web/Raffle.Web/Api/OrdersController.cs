@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿
 using MediatR;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Raffle.Core.Queries;
-using Raffle.Web.Models.Admin.RaffleOrder;
 using Raffle.Core.Repositories;
+
+using Raffle.Web.Models.Admin.RaffleOrder;
+
+using System;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Raffle.Web.Api
 {
@@ -43,7 +44,8 @@ namespace Raffle.Web.Api
                 TotalPoints = x.TotalPoints,
                 TotalTickets = x.TotalTickets,
                 StartDate = x.StartDate,
-                CompletedDate = x.CompletedDate.Value.ToUniversalTime()
+                CompletedDate = x.CompletedDate.Value.ToUniversalTime(),
+                HowDidYouHear = x.HowDidYouHear
             }).ToList();
         }
 
@@ -51,7 +53,7 @@ namespace Raffle.Web.Api
         public async Task<ActionResult<List<AdminListRaffleItem>>> GetRaffleItems()
         {
             var adminRaffleItems = await mediator.Send(new GetAdminRaffleItemsQuery());
-            return adminRaffleItems.RaffleItems.OrderByDescending(x => x.TotalTicketsEntered).ToList();           
+            return adminRaffleItems.RaffleItems.OrderByDescending(x => x.TotalTicketsEntered).ToList();
         }
     }
 

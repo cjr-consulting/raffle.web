@@ -20,5 +20,6 @@ namespace Raffle.Web.Models.Admin.RaffleOrder
         public DateTime? CompletedDate { get; set; }
         public int TotalTickets { get; set; }
         public int TotalPoints { get; set; }
+        public string HowDidYouHear { get; set; }
     }
 }

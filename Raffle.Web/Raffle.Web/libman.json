@@ -51,6 +51,14 @@
       "files": [
         "lazysizes.min.js"
       ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "chartjs-plugin-colorschemes@0.4.0",
+      "destination": "wwwroot/lib/chartjs-plugin-colorschemes/",
+      "files": [
+        "dist/chartjs-plugin-colorschemes.min.js"
+      ]
     }
   ]
 }

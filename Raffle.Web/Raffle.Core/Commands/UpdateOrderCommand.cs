@@ -42,7 +42,7 @@ namespace Raffle.Core.Commands
                 using (var transaction = conn.BeginTransaction())
                 {
                     const string clearLineItemsQuery = "DELETE FROM RaffleOrderLineItems WHERE RaffleOrderId = @RaffleOrderId;";
-                    const string clearLineItemQuery = "DELETE FROM RaffleOrderLineItems WHERE RaffleOrderId = @RaffleOrderId AND RaffleItemId = @RaffleItemId;";
+                    const string clearLineItemQuery =  "DELETE FROM RaffleOrderLineItems WHERE RaffleOrderId = @RaffleOrderId AND RaffleItemId = @RaffleItemId;";
                     const string upsertOrderItemQuery = "IF EXISTS(SELECT 1 FROM RaffleOrderLineItems WHERE RaffleItemId = @RaffleItemId AND RaffleOrderId = @RaffleOrderId) " +
                         "BEGIN " +
                         "  UPDATE RaffleOrderLineItems SET " +

@@ -8,6 +8,7 @@
 
 @section Scripts {
     <script type="text/javascript" src="~/lib/Chart.js/Chart.min.js"></script>
+    <script type="text/javascript" src="~/lib/chartjs-plugin-colorschemes/dist/chartjs-plugin-colorschemes.min.js"></script>
     <script type="text/javascript" src="~/js/performance.js" asp-append-version="true"></script>
 }
 
@@ -26,6 +27,15 @@
 <div class="clearfix">
     <div>
         <canvas id="totalPointsChart" width="700" height="300"></canvas>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <canvas id="foundChart" width="500" height="200"></canvas>
+    </div>
+    <div class="col-md-6">
+        <canvas id="foundNoNoneChart" width="500" height="200"></canvas>
     </div>
 </div>
 <div class="clearfix">

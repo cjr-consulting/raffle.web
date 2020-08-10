@@ -2,10 +2,97 @@
 (function (window) {
     let ordersChartctx = document.getElementById('ordersChart').getContext('2d');
     let totalPointsChartctx = document.getElementById('totalPointsChart').getContext('2d');
+    let foundChart = document.getElementById('foundChart').getContext('2d');
+    let foundNoNoneChart = document.getElementById('foundNoNoneChart').getContext('2d');
     let raffleItemChartctx = document.getElementById('raffleItems').getContext('2d');
 
     function onlyUnique(value, index, self) {
         return self.indexOf(value) === index;
+    }
+
+    function setupFoundChart(data) {
+        let reduced = data
+            .reduce((r, a) => {
+                r[a.howDidYouHear === null ? '' : a.howDidYouHear] = [...r[a.howDidYouHear === null ? '' : a.howDidYouHear] || [], a];
+                return r;
+            }, {});
+
+        let labels = data.map(i => {
+                if (i.howDidYouHear === null) {
+                    return '';
+                }
+
+                return i.howDidYouHear;
+        }).filter(onlyUnique)
+            .sort();
+        console.debug('labels', labels);
+
+        var foundData = labels.map(value => {
+            if (reduced[value] === undefined) {
+                return 0;
+            } else {
+                return reduced[value].length;
+            }
+        });
+        console.debug("foundData", foundData);
+
+        labels[0] = 'N/A';
+
+        var chart = new Chart(foundChart, {
+            // The type of chart we want to create
+            type: 'doughnut',
+            // The data for our dataset
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'How',
+                    data: foundData
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                title: {
+                    display: true,
+                    text: 'How did you find us?'
+                },
+                responsive: true,
+                aspectRatio: 1.2,
+                plugins: {
+                    colorschemes: {
+                        scheme: "brewer.RdYlGn8"
+                    }
+                }
+            }
+        });
+
+        var chart = new Chart(foundNoNoneChart, {
+            // The type of chart we want to create
+            type: 'doughnut',
+            // The data for our dataset
+            data: {
+                labels: labels.splice(1),
+                datasets: [{
+                    label: 'How',
+                    data: foundData.splice(1)
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                title: {
+                    display: true,
+                    text: 'How did you find us?'
+                },
+                responsive: true,
+                aspectRatio: 1.2,
+                plugins: {
+                    colorschemes: {
+                        scheme: "brewer.Accent7"
+                    }
+                }
+            }
+        });
     }
 
     fetch('/api/orders')
@@ -86,12 +173,12 @@
                     labels: labels,
                     datasets: [{
                         label: 'Outstanding',
-                        backgroundColor: 'rgb(255, 99, 132)',
+                        //backgroundColor: 'rgb(255, 99, 132)',
                         data: dataOutstanding
                     },
                     {
                         label: 'Complete',
-                        backgroundColor: 'rgb(0, 255, 0)',
+                        //backgroundColor: 'rgb(0, 255, 0)',
                         data: dataComplete
                     }]
                 },
@@ -103,17 +190,22 @@
                         text: 'Completed Order By Points'
                     },
                     responsive: true,
-                    aspectRatio: 1.2,
+                    aspectRatio: 1.8,
                     scales: {
                         yAxes: [{
                             stacked: true,
                             ticks: {
-                                stepSize: 25
+                                stepSize: 50
                             }
                         }],
                         xAxes: [{
                             stacked: true
                         }]
+                    },
+                    plugins: {
+                        colorschemes: {
+                            scheme: 'office.Austin6'
+                        }
                     }
                 }
             });
@@ -125,10 +217,16 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Points',
-                        borderColor: 'rgb(255, 99, 132)',
-                        data: dataTotalPoints
-                    }]
+                            label: 'Points',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: dataTotalPoints
+                        }, {
+                            label: 'New Points',
+                            //backgroundColor: 'rgb(0, 255, 0)',
+                            data: dataComplete,
+                            barPercentage: .3,
+                            type: 'bar'
+                        }]
                 },
                 // Configuration options go here
                 options: {
@@ -137,17 +235,23 @@
                         text: 'Total Points Over Time'
                     },
                     responsive: true,
-                    aspectRatio: 1.1,
+                    aspectRatio: 1.4,
                     scales: {
                         yAxes: [{
                             ticks: {
-                                stepSize: 25
+                                stepSize: 50
                             }
                         }]
+                    },
+                    plugins: {
+                        colorschemes: {
+                            scheme: 'office.Codex6'
+                        }
                     }
                 }
             });
 
+            setupFoundChart(data);
         });
 
     fetch('/api/orders/raffleitems')
@@ -167,8 +271,8 @@
                     labels: labels,
                     datasets: [{
                         label: 'Tickets',
-                        backgroundColor: 'rgb(255, 99, 132, 0.75)',
-                        borderColor: 'rgb(255, 65, 100)',
+                        //backgroundColor: 'rgb(255, 99, 132, 0.75)',
+                        //borderColor: 'rgb(255, 65, 100)',
                         borderWidth: 2,
                         data: countData
                     }]
@@ -195,6 +299,11 @@
                                 stepSize: 5
                             }
                         }]
+                    },
+                    plugins: {
+                        colorschems: {
+                            scheme: "brewer.SetOne5"
+                        }
                     }
                 }
             });

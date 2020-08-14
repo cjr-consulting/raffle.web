@@ -1,5 +1,6 @@
 using MediatR;
 
+using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -57,6 +58,8 @@ namespace Raffle.Web
             });
 
             services.AddApplicationInsightsTelemetry();
+            services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>(
+                (module, o) => { module.EnableSqlCommandTextInstrumentation = true; });
             services.AddControllersWithViews();
             services.AddRazorPages();
 

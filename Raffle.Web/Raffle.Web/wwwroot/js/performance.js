@@ -217,15 +217,19 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                            label: 'Points',
+                        label: 'Overall Points',
+                        yAxisID: 'A',
                             borderColor: 'rgb(255, 99, 132)',
                             data: dataTotalPoints
                         }, {
-                            label: 'New Points',
+                            label: 'Daily Points',
                             //backgroundColor: 'rgb(0, 255, 0)',
+                            yAxisID: 'B',
                             data: dataComplete,
                             barPercentage: .3,
-                            type: 'bar'
+                            type: 'line',
+                            fill: false,
+                            cubicInterpolationMode: 'monotone'
                         }]
                 },
                 // Configuration options go here
@@ -238,10 +242,20 @@
                     aspectRatio: 1.4,
                     scales: {
                         yAxes: [{
+                            id: 'A',
+                            type: 'linear',
+                            position: 'left',
                             ticks: {
-                                stepSize: 50
+                                stepSize: 100
                             }
-                        }]
+                        }, {
+                                id: 'B',
+                                type: 'linear',
+                                position: 'right',
+                                ticks: {
+                                    stepSize: 50
+                                }
+                            }]
                     },
                     plugins: {
                         colorschemes: {

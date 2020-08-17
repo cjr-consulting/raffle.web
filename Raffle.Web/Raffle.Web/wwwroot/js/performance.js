@@ -57,7 +57,7 @@
                     text: 'How did you find us?'
                 },
                 responsive: true,
-                aspectRatio: 1.2,
+                aspectRatio: 2.4,
                 plugins: {
                     colorschemes: {
                         scheme: "brewer.RdYlGn8"
@@ -85,7 +85,7 @@
                     text: 'How did you find us?'
                 },
                 responsive: true,
-                aspectRatio: 1.2,
+                aspectRatio: 2.4,
                 plugins: {
                     colorschemes: {
                         scheme: "brewer.Accent7"
@@ -227,7 +227,7 @@
                             yAxisID: 'B',
                             data: dataComplete,
                             barPercentage: .3,
-                            type: 'line',
+                            type: 'bar',
                             fill: false,
                             cubicInterpolationMode: 'monotone'
                         }]
@@ -253,7 +253,7 @@
                                 type: 'linear',
                                 position: 'right',
                                 ticks: {
-                                    stepSize: 50
+                                    stepSize: 100
                                 }
                             }]
                     },

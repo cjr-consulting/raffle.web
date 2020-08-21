@@ -2,7 +2,7 @@
 (
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
     [TicketNumber] NVARCHAR(150) NULL, 
-    [Confirmed21] BIT NOT NULL DEFAULT 0,
+    [Confirmed21] BIT NOT NULL CONSTRAINT DF_RaffleOrders_Confirm21 DEFAULT 0,
     [Customer_Email] NVARCHAR(500) NULL, 
     [Customer_FirstName] NVARCHAR(200) NULL, 
     [Customer_LastName] NVARCHAR(200) NULL, 
@@ -12,14 +12,14 @@
     [Customer_Address_City] NVARCHAR(150) NULL, 
     [Customer_Address_State] NVARCHAR(150) NULL, 
     [Customer_Address_Zip] NVARCHAR(11) NULL,
-    [Customer_IsInternational] BIT NOT NULL DEFAULT 0,
+    [Customer_IsInternational] BIT NOT NULL CONSTRAINT DF_RaffleOrders_CustomerIsInternational DEFAULT 0,
     [Customer_IAddressText] NVARCHAR(500) NULL,
-    [IsOrderConfirmed] BIT NULL DEFAULT 0, 
-    [StartDate] DATETIME2 NOT NULL DEFAULT GETUTCDATE(), 
+    [IsOrderConfirmed] BIT NULL CONSTRAINT DF_RaffleOrders_IsOrderConfirmed DEFAULT 0, 
+    [StartDate] DATETIME2 NOT NULL CONSTRAINT DF_RaffleOrders_StartDate DEFAULT GETUTCDATE(), 
     [CompletedDate] DATETIME2 NULL, 
     [UpdatedDate] DATETIME2 NULL,
     [DonationDate] DATETIME2 NULL,
-    [DonationNote] NVARCHAR(800) NOT NULL DEFAULT '', 
-    [HowDidYouHear] NVARCHAR(100) NOT NULL DEFAULT '', 
-    [HowDidYouHearOther] NVARCHAR(500) NOT NULL DEFAULT ''
+    [DonationNote] NVARCHAR(800) NOT NULL CONSTRAINT DF_RaffleOrders_DonationNote DEFAULT '', 
+    [HowDidYouHear] NVARCHAR(100) NOT NULL CONSTRAINT DF_RaffleOrders_HowDidYouHear DEFAULT '', 
+    [HowDidYouHearOther] NVARCHAR(500) NOT NULL CONSTRAINT DF_RaffleOrders_HowDidYouHearOther DEFAULT ''
 )

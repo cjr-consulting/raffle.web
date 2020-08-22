@@ -98,9 +98,9 @@ namespace Raffle.Web.Controllers
             if (HttpContext.Request.Cookies.ContainsKey(CookieKeys.RaffleOrderId))
             {
                 int.TryParse(HttpContext.Request.Cookies[CookieKeys.RaffleOrderId], out int orderId);
-                if (!await mediator.Send(new RaffleOrderExistsQuery { OrderId = orderId }))
+                if (!(await mediator.Send(new RaffleOrderExistsQuery { OrderId = orderId })))
                 {
-                    logger.LogInformation("No Order Found.");
+                    logger.LogInformation("No Order Found");
                     orderId = await mediator.Send(new StartRaffleOrderQuery());
                     HttpContext.Response.Cookies.Append(
                         CookieKeys.RaffleOrderId,
@@ -113,6 +113,23 @@ namespace Raffle.Web.Controllers
                         });
                     logger.LogInformation($"New Order Created (OrderId: {orderId})");
                 }
+
+                order = await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId });
+            }
+            else
+            {
+                logger.LogInformation("No Order Cookie Found");
+                var orderId = await mediator.Send(new StartRaffleOrderQuery());
+                HttpContext.Response.Cookies.Append(
+                    CookieKeys.RaffleOrderId,
+                    orderId.ToString(),
+                    new CookieOptions
+                    {
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = new DateTimeOffset(DateTime.Now.AddDays(7))
+                    });
+                logger.LogInformation($"New Order Created (OrderId: {orderId})");
 
                 order = await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId });
             }

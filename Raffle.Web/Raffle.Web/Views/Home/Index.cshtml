@@ -16,35 +16,42 @@
         <img src="~/images/DFDQ-RaffleBanner.jpg" class="img-fluid" alt="Welcome to the Darts for Dreams Quarantine Edition Raffle" />
     </div>
 </div>
-<div class="text-center">
-    <h5>The online raffle will be turned off at 2 PM ET on August 22nd! </h5>
-    @if (Model.CloseDate >= DateTime.UtcNow)
-    {
+
+@if (Model.CloseDate >= DateTime.UtcNow)
+{
+    <div class="text-center">
+        <h5>The online raffle will be turned off at 2 PM ET on August 22nd! </h5>
         <h5><span id="timeCountdown" utc="@Model.CloseDate.Value.ToString("o")"></span></h5>
-    }
-</div>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <h5>The online raffle will start at 2 PM ET on August 22nd! </h5>
+    </div>
+}
 <p>
     Thank you for choosing to stop by and help MAWNJ via our online Darts for Dreams event in 2020.
     Your support is truly appreciated as we continue to help kids with critical illnesses in our area.
 </p>
-<p>
-    Step 1: Below is a list of prizes available to win on August 22nd, some basic information,
-    images and their value. Simple navigate the page and select how many chances for each prize
-    you'd like to have. Once you've made your choices, hit the "CONTINUE" button at the bottom
-    to move to the next step.
-</p>
-<div class="row">
-    <div class="mb-3">
-        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-        {
-            <div class="alert alert-danger" role="alert">
-                @Model.ErrorMessage
-            </div>
-        }
-    </div>
-</div>
 @if (DateTime.UtcNow < Model.CloseDate)
 {
+    <p>
+        Step 1: Below is a list of prizes available to win on August 22nd, some basic information,
+        images and their value. Simple navigate the page and select how many chances for each prize
+        you'd like to have. Once you've made your choices, hit the "CONTINUE" button at the bottom
+        to move to the next step.
+    </p>
+    <div class="row">
+        <div class="mb-3">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger" role="alert">
+                    @Model.ErrorMessage
+                </div>
+            }
+        </div>
+    </div>
     <form asp-action="Index" method="get">
         <div class="form-actions no-color">
             <div class="row">
@@ -96,26 +103,26 @@
                                 #@Model.RaffleItems[i].ItemNumber @Html.HiddenFor(x => x.RaffleItems[i].ItemNumber)
                                 @if (flagManager.Get("RaffleItemEmoji") == "on" || (string)ViewData["emoji"] == "on")
                                 {
-                                <br />
-                                if (Model.RaffleItems[i].TotalTicketsEntered > 0 && Model.RaffleItems[i].TotalTicketsEntered <= 10)
+                                    <br />
+                                    if (Model.RaffleItems[i].TotalTicketsEntered > 0 && Model.RaffleItems[i].TotalTicketsEntered <= 10)
                                     {
-                                <img src="~/images/1star.jpg" width="50" height="50" title="1-10 tix" alt="1-10 tix" />
+                                        <img src="~/images/1star.jpg" width="50" height="50" title="1-10 tix" alt="1-10 tix" />
                                     }
                                     else if (Model.RaffleItems[i].TotalTicketsEntered > 10 && Model.RaffleItems[i].TotalTicketsEntered <= 25)
                                     {
-                                <img src="~/images/2stars.jpg" width="50" height="50" title="11-25 tix" alt="11-25 tix" />
+                                        <img src="~/images/2stars.jpg" width="50" height="50" title="11-25 tix" alt="11-25 tix" />
                                     }
                                     else if (Model.RaffleItems[i].TotalTicketsEntered > 25 && Model.RaffleItems[i].TotalTicketsEntered <= 50)
                                     {
-                                <img src="~/images/3stars.jpg" width="50" height="50" title="26-50 tix" alt="26-50 tix" />
+                                        <img src="~/images/3stars.jpg" width="50" height="50" title="26-50 tix" alt="26-50 tix" />
                                     }
                                     else if (Model.RaffleItems[i].TotalTicketsEntered > 50 && Model.RaffleItems[i].TotalTicketsEntered <= 100)
                                     {
-                                <img src="~/images/4stars.jpg" width="50" height="50" title="51-100 tix" alt="51-100 tix" />
+                                        <img src="~/images/4stars.jpg" width="50" height="50" title="51-100 tix" alt="51-100 tix" />
                                     }
                                     else if (Model.RaffleItems[i].TotalTicketsEntered > 100)
                                     {
-                                <img src="~/images/bigstar.jpg" width="50" height="50" title="100+ tix" alt="100+ tix" />
+                                        <img src="~/images/bigstar.jpg" width="50" height="50" title="100+ tix" alt="100+ tix" />
                                     }
                                 }
                             </td>
@@ -124,86 +131,86 @@
                                 <div class="row">
                                     @if (Model.RaffleItems[i].Pictures.Count >= 1)
                                     {
-                                    <div class="col-md-3">
-                                        <a href="@Model.RaffleItems[i].Pictures.First()" target="_blank" rel="noopener noreferrer">
-                                            @if (i < 2)
-                                            {
-                                                <img src="@Model.RaffleItems[i].Pictures.First()" class="img-fluid rounded" alt="@Model.RaffleItems[i].Title">
-                                            }
-                                            else
-                                            {
-                                                <img data-src="@Model.RaffleItems[i].Pictures.First()" class="lazyload img-fluid rounded" alt="@Model.RaffleItems[i].Title">
-                                            }
-                                        </a>
-                                    </div>
-                                    }
-                                <div class="col-md-@(Model.RaffleItems[i].Pictures.Count >= 1? "9" : "12")">
-                                    <h5>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</h5>
-
-                                    <div>
-                                        @if (Model.RaffleItems[i].NumberOfDraws > 1)
-                                        {
-                                            <span class="badge badge-success" title="Number of tickets drawn">@Model.RaffleItems[i].NumberOfDraws Winners</span>
-                                        }
-                                        @if (Model.RaffleItems[i].LocalPickupOnly)
-                                        {
-                                            <span class="badge badge-primary">Local Pickup Only</span>
-                                        }
-                                        @if (Model.RaffleItems[i].ForOver21)
-                                        {
-                                            <span class="badge badge-warning">Over 21</span>
-                                        }
-                                    </div>
-
-                                    <div>
-                                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Value))
-                                        {
-                                            <b>Est. value of @Model.RaffleItems[i].Value</b><br />
-                                        }
-                                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Description))
-                                        {
-                                            @Model.RaffleItems[i].Description<br />
-                                        }
-                                        @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
-                                        {
-                                            <b>Donated By: </b><span class="font-italic">@Model.RaffleItems[i].Sponsor</span><br />
-                                        }
-                                    </div>
-                                    @if (Model.RaffleItems[i].Pictures.Count > 0)
-                                    {
-                                        <div>
-                                            @foreach (var picture in Model.RaffleItems[i].Pictures.Skip(1))
-                                            {
-                                            <a href="@picture" target="_blank" rel="noopener noreferrer">
+                                        <div class="col-md-3">
+                                            <a href="@Model.RaffleItems[i].Pictures.First()" target="_blank" rel="noopener noreferrer">
                                                 @if (i < 2)
                                                 {
-                                                    <img src="@picture" class="rounded float-left" style="max-width: 80px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                                    <img src="@Model.RaffleItems[i].Pictures.First()" class="img-fluid rounded" alt="@Model.RaffleItems[i].Title">
                                                 }
                                                 else
                                                 {
-                                                    <img data-src="@picture" class="lazyload rounded float-left" style="max-width: 80px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                                    <img data-src="@Model.RaffleItems[i].Pictures.First()" class="lazyload img-fluid rounded" alt="@Model.RaffleItems[i].Title">
                                                 }
                                             </a>
-                                            }
                                         </div>
                                     }
-                                </div>
+                                    <div class="col-md-@(Model.RaffleItems[i].Pictures.Count >= 1? "9" : "12")">
+                                        <h5>@Model.RaffleItems[i].Title @Html.HiddenFor(x => x.RaffleItems[i].Title)</h5>
+
+                                        <div>
+                                            @if (Model.RaffleItems[i].NumberOfDraws > 1)
+                                            {
+                                                <span class="badge badge-success" title="Number of tickets drawn">@Model.RaffleItems[i].NumberOfDraws Winners</span>
+                                            }
+                                            @if (Model.RaffleItems[i].LocalPickupOnly)
+                                            {
+                                                <span class="badge badge-primary">Local Pickup Only</span>
+                                            }
+                                            @if (Model.RaffleItems[i].ForOver21)
+                                            {
+                                                <span class="badge badge-warning">Over 21</span>
+                                            }
+                                        </div>
+
+                                        <div>
+                                            @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Value))
+                                            {
+                                                <b>Est. value of @Model.RaffleItems[i].Value</b><br />
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Description))
+                                            {
+                                                @Model.RaffleItems[i].Description<br />
+                                            }
+                                            @if (!string.IsNullOrEmpty(Model.RaffleItems[i].Sponsor))
+                                            {
+                                                <b>Donated By: </b><span class="font-italic">@Model.RaffleItems[i].Sponsor</span><br />
+                                            }
+                                        </div>
+                                        @if (Model.RaffleItems[i].Pictures.Count > 0)
+                                        {
+                                            <div>
+                                                @foreach (var picture in Model.RaffleItems[i].Pictures.Skip(1))
+                                                {
+                                                    <a href="@picture" target="_blank" rel="noopener noreferrer">
+                                                        @if (i < 2)
+                                                        {
+                                                            <img src="@picture" class="rounded float-left" style="max-width: 80px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img data-src="@picture" class="lazyload rounded float-left" style="max-width: 80px; margin-right:8px;" alt="@Model.RaffleItems[i].Title">
+                                                        }
+                                                    </a>
+                                                }
+                                            </div>
+                                        }
                                     </div>
+                                </div>
                             </td>
                             <td class="text-center align-middle">@Model.RaffleItems[i].Category</td>
                             <td class="text-center align-middle">@Model.RaffleItems[i].Cost @Html.HiddenFor(x => x.RaffleItems[i].Cost)</td>
                             <td class="text-center align-middle">
                                 @if (Model.RaffleItems[i].IsAvailable)
                                 {
-                                @Html.TextBoxFor(x =>
-                                           x.RaffleItems[i].Amount,
-                                           null,
-                                           new
-                                           {
-                                               style = "width:50px",
-                                               @class = "form-control ticketInput",
-                                               data_raffle_item_id = Model.RaffleItems[i].Id
-                                           })
+                                    @Html.TextBoxFor(x =>
+                                               x.RaffleItems[i].Amount,
+                                               null,
+                                               new
+                                               {
+                                                   style = "width:50px",
+                                                   @class = "form-control ticketInput",
+                                                   data_raffle_item_id = Model.RaffleItems[i].Id
+                                               })
                                 }
                                 else
                                 {
@@ -227,7 +234,21 @@
 }
 else
 {
-    <div class="text-center">
-        The raffle is complete!!
-    </div>
+<div class="text-center">
+    <p>
+        Thank you for coming to check out the Darts for Dreams raffle.
+    <p>
+        The raffles are now closed.If you still want to make a donation,
+        you can still go to http://site.wish.org/goto/DartsforDreams15 and help out.
+    </p>
+    <p>
+        As we select the winners, this page will update to show the prizes and the winner.
+    </p>
+    <p>
+        We can't thank everyone enough for their support as we try to reach our goal
+        of $74,000 this year and half million dollars since we started.  We appreciate
+        everyone who'se helped in every way over the years.The success of this event
+        is a testament to all of your support!!!
+    </p>
+</div>
 }

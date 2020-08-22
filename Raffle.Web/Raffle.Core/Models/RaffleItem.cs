@@ -20,7 +20,9 @@ namespace Raffle.Core.Models
         public int NumberOfDraws { get; set; }
         public string WinningTickets { get; set; }
         public int TotalTicketsEntered { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public List<string> ImageUrls { get; set; } = new List<string>();
+        public bool HasBeenDrawn { get { return !string.IsNullOrEmpty(WinningTickets); } }
     }
 }

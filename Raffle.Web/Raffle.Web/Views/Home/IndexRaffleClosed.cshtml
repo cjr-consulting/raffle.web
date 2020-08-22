@@ -1,0 +1,65 @@
+﻿@model Raffle.Web.Models.Raffle.RaffleOrderViewModel
+@inject Raffle.Web.Services.FlagManager flagManager
+
+@{
+    ViewData["Title"] = "Raffle";
+}
+
+@section Scripts {
+    <script type="text/javascript" src="~/lib/lazysizes/lazysizes.min.js"></script>
+    <script type="text/javascript" src="~/lib/handlebars.js/handlebars.min.js"></script>
+    <!--<script type="text/javascript" src="~/js/rafflerun.js" asp-append-version="true"></script>-->
+    <script type="text/javascript" src="~/js/rafflerun.js"></script>
+}
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <img src="~/images/DFDQ-RaffleBanner.jpg" class="img-fluid" alt="Welcome to the Darts for Dreams Quarantine Edition Raffle" />
+    </div>
+</div>
+<div class="text-center">
+    <h5>The online raffle will start at 2:30 PM ET on August 22nd! </h5>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <p>
+            Thank you for choosing to stop by and help MAWNJ via our online Darts for Dreams event in 2020.
+            Your support is truly appreciated as we continue to help kids with critical illnesses in our area.
+        </p>
+        <div class="text-center">
+            <p>
+                Thank you for coming to check out the Darts for Dreams raffle.
+            <p>
+                The raffles are now closed.If you still want to make a donation,
+                you can still go to http://site.wish.org/goto/DartsforDreams15 and help out.
+            </p>
+            <p>
+                As we select the winners, this page will update to show the prizes and the winner.
+            </p>
+            <p>
+                We can't thank everyone enough for their support as we try to reach our goal
+                of $74,000 this year and half million dollars since we started.  We appreciate
+                everyone who'se helped in every way over the years.  The success of this event
+                is a testament to all of your support!!!
+            </p>
+            <p>
+                Join us on <a href="https://us02web.zoom.us/j/88193680966?pwd=cFh2aHhpNGVLbjN5NHA5clpWUHRoZz09">Zoom Meeting</a> during a live presentation of the raffle.
+            </p>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table" style="margin-top: 5px;">
+            <thead>
+                <tr>
+                    <th scope="col">Title</th>
+                    <!--<th scope="col">Draw Ticket #</th>-->
+                    <th scope="col">Winner(s)</th>
+                </tr>
+            </thead>
+            <tbody id="raffleList">
+            </tbody>
+        </table>
+    </div>
+</div>

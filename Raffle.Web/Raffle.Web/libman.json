@@ -59,6 +59,18 @@
       "files": [
         "dist/chartjs-plugin-colorschemes.min.js"
       ]
+    },
+    {
+      "library": "microsoft-signalr@3.1.7",
+      "destination": "wwwroot/lib/microsoft-signalr/"
+    },
+    {
+      "library": "handlebars.js@4.7.6",
+      "destination": "wwwroot/lib/handlebars.js/",
+      "files": [
+        "handlebars.min.js",
+        "handlebars.js"
+      ]
     }
   ]
 }

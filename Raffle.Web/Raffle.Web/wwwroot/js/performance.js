@@ -66,7 +66,7 @@
             }
         });
 
-        var chart = new Chart(foundNoNoneChart, {
+        var chart2 = new Chart(foundNoNoneChart, {
             // The type of chart we want to create
             type: 'doughnut',
             // The data for our dataset

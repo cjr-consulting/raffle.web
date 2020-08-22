@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +58,7 @@ namespace Raffle.Web
                 options.Secure = CookieSecurePolicy.SameAsRequest;
             });
 
+            services.AddSignalR();
             services.AddApplicationInsightsTelemetry();
             services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>(
                 (module, o) => { module.EnableSqlCommandTextInstrumentation = true; });
@@ -94,8 +96,9 @@ namespace Raffle.Web
                 options.SlidingExpiration = true;
             });
 
-            services.AddMediatR(typeof(Startup), typeof(RaffleDbConfiguration));
+            services.AddMediatR(typeof(Startup), typeof(RaffleDbConfiguration), typeof(NotifyRaffleRunRaffleItemUpdate));
 
+            services.AddTransient<RaffleRunHub>();
             services.AddEmailService(Configuration);
 
             var section = Configuration.GetSection("Flags");
@@ -155,6 +158,7 @@ namespace Raffle.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<RaffleRunHub>("/RaffleRunHub");
             });
         }
     }

@@ -87,18 +87,37 @@ namespace Raffle.Web.Controllers
 
         public async Task<IActionResult> Index(string sortBy, string searchFilter, string categoryFilter)
         {
-            int? orderId = null;
+            var raffleEvent = raffleEventRepository.GetById(1);
+            if(raffleEvent.CloseDate.HasValue && raffleEvent.CloseDate.Value < DateTime.UtcNow)
+            {
+                return View("IndexRaffleClosed");
+            }
+
+            RaffleOrder order = null;
 
             if (HttpContext.Request.Cookies.ContainsKey(CookieKeys.RaffleOrderId))
             {
-                orderId = int.Parse(HttpContext.Request.Cookies[CookieKeys.RaffleOrderId]);
-                if (!await mediator.Send(new RaffleOrderExistsQuery { OrderId = orderId.Value }))
+                int.TryParse(HttpContext.Request.Cookies[CookieKeys.RaffleOrderId], out int orderId);
+                if (!await mediator.Send(new RaffleOrderExistsQuery { OrderId = orderId }))
                 {
-                    orderId = null;
+                    logger.LogInformation("No Order Found.");
+                    orderId = await mediator.Send(new StartRaffleOrderQuery());
+                    HttpContext.Response.Cookies.Append(
+                        CookieKeys.RaffleOrderId,
+                        orderId.ToString(),
+                        new CookieOptions
+                        {
+                            Secure = true,
+                            SameSite = SameSiteMode.Strict,
+                            Expires = new DateTimeOffset(DateTime.Now.AddDays(7))
+                        });
+                    logger.LogInformation($"New Order Created (OrderId: {orderId})");
                 }
+
+                order = await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId });
             }
 
-            if(HttpContext.Request.Query["emoji"] == "on")
+            if (HttpContext.Request.Query["emoji"] == "on")
             {
                 ViewData["emoji"] = "on";
             }
@@ -133,31 +152,12 @@ namespace Raffle.Web.Controllers
                     Pictures = x.ImageUrls
                 }).ToList();
 
-            if(orderId.HasValue)
-            { 
-                var order = (await mediator.Send(new GetRaffleOrderQuery { OrderId = orderId.Value }));
-                foreach(var line in order.Lines)
-                {
-                    raffleItems.First(x => x.Id == line.RaffleItemId).Amount = line.Count;
-                }
-            } 
-            else
+            foreach(var line in order.Lines)
             {
-                logger.LogInformation("No Order Found.");
-                orderId = await mediator.Send(new StartRaffleOrderQuery());
-                HttpContext.Response.Cookies.Append(
-                    CookieKeys.RaffleOrderId,
-                    orderId.ToString(),
-                    new CookieOptions
-                    {
-                        Secure = true,
-                        SameSite = SameSiteMode.Strict,
-                        Expires = new DateTimeOffset(DateTime.Now.AddDays(7))
-                    });
-                logger.LogInformation($"New Order Created (OrderId: {orderId})");
+                raffleItems.First(x => x.Id == line.RaffleItemId).Amount = line.Count;
             }
 
-            if(!string.IsNullOrEmpty(searchFilter))
+            if (!string.IsNullOrEmpty(searchFilter))
             {
                 raffleItems = raffleItems.Where(x => x.Title.Contains(searchFilter, StringComparison.OrdinalIgnoreCase)
                     || x.Description.Contains(searchFilter, StringComparison.OrdinalIgnoreCase)
@@ -202,7 +202,6 @@ namespace Raffle.Web.Controllers
                     break;
             }
 
-            var raffleEvent = raffleEventRepository.GetById(1);
             var model = new RaffleOrderViewModel
             {
                 StartDate = raffleEvent.StartDate,

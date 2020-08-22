@@ -3,10 +3,12 @@
 using MediatR;
 
 using Raffle.Core.Events;
-using Raffle.Core.Shared;
+using Raffle.Core.Models;
+using Raffle.Core.Repositories;
 
 using System;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,15 +37,26 @@ namespace Raffle.Core.Commands
     {
         readonly string connectionString;
         readonly IMediator mediator;
+        readonly IRaffleItemRepository repository;
 
-        public UpdateRaffleItemCommandHandler(RaffleDbConfiguration config, IMediator mediator)
+        public UpdateRaffleItemCommandHandler(
+            RaffleDbConfiguration config,
+            IRaffleItemRepository repository,
+            IMediator mediator)
         {
+            this.repository = repository;
             this.mediator = mediator;
             connectionString = config.ConnectionString;
         }
 
         public async Task Handle(UpdateRaffleItemCommand notification, CancellationToken cancellationToken)
         {
+            var existingRafflItem = repository.GetById(notification.Id);
+            if(NoChange(existingRafflItem, notification))
+            {
+                return;
+            }
+
             const string query = "UPDATE [RaffleItems] SET" +
                 " ItemNumber = @ItemNumber, " +
                 " Title = @Title," +
@@ -57,14 +70,34 @@ namespace Raffle.Core.Commands
                 " ForOver21 = @ForOver21, " +
                 " LocalPickupOnly = @LocalPickupOnly," +
                 " NumberOfDraws = @NumberOfDraws," +
-                " WinningTickets = @WinningTickets " +
+                " WinningTickets = @WinningTickets, " +
+                " UpdatedDate = GETUTCDATE() " +
                 "WHERE Id = @Id";
+
+
             using (var conn = new SqlConnection(connectionString))
             {
                 await conn.ExecuteAsync(query, notification);
-            }
 
-            await mediator.Publish(new RaffleItemUpdated(), cancellationToken);
+                var raffleItem = repository.GetById(notification.Id);
+                await mediator.Publish(new RaffleItemUpdated { RaffleItem = raffleItem }, cancellationToken);
+            }
         }
+        bool NoChange(RaffleItem raffleItem, UpdateRaffleItemCommand notification)
+        {
+            return raffleItem.Title == notification.Title
+                && raffleItem.Description == notification.Description
+                && raffleItem.Category == notification.Category
+                && raffleItem.Order == notification.Order
+                && raffleItem.ItemValue == notification.ItemValue
+                && raffleItem.Sponsor == notification.Sponsor
+                && raffleItem.Cost == notification.Cost
+                && raffleItem.IsAvailable == notification.IsAvailable
+                && raffleItem.ForOver21 == notification.ForOver21
+                && raffleItem.LocalPickupOnly == notification.LocalPickupOnly
+                && raffleItem.NumberOfDraws == notification.NumberOfDraws
+                && raffleItem.WinningTickets == notification.WinningTickets;
+        }
+
     }
 }

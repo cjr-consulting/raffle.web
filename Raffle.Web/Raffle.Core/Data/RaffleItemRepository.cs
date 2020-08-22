@@ -67,7 +67,44 @@ namespace Raffle.Core.Data
         {
             using (var conn = new SqlConnection(connectionString))
             {
-                return conn.Query<RaffleItem>("SELECT * FROM RaffleItems WHERE Id = @id", new { id }).SingleOrDefault();
+                const string query = "SELECT " +
+                    "ri.*, " +
+                    "TotalTicketsEntered = (SELECT SUM(roii.Count) " +
+                    "   FROM RaffleOrders ro JOIN RaffleOrderLineItems roii " +
+                    "       ON ro.Id = roii.RaffleOrderId " +
+                    "   WHERE ro.TicketNumber <> '' AND roii.RaffleItemId = ri.Id), " +
+                    " rii.ImageRoute " +
+                    "FROM RaffleItems ri " +
+                    "LEFT JOIN RaffleItemImages rii ON ri.Id = rii.RaffleItemId " +
+                    "WHERE ri.Id = @id";
+
+                var raffleItemDictionary = new Dictionary<int, RaffleItem>();
+                var result = conn.Query<RaffleItem, string, RaffleItem>(
+                        query,
+                        (raffleItem, imageRoute) =>
+                        {
+                            RaffleItem raffleItemEntry;
+
+                            if (!raffleItemDictionary.TryGetValue(raffleItem.Id, out raffleItemEntry))
+                            {
+                                raffleItemEntry = raffleItem;
+                                raffleItemEntry.ImageUrls = new List<string>();
+                                raffleItemDictionary.Add(raffleItemEntry.Id, raffleItemEntry);
+                            }
+
+                            if (imageRoute != null)
+                            {
+                                raffleItemEntry.ImageUrls.Add(imageRoute);
+                            }
+
+                            return raffleItemEntry;
+                        },
+                        new { Id = id },
+                        splitOn: "ImageRoute")
+                    .Distinct()
+                    .SingleOrDefault();
+
+                return result;
             }
         }
 

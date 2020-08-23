@@ -1,5 +1,4 @@
-﻿
-using MediatR;
+﻿using MediatR;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Raffle.Core.Commands;
 using Raffle.Core.Queries;
 using Raffle.Core.Repositories;
-using Raffle.Core.Shared;
 using Raffle.Web.Models.Admin.RaffleItem;
 
 using System;

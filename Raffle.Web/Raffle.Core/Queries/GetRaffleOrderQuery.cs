@@ -75,6 +75,10 @@ namespace Raffle.Core.Queries
                                 splitOn: "Email"))
                                 .Distinct()
                                 .SingleOrDefault();
+                if(order == null)
+                {
+                    return null;
+                }
 
                 order.Lines = (await conn.QueryAsync<RaffleOrderLine>(getOrderLineItems, new { id = request.OrderId }))
                                 .OrderBy(x => x.RaffleItemNumber)

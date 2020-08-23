@@ -13,6 +13,7 @@
         });
 
     const rowTemplate = Handlebars.compile("<tr id=\"raffleItem-{{id}}\">" +
+        "<td># {{itemNumber}}</td>" +
         "<td><div class='row'>{{#if image}}<div class='col-md-2'><img class='img-fluid rounded' width='150' style='margin-right:5px' src='{{image}}'/></div>{{/if}}" +
         "<div class='col-md-8'><h5>{{title}}</h5>" +
         "{{#if itemValue}}<b>Est. value of {{itemValue}}</b><br/>{{/if}} " +
@@ -26,11 +27,21 @@
     const raffleList = document.getElementById("raffleList");
     let raffleItems = [];
 
-    function raffleItemsDesc(a, b) {
+    function byRaffleItemUpdatedDesc(a, b) {
         if (a.updatedDate > b.updatedDate) {
             return -1;
         } else if (a.updatedDate < b.updatedDate) {
             return 1;
+        }
+
+        return 0;
+    }
+
+    function byRaffleItemNumber(a, b) {
+        if (a.itemNumber > b.itemNumber) {
+            return 1;
+        } else if (a.itemNumber < b.itemNumber) {
+            return -1;
         }
 
         return 0;
@@ -59,7 +70,7 @@
 
     function refreshList() {
         let listHtml = '';
-        raffleItems = raffleItems.sort(raffleItemsDesc);
+        raffleItems = raffleItems.sort(byRaffleItemNumber);
 
         for (var i = 0; i < raffleItems.length; i++) {
             let item = raffleItems[i];

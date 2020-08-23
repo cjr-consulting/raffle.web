@@ -77,7 +77,9 @@ namespace Raffle.Web
             return new RaffleItemDuringRunModel
             {
                 Id = item.Id,
+                ItemNumber = item.ItemNumber,
                 Image = item.ImageUrls.Any() ? item.ImageUrls.First() : string.Empty,
+                Images = item.ImageUrls.Skip(1).ToList(),
                 Title = item.Title,
                 Description = item.Description,
                 Sponsor = item.Sponsor,

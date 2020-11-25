@@ -124,8 +124,8 @@
                 }, {});
             console.debug("totalPoints", totalPoints);
 
-            let startDate = moment("2020-7-31");
-            let endDate = moment("2020-08-22");
+            let startDate = moment("2020-11-24");
+            let endDate = moment("2020-12-14");
             let labels = [];
 
             while (startDate <= endDate) {

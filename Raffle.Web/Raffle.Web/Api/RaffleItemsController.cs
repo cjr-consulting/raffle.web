@@ -105,7 +105,7 @@ namespace Raffle.Web.Api
         public List<Ticket> WinningTickets { get; set; } = new List<Ticket>();
         public List<Winner> Winners { get; set; } = new List<Winner>();
         public DateTime UpdatedDate { get; set; }
-        public List<string> Images { get; set; }
+        public List<string> Images { get; set; } = new List<string>();
     }
 
     public class Ticket

@@ -48,8 +48,6 @@ namespace Raffle.Core.Commands
             {
                 await conn.ExecuteAsync(query, notification);
             }
-
-            await mediator.Publish(new RaffleItemUpdated(), cancellationToken);
         }
     }
 }

@@ -13,35 +13,38 @@
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8">
-        <img src="~/images/DFDQ-RaffleBanner.jpg" class="img-fluid" alt="Welcome to the Darts for Dreams Quarantine Edition Raffle" />
+        <img src="~/images/2020T4T-Web-header.jpg" class="img-fluid" alt="Welcome to the Darts for Dreams Quarantine Edition Raffle" />
     </div>
 </div>
 
 @if (Model.CloseDate >= DateTime.UtcNow)
 {
     <div class="text-center">
-        <h5>The online raffle will be turned off at 2 PM ET on August 22nd! </h5>
-        <h5><span id="timeCountdown" utc="@Model.CloseDate.Value.ToString("o")"></span></h5>
+        <h5>The online raffle will be turned off at 2 PM ET on December 13th! </h5>
+        <h5><span id="timeCountdown" utc="@Model.CloseDate.Value.ToString("o")"></span> Check back often as items will be added daily</h5>
     </div>
 }
 else
 {
     <div class="text-center">
-        <h5>The online raffle will start at 2 PM ET on August 22nd! </h5>
+        <h5>The online raffle will start at 2 PM ET on December 13th! </h5>
     </div>
 }
 <p>
-    Thank you for choosing to stop by and help MAWNJ via our online Darts for Dreams event in 2020.
-    Your support is truly appreciated as we continue to help kids with critical illnesses in our area.
+    Thank you for choosing to stop by and help Toys for Tots via our online
+    Jesse P. Roland Annual Toys for Tots Benefit event in 2020.
+    Your support is truly appreciated as we continue to help bring the 
+    joy of Christmas to less fortunate children in the NYC area.
 </p>
 @if (DateTime.UtcNow < Model.CloseDate)
 {
-    <p>
-        Step 1: Below is a list of prizes available to win on August 22nd, some basic information,
-        images and their value. Simple navigate the page and select how many chances for each prize
-        you'd like to have. Once you've made your choices, hit the "CONTINUE" button at the bottom
-        to move to the next step.
-    </p>
+<p>
+    Step 1: Below is a list of prizes available to win on December 13th, 
+    some basic information, images and their value. Simply navigate the page 
+    and select how many chances for each prize you'd like to have. 
+    Once you've made your choices, hit the "CONTINUE" button at the 
+    bottom to move to the next step.
+</p>
     <div class="row">
         <div class="mb-3">
             @if (!string.IsNullOrEmpty(Model.ErrorMessage))
@@ -64,7 +67,7 @@ else
                 <div class="col-md-6">
                     <div class="text-align">
                         <select name="categoryFilter" class="btn btn-secondary dropdown-toggle" onchange="this.form.submit();">
-                            <option value="">Select a Category</option>
+                            <option value="">All</option>
                             @foreach (var category in Model.Categories)
                             {
                                 @if (category == (string)ViewData["categoryFilter"])

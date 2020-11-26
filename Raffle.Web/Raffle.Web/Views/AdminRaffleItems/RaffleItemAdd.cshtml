@@ -8,7 +8,7 @@
     <h1 class="display-4">Add Raffle Item</h1>
 </div>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <div class="row">
         <div class="col-md-12">
             <div class="row">
@@ -67,6 +67,11 @@
                         @Html.CheckBoxFor(x => x.IsAvailable)
                         Available
                     </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    Upload: <input type="file" id="ItemImage" name="ItemImage"/>
                 </div>
             </div>
             <div class="row">

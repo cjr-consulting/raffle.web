@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -18,6 +20,7 @@ namespace Raffle.Web.Models.Admin.RaffleItem
         public string Sponsor { get; set; } = string.Empty;
         [Required]
         public int Cost { get; set; }
+        public IFormFile ItemImage { get; set; }
         public int NumberOfDraws { get; set; } = 1;
         public bool IsAvailable { get; set; } = true;
         public bool ForOver21 { get; set; }

@@ -1,7 +1,9 @@
 ﻿using Dapper;
+
 using MediatR;
+
 using Raffle.Core.Events;
-using Raffle.Core.Shared;
+using Raffle.Core.Repositories;
 
 using System;
 using System.Data.SqlClient;
@@ -25,16 +27,25 @@ namespace Raffle.Core.Commands
         public bool ForOver21 { get; set; }
         public bool LocalPickupOnly { get; set; }
         public int NumberOfDraws { get; set; } = 1;
+        public StorageFile ImageFile { get; set; }
     }
 
     public class AddRaffleItemCommandHandler : INotificationHandler<AddRaffleItemCommand>
     {
         readonly string connectionString;
+        readonly IStorageService storageService;
+        readonly IRaffleItemRepository repository;
         readonly IMediator mediator;
 
-        public AddRaffleItemCommandHandler(RaffleDbConfiguration config, IMediator mediator)
+        public AddRaffleItemCommandHandler(
+            RaffleDbConfiguration config,
+            IRaffleItemRepository repository,
+            IStorageService storageService,
+            IMediator mediator)
         {
             this.mediator = mediator;
+            this.repository = repository;
+            this.storageService = storageService;
             connectionString = config.ConnectionString;
         }
 
@@ -43,10 +54,24 @@ namespace Raffle.Core.Commands
             const string query = "INSERT INTO [RaffleItems] " +
                 "(ItemNumber, Title, Description, ImageUrl, Category, Sponsor, ItemValue, Cost, IsAvailable, ForOver21, LocalPickupOnly, NumberOfDraws) " +
                 "VALUES " +
-                "(@ItemNumber, @Title, @Description, @ImageUrl, @Category, @Sponsor, @ItemValue, @Cost, @IsAvailable, @ForOver21, @LocalPickupOnly, @NumberOfDraws)";
+                "(@ItemNumber, @Title, @Description, @ImageUrl, @Category, @Sponsor, @ItemValue, @Cost, @IsAvailable, @ForOver21, @LocalPickupOnly, @NumberOfDraws);" +
+                "SELECT SCOPE_IDENTITY();";
+
+            const string insertImage = "INSERT INTO RaffleItemImages(RaffleItemId, ImageRoute, Title) VALUES " +
+                "(@RaffleItemId, @ImageRoute, @Title);";
+
             using (var conn = new SqlConnection(connectionString))
             {
-                await conn.ExecuteAsync(query, notification);
+                var raffleItemId = await conn.ExecuteScalarAsync<int>(query, notification);
+
+                var raffleItem = repository.GetById(raffleItemId);
+                if (notification.ImageFile != null)
+                {
+                    var path = await storageService.SaveFile(notification.ImageFile);
+                    await conn.ExecuteAsync(insertImage, new { RaffleItemId = raffleItemId, ImageRoute = path, Title = notification.ItemValue });
+                }
+
+                await mediator.Publish(new RaffleItemUpdated { RaffleItem = raffleItem }, cancellationToken);
             }
         }
     }

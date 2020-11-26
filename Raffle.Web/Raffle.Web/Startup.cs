@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -113,6 +112,7 @@ namespace Raffle.Web
             services.AddSingleton(services => new RaffleDbConfiguration { ConnectionString = dbConnectionString });
             services.AddSingleton(services => new EmailAddress(Configuration["raffleManager:Email"], Configuration["raffleManager:Name"]));
 
+            services.AddAzureBlobStorageService();
             services.AddRaffleItem();
             services.AddRaffleItemCache();
             services.AddSingleton<ICacheManager, CacheManager>();

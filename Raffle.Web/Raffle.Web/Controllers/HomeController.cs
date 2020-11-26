@@ -518,5 +518,19 @@ namespace Raffle.Web.Controllers
         {
             return View();
         }
+
+        [HttpGet("FileTest")]
+        public async Task<IActionResult> FileTest()
+        {
+            var service = new AzureBlobStorageService(
+                "DefaultEndpointsProtocol=https;AccountName=dfdrafflestorage;AccountKey=OYWYIzGtd34iOybRDSj0YTjz0E2KYRhzefSZ4OFEAvP0PwFhn2ob/tEQQVruJktdTHrawGTjyarrKYlW3rh2OQ==;EndpointSuffix=core.windows.net",
+                "testcontiner");
+
+            var file = new StorageFile("presentfilename", new byte[] { 0, 1, 0, 0 }, "foldername");
+
+            await service.SaveFile(file);
+
+            return null;
+        }
     }
 }

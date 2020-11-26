@@ -3,12 +3,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Raffle.Core;
 using Raffle.Core.Commands;
 using Raffle.Core.Queries;
 using Raffle.Core.Repositories;
 using Raffle.Web.Models.Admin.RaffleItem;
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -66,6 +68,17 @@ namespace Raffle.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                StorageFile file = null;
+                if (model.ItemImage != null)
+                {
+                    var ms = new MemoryStream();
+                    model.ItemImage.OpenReadStream().CopyTo(ms);
+                    file = new StorageFile(
+                        model.ItemImage.FileName,
+                        ms.ToArray(),
+                        "folder");
+                }
+
                 await mediator.Publish(new AddRaffleItemCommand
                 {
                     ItemNumber = model.ItemNumber,
@@ -79,7 +92,8 @@ namespace Raffle.Web.Controllers
                     ForOver21 = model.ForOver21,
                     LocalPickupOnly = model.LocalPickupOnly,
                     NumberOfDraws = model.NumberOfDraws,
-                    Order = model.Order
+                    Order = model.Order,
+                    ImageFile = file
                 });
                 return RedirectToAction("Index");
             }

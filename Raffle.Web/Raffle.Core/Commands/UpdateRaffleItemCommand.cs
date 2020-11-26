@@ -31,6 +31,7 @@ namespace Raffle.Core.Commands
         public bool LocalPickupOnly { get; set; } = true;
         public int NumberOfDraws { get; set; } = 1;
         public string WinningTickets { get; set; } = string.Empty;
+        public StorageFile ImageFile { get; set; }
     }
 
     public class UpdateRaffleItemCommandHandler : INotificationHandler<UpdateRaffleItemCommand>
@@ -83,9 +84,11 @@ namespace Raffle.Core.Commands
                 await mediator.Publish(new RaffleItemUpdated { RaffleItem = raffleItem }, cancellationToken);
             }
         }
+
         bool NoChange(RaffleItem raffleItem, UpdateRaffleItemCommand notification)
         {
-            return raffleItem.Title == notification.Title
+            return raffleItem.ItemNumber == notification.ItemNumber
+                && raffleItem.Title == notification.Title
                 && raffleItem.Description == notification.Description
                 && raffleItem.Category == notification.Category
                 && raffleItem.Order == notification.Order

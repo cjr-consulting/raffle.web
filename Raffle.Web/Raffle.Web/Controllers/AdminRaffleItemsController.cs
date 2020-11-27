@@ -121,7 +121,7 @@ namespace Raffle.Web.Controllers
                 NumberOfDraws = raffleItem.NumberOfDraws,
                 Order = raffleItem.Order,
                 WinningTickets = raffleItem.WinningTickets,
-                ImageUrl = raffleItem.ImageUrls.First()
+                ImageUrl = raffleItem.ImageUrls.Any() ? raffleItem.ImageUrls.First() : string.Empty
             };
             return View("RaffleItemUpdate", model);
         }

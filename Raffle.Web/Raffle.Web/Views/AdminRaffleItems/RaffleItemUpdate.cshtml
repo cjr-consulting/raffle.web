@@ -79,7 +79,14 @@
     <div class="row">
         <div class="col-md-12">
             Replace with new image: <input type="file" id="ItemImage" name="ItemImage" />
-                                    <img src="@Model.ImageUrl" class="img-fluid rounded" style="margin-top:5px;" alt="@Model.Title">
+            @if (string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div>No Image currently.</div>
+            }
+            else
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded" style="margin-top:5px;" alt="@Model.Title">
+            }
         </div>
     </div>
     <div class="row" style="margin-top:5px;">

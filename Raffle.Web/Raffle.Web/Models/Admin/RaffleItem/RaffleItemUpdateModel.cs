@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -24,5 +26,7 @@ namespace Raffle.Web.Models.Admin.RaffleItem
         public bool ForOver21 { get; set; }
         public bool LocalPickupOnly { get; set; }
         public string WinningTickets { get; set; } = string.Empty;
+        public IFormFile ItemImage { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

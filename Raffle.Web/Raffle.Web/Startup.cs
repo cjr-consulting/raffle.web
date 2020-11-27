@@ -112,7 +112,7 @@ namespace Raffle.Web
             services.AddSingleton(services => new RaffleDbConfiguration { ConnectionString = dbConnectionString });
             services.AddSingleton(services => new EmailAddress(Configuration["raffleManager:Email"], Configuration["raffleManager:Name"]));
 
-            services.AddAzureBlobStorageService();
+            services.AddAzureBlobStorageService(Configuration.GetSection("ImageStorage"));
             services.AddRaffleItem();
             services.AddRaffleItemCache();
             services.AddSingleton<ICacheManager, CacheManager>();

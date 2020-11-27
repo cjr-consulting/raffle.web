@@ -76,7 +76,7 @@ namespace Raffle.Web.Controllers
                     file = new StorageFile(
                         model.ItemImage.FileName,
                         ms.ToArray(),
-                        "folder");
+                        "tftraffle");
                 }
 
                 await mediator.Publish(new AddRaffleItemCommand
@@ -120,7 +120,8 @@ namespace Raffle.Web.Controllers
                 LocalPickupOnly = raffleItem.LocalPickupOnly,
                 NumberOfDraws = raffleItem.NumberOfDraws,
                 Order = raffleItem.Order,
-                WinningTickets = raffleItem.WinningTickets
+                WinningTickets = raffleItem.WinningTickets,
+                ImageUrl = raffleItem.ImageUrls.First()
             };
             return View("RaffleItemUpdate", model);
         }
@@ -131,6 +132,17 @@ namespace Raffle.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                StorageFile file = null;
+                if (model.ItemImage != null)
+                {
+                    var ms = new MemoryStream();
+                    model.ItemImage.OpenReadStream().CopyTo(ms);
+                    file = new StorageFile(
+                        model.ItemImage.FileName,
+                        ms.ToArray(),
+                        "tftraffle");
+                }
+
                 var command = new UpdateRaffleItemCommand
                 {
                     Id = id,
@@ -146,7 +158,8 @@ namespace Raffle.Web.Controllers
                     LocalPickupOnly = model.LocalPickupOnly,
                     NumberOfDraws = model.NumberOfDraws,
                     Order = model.Order,
-                    WinningTickets = model.WinningTickets ?? string.Empty
+                    WinningTickets = model.WinningTickets ?? string.Empty,
+                    ImageFile = file
                 };
                 await mediator.Publish(command);
                 return RedirectToAction("Index");

@@ -55,7 +55,7 @@ namespace Raffle.Core.Handlers
             await emailSender.SendEmailAsync(
                             managerEmail.Email,
                             managerEmail.Name,
-                            $"Receipt for Darts For Dreams 15 Raffle Order# {order.Id}",
+                            $"Receipt Jesse P. Roland Memorial Toys for Tots Benefit Raffle Order# {order.Id}",
                             text,
                             body);
         }
@@ -65,7 +65,7 @@ namespace Raffle.Core.Handlers
             await emailSender.SendEmailAsync(
                             order.Customer.Email,
                             $"{order.Customer.FirstName} {order.Customer.LastName}",
-                            $"Receipt for Darts For Dreams 15 Raffle Order# {order.Id}",
+                            $"Receipt Jesse P. Roland Memorial Toys for Tots Benefit Raffle Order# {order.Id}",
                             text,
                             body);
         }
@@ -118,7 +118,7 @@ namespace Raffle.Core.Handlers
                     "</tr>";
             }
 
-            var result = template.Replace(token, $"https://raffle.dartsfordreams.com/home/privacy")
+            var result = template.Replace(token, $"https://t4tdarts.com/home/privacy")
                 .Replace("${raffle.orderid}", order.Id.ToString())
                 .Replace("${donor.email}", order.Customer.Email)
                 .Replace("${name.first}", order.Customer.FirstName)

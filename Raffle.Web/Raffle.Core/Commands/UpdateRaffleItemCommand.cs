@@ -39,12 +39,15 @@ namespace Raffle.Core.Commands
         readonly string connectionString;
         readonly IMediator mediator;
         readonly IRaffleItemRepository repository;
+        readonly IStorageService storageService;
 
         public UpdateRaffleItemCommandHandler(
             RaffleDbConfiguration config,
             IRaffleItemRepository repository,
+            IStorageService storageService,
             IMediator mediator)
         {
+            this.storageService = storageService;
             this.repository = repository;
             this.mediator = mediator;
             connectionString = config.ConnectionString;
@@ -75,10 +78,19 @@ namespace Raffle.Core.Commands
                 " UpdatedDate = GETUTCDATE() " +
                 "WHERE Id = @Id";
 
+            const string replaceImage = "DELETE FROM RaffleItemImages WHERE RaffleItemId = @Id; " +
+                "INSERT INTO RaffleItemImages(RaffleItemId, ImageRoute, Title) VALUES " +
+                "(@Id, @ImageRoute, @Title);";
 
             using (var conn = new SqlConnection(connectionString))
             {
                 await conn.ExecuteAsync(query, notification);
+
+                if(notification.ImageFile != null)
+                {
+                    var path = await storageService.SaveFile(notification.ImageFile);
+                    await conn.ExecuteAsync(replaceImage, new { notification.Id, ImageRoute = path, Title = notification.Title });
+                }
 
                 var raffleItem = repository.GetById(notification.Id);
                 await mediator.Publish(new RaffleItemUpdated { RaffleItem = raffleItem }, cancellationToken);
@@ -99,7 +111,8 @@ namespace Raffle.Core.Commands
                 && raffleItem.ForOver21 == notification.ForOver21
                 && raffleItem.LocalPickupOnly == notification.LocalPickupOnly
                 && raffleItem.NumberOfDraws == notification.NumberOfDraws
-                && raffleItem.WinningTickets == notification.WinningTickets;
+                && raffleItem.WinningTickets == notification.WinningTickets
+                && notification.ImageFile == null;
         }
 
     }

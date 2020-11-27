@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Raffle.Core;
@@ -25,11 +26,12 @@ namespace Raffle.Web.Config
 
     public static class StorageServiceExtensions
     {
-        public static void AddAzureBlobStorageService(this IServiceCollection services)
+        public static void AddAzureBlobStorageService(this IServiceCollection services, IConfigurationSection configurationSection)
         {
             services.AddTransient<IStorageService>(x => new AzureBlobStorageService(
-                "DefaultEndpointsProtocol=https;AccountName=dfdrafflestorage;AccountKey=OYWYIzGtd34iOybRDSj0YTjz0E2KYRhzefSZ4OFEAvP0PwFhn2ob/tEQQVruJktdTHrawGTjyarrKYlW3rh2OQ==;EndpointSuffix=core.windows.net",
-                "testcontiner"));
+                configurationSection.GetValue<string>("AzureBlobStorage:ConnectionString"),
+                configurationSection.GetValue<string>("AzureBlobStorage:ContainerName"))
+            );
         }
     }
 }

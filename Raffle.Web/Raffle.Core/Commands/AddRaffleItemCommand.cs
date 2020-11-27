@@ -68,7 +68,7 @@ namespace Raffle.Core.Commands
                 if (notification.ImageFile != null)
                 {
                     var path = await storageService.SaveFile(notification.ImageFile);
-                    await conn.ExecuteAsync(insertImage, new { RaffleItemId = raffleItemId, ImageRoute = path, Title = notification.ItemValue });
+                    await conn.ExecuteAsync(insertImage, new { RaffleItemId = raffleItemId, ImageRoute = path, Title = notification.Title });
                 }
 
                 await mediator.Publish(new RaffleItemUpdated { RaffleItem = raffleItem }, cancellationToken);

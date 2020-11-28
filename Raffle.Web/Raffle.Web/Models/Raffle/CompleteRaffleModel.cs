@@ -73,7 +73,6 @@ namespace Raffle.Web.Models.Raffle
         {
             HowDidYouHearList = new List<SelectListItem>
             {
-                new SelectListItem("Saw this on a Make-A-Wish page", "Saw this on a Make-A-Wish page"),
                 new SelectListItem("You've been to the event in the past or know people who have",  "You've been to the event in the past or know people who have"),
                 new SelectListItem("You found us on FB directly or via a share in a community FB group", "You found us on FB directly or via a share in a community FB group"),
                 new SelectListItem("You saw it posted on FB in a darts related group", "You saw it posted on FB in a darts related group"),

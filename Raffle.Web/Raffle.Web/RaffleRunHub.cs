@@ -95,7 +95,7 @@ namespace Raffle.Web
                 return new List<Ticket>();
 
             var phase1 = winningTickets.Split('(')[0].Trim();
-            var tickets = phase1.Split(",", StringSplitOptions.RemoveEmptyEntries);
+            var tickets = phase1.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
 
             var result = new List<Ticket>();
             foreach (var ticketNumber in tickets)

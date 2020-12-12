@@ -4,9 +4,6 @@ using Microsoft.Extensions.Caching.Memory;
 
 using Raffle.Core.Events;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,6 +17,7 @@ namespace Raffle.Core.Cache
         {
             this.cache = cache;
         }
+
         public Task Handle(RaffleItemUpdated notification, CancellationToken cancellationToken)
         {
             cache.Remove(CacheKeys.RaffleItemsAll);

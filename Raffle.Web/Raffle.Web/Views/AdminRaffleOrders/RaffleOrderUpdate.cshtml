@@ -6,6 +6,9 @@
 <hr/>
 <form method="post">
     @Html.HiddenFor(x => x.Id)
+    <div>
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    </div>
     <div class="row">
         <div class="col-md-6">
             <div class="row">
@@ -34,12 +37,12 @@
             </div>
             @if (Model.UpdateDate.HasValue)
             {
-            <div class="row">
-                <div class="col-md-12">
-                    <label>Last Update</label>
-                    <span class="localTime" utc="@Model.UpdateDate.Value.ToString("o")"></span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Last Update</label>
+                        <span class="localTime" utc="@Model.UpdateDate.Value.ToString("o")"></span>
+                    </div>
                 </div>
-            </div>
             }
         </div>
         <div class="col-md-6">
@@ -85,8 +88,8 @@
                         <h5>How did you find us?</h5>
                         @if (!string.IsNullOrEmpty(Model.HowDidYouHear))
                         {
-                        <b>@Model.HowDidYouHear</b><br/>
-                        @Model.HOwDidYouHearOther
+                            <b>@Model.HowDidYouHear</b><br />
+                            @Model.HOwDidYouHearOther
                         }
                         else
                         {
@@ -113,24 +116,24 @@
                 <tbody>
                     @foreach (var item in Model.Lines)
                     {
-                    <tr>
-                        <td>
-                            @if (item.ImageUrls.Any())
-                            {
-                                <img src="@item.ImageUrls.First()" alt="@item.Name" class="rounded float-left" style="max-width: 100px; margin-right:8px;" />
-                            }
-                        </td>
-                        <td class="align-middle">@item.Name</td>
-                        <td class="text-right align-middle">@item.Amount</td>
-                        <td class="text-right align-middle">@item.Price</td>
-                        <td class="text-right align-middle">@item.Cost</td>
-                    </tr>
+                        <tr>
+                            <td>
+                                @if (item.ImageUrls.Any())
+                                {
+                                    <img src="@item.ImageUrls.First()" alt="@item.Name" class="rounded float-left" style="max-width: 100px; margin-right:8px;" />
+                                }
+                            </td>
+                            <td class="align-middle">@item.Name</td>
+                            <td class="text-right align-middle">@item.Amount</td>
+                            <td class="text-right align-middle">@item.Price</td>
+                            <td class="text-right align-middle">@item.Cost</td>
+                        </tr>
                     }
                     <tr class="table-primary">
                         <td><b>Total Points</b></td>
                         <td colspan="3" class="text-right">
-                            <b>#1</b> - @Model.TotalTicketsOne /                           
-                            <b>#2</b> - @Model.TotalTicketsTwo /                             
+                            <b>#1</b> - @Model.TotalTicketsOne /
+                            <b>#2</b> - @Model.TotalTicketsTwo /
                             <b>Sheet Tickets</b> - @Model.TotalTicketsFromSheet
                         </td>
                         <td class="text-right"><b>@Model.TotalPrice</b></td>

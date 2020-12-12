@@ -7,6 +7,7 @@ using Raffle.Core;
 using Raffle.Core.Commands;
 using Raffle.Core.Queries;
 using Raffle.Core.Repositories;
+using Raffle.Core.Shared;
 using Raffle.Web.Models.Admin.RaffleItem;
 
 using System;
@@ -130,42 +131,56 @@ namespace Raffle.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int id, RaffleItemUpdateModel model)
         {
-            if (ModelState.IsValid)
+            var raffleItem = raffleItemRepository.GetById(id);
+            if (!ModelState.IsValid)
             {
-                StorageFile file = null;
-                if (model.ItemImage != null)
-                {
-                    var ms = new MemoryStream();
-                    model.ItemImage.OpenReadStream().CopyTo(ms);
-                    file = new StorageFile(
-                        model.ItemImage.FileName,
-                        ms.ToArray(),
-                        "tftraffle");
-                }
-
-                var command = new UpdateRaffleItemCommand
-                {
-                    Id = id,
-                    ItemNumber = model.ItemNumber,
-                    Title = model.Title,
-                    Description = model.Description ?? string.Empty,
-                    Category = model.Category ?? string.Empty,
-                    Sponsor = model.Sponsor ?? string.Empty,
-                    Cost = model.Cost,
-                    ItemValue = model.ItemValue ?? string.Empty,
-                    IsAvailable = model.IsAvailable,
-                    ForOver21 = model.ForOver21,
-                    LocalPickupOnly = model.LocalPickupOnly,
-                    NumberOfDraws = model.NumberOfDraws,
-                    Order = model.Order,
-                    WinningTickets = model.WinningTickets ?? string.Empty,
-                    ImageFile = file
-                };
-                await mediator.Publish(command);
-                return RedirectToAction("Index");
+                model.ImageUrl = raffleItem.ImageUrls.Any() ? raffleItem.ImageUrls.First() : string.Empty;
+                return View("RaffleItemUpdate", model);
             }
 
-            return View("RaffleItemUpdate");
+            StorageFile file = null;
+            if (model.ItemImage != null)
+            {
+                var ms = new MemoryStream();
+                model.ItemImage.OpenReadStream().CopyTo(ms);
+                file = new StorageFile(
+                    model.ItemImage.FileName,
+                    ms.ToArray(),
+                    "tftraffle");
+            }
+
+            var command = new UpdateRaffleItemCommand
+            {
+                Id = id,
+                ItemNumber = model.ItemNumber,
+                Title = model.Title,
+                Description = model.Description ?? string.Empty,
+                Category = model.Category ?? string.Empty,
+                Sponsor = model.Sponsor ?? string.Empty,
+                Cost = model.Cost,
+                ItemValue = model.ItemValue ?? string.Empty,
+                IsAvailable = model.IsAvailable,
+                ForOver21 = model.ForOver21,
+                LocalPickupOnly = model.LocalPickupOnly,
+                NumberOfDraws = model.NumberOfDraws,
+                Order = model.Order,
+                WinningTickets = model.WinningTickets ?? string.Empty,
+                ImageFile = file
+            };
+
+            var result = await mediator.Send(command);
+            if (result.Failed)
+            {
+                model.ImageUrl = raffleItem.ImageUrls.Any() ? raffleItem.ImageUrls.First() : string.Empty;
+                foreach (var errorMessage in result.ErrorMessages)
+                {
+                    ModelState.AddModelError("WinningTickets", errorMessage);
+                }
+
+                return View("RaffleItemUpdate", model);
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

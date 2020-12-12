@@ -4,9 +4,12 @@ using MediatR;
 
 using Raffle.Core.Events;
 using Raffle.Core.Models;
+using Raffle.Core.Queries;
 using Raffle.Core.Repositories;
+using Raffle.Core.Shared;
 
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
@@ -14,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Raffle.Core.Commands
 {
-    public class UpdateRaffleItemCommand : INotification
+    public class UpdateRaffleItemCommand : IRequest<Result>
     {
         public int Id { get; set; }
         public int ItemNumber { get; set; }
@@ -34,12 +37,14 @@ namespace Raffle.Core.Commands
         public StorageFile ImageFile { get; set; }
     }
 
-    public class UpdateRaffleItemCommandHandler : INotificationHandler<UpdateRaffleItemCommand>
+    public class UpdateRaffleItemCommandHandler : IRequestHandler<UpdateRaffleItemCommand, Result>
     {
         readonly string connectionString;
         readonly IMediator mediator;
         readonly IRaffleItemRepository repository;
         readonly IStorageService storageService;
+
+        List<string> errorMessages = new List<string>();
 
         public UpdateRaffleItemCommandHandler(
             RaffleDbConfiguration config,
@@ -53,12 +58,23 @@ namespace Raffle.Core.Commands
             connectionString = config.ConnectionString;
         }
 
-        public async Task Handle(UpdateRaffleItemCommand notification, CancellationToken cancellationToken)
+        public async Task<Result> Handle(UpdateRaffleItemCommand request, CancellationToken cancellationToken)
         {
-            var existingRafflItem = repository.GetById(notification.Id);
-            if(NoChange(existingRafflItem, notification))
+            var existingRafflItem = repository.GetById(request.Id);
+            if (NoChange(existingRafflItem, request))
             {
-                return;
+                return Result.Valid();
+            }
+
+            var ordersResult = await mediator.Send(new GetRaffleOrdersQuery());
+            var raffleTickets = ordersResult
+                .Orders
+                .SelectMany(x => SplitTicketString(x.TicketNumber))
+                .Where(x => x != null);
+
+            if (InvalidTicketNumbers(request.WinningTickets, raffleTickets.ToList()))
+            {
+                return Result.Fail(errorMessages);
             }
 
             const string query = "UPDATE [RaffleItems] SET" +
@@ -84,20 +100,22 @@ namespace Raffle.Core.Commands
 
             using (var conn = new SqlConnection(connectionString))
             {
-                await conn.ExecuteAsync(query, notification);
+                await conn.ExecuteAsync(query, request);
 
-                if(notification.ImageFile != null)
+                if (request.ImageFile != null)
                 {
-                    var path = await storageService.SaveFile(notification.ImageFile);
-                    await conn.ExecuteAsync(replaceImage, new { notification.Id, ImageRoute = path, Title = notification.Title });
+                    var path = await storageService.SaveFile(request.ImageFile);
+                    await conn.ExecuteAsync(replaceImage, new { request.Id, ImageRoute = path, Title = request.Title });
                 }
 
-                var raffleItem = repository.GetById(notification.Id);
+                var raffleItem = repository.GetById(request.Id);
                 await mediator.Publish(new RaffleItemUpdated { RaffleItem = raffleItem }, cancellationToken);
             }
+
+            return Result.Valid();
         }
 
-        bool NoChange(RaffleItem raffleItem, UpdateRaffleItemCommand notification)
+        private bool NoChange(RaffleItem raffleItem, UpdateRaffleItemCommand notification)
         {
             return raffleItem.ItemNumber == notification.ItemNumber
                 && raffleItem.Title == notification.Title
@@ -115,5 +133,42 @@ namespace Raffle.Core.Commands
                 && notification.ImageFile == null;
         }
 
+        bool InvalidTicketNumbers(string winningTickets, List<string> orderTickets)
+        {
+            bool hasErrors = false;
+            var tickets = SplitTicketString(winningTickets);
+
+            foreach(var ticket in tickets)
+            {
+                if(!int.TryParse(ticket, out var ticketNum))
+                {
+                    errorMessages.Add($"Invalid number in ticket [{ticket}]");
+                    hasErrors = true;
+                    continue;
+                }
+
+                if(!orderTickets.Any(x=> x == ticket))
+                {
+                    errorMessages.Add($"Ticket number [{ticket}] wasn't used on an order");
+                    hasErrors = true;
+                    continue;
+                }
+            }
+
+            return hasErrors;
+        }
+
+        IReadOnlyList<string> SplitTicketString(string ticketString)
+        {
+            if(ticketString == null)
+            {
+                return new List<string>();
+            }
+
+            return ticketString
+                .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .ToList();
+        }
     }
 }

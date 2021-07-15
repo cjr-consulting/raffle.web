@@ -20,7 +20,7 @@
 @if (Model.CloseDate >= DateTime.UtcNow)
 {
     <div class="text-center">
-        <h5>The online raffle will be turned off at 2 PM ET on December 13th! </h5>
+        <h5>The online raffle will be turned off at 4 PM ET on December 13th! </h5>
         <h5><span id="timeCountdown" utc="@Model.CloseDate.Value.ToString("o")"></span> Check back often as items will be added daily</h5>
         <p><a href="https://www.facebook.com/Toys4TotsDartTourney11379">Follow the Facebook Page</a> for more information on the event, raffles, 50/50 and auctions</p>
     </div>
@@ -28,7 +28,7 @@
 else
 {
     <div class="text-center">
-        <h5>The online raffle will start at 2 PM ET on December 13th! </h5>
+        <h5>The online raffle will start at 4 PM ET on December 13th! </h5>
     </div>
 }
 <p>
